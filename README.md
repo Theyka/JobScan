@@ -72,10 +72,9 @@ Platforms to scrape:
 - JobSearch:
     - Urls:
         - https://jobsearch.az/api-az/vacancies-az?hl=az&q=&posted_date=&seniority=&categories=1076&industries=&ads=&location=&job_type=&salary=&order_by=
+        - https://jobsearch.az/api-az/vacancies-az/netto-software-help-desk-specialist-junior-132548
 
-    - They only give json data if we have **X-Requested-With: XMLHttpRequest** header, otherwise they return html page, so we need to set this header in our requests.
-    - Also in every json response there is "next" field which contains the url for the next page, so we should use this field to get all the data until it becomes null.
-
+    - They only give json data if we have **X-Requested-With: XMLHttpRequest** header, otherwise they return html page, so we need to set this header in our requests. Also in every json response there is "next" field which contains the url for the next page, so we should use this field to get all the data until it becomes null.
 
 
 After we get all the data from both platforms, we should store it in a database we also should consider the fact that there might be duplicate jobs from both platforms, so we should check for duplicates before storing the data in the database. We cann't use the job title and company name as a unique identifier for each job because one company could have different name on different platforms, so we should add fingerprinting to the job descripition and use it as a unique identifier for each job. Also we should CLEAN the html from the job description and use MD file format to store the job description in the database, so we can easily display it on the frontend. We can use libraries like BeautifulSoup to clean the html and convert it to MD format. After that we should build a simple frontend to display the jobs in a nice way, we can use Tailwind CSS for styling and Supabase for the backend.
