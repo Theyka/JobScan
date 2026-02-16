@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+html.light {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+html.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) {
+    color-scheme: dark;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #cbd5e1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.line-clamp-2-custom {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.job-description {
+  color: inherit;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.job-description h1,
+.job-description h2,
+.job-description h3 {
+  display: block;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.job-description strong,
+.job-description b {
+  font-weight: 700;
+}
+
+.job-description h1 {
+  font-size: 1.5rem;
+}
+
+.job-description h2 {
+  font-size: 1.25rem;
+}
+
+.job-description h3 {
+  font-size: 1.1rem;
+}
+
+.job-description ul,
+.job-description ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.job-description ul {
+  list-style-type: disc;
+}
+
+.job-description ol {
+  list-style-type: decimal;
+}
+
+.job-description li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.job-description li::marker {
+  color: #2563eb;
+}
+
+.dark .job-description li::marker {
+  color: #3b82f6;
+}
+
+.job-description a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.dark .job-description a {
+  color: #3b82f6;
+}
+
+.job-description p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.job-description div {
+  margin-bottom: 0.125rem;
+}
+
+.job-description h1:first-child,
+.job-description h2:first-child,
+.job-description h3:first-child {
+  margin-top: 0;
+}
