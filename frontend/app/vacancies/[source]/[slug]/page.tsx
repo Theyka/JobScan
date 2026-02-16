@@ -1,18 +1,11 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { getVacancyDetail, normalizeRouteSource, type VacancyDetail } from '@/lib/vacancy-detail-data'
-
-export const dynamic = 'force-dynamic'
-
-type VacancyPageParams = {
-  source: string
-  slug: string
-}
-
-type VacancyPageProps = {
-  params: VacancyPageParams | Promise<VacancyPageParams>
-}
+import Footer from '@/components/landing/Footer'
+import SiteHeader from '@/components/shared/SiteHeader'
+import { getVacancyDetail, normalizeRouteSource } from '@/lib/vacancy-detail-data'
+import type { VacancyDetail } from '@/lib/datatypes/vacancy-detail-data.types'
+import type { VacancyPageProps } from '@/lib/datatypes/vacancy-page.types'
 
 function decodeParam(value: string): string {
   const raw = String(value ?? '')
@@ -129,7 +122,7 @@ function renderInfoCards(detail: VacancyDetail) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {infoEntries.map((entry) => (
         <div
           key={`${entry.label}-${entry.value}`}
@@ -341,6 +334,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-50">
       <div className="container mx-auto max-w-6xl px-4 py-8">
+        <SiteHeader className="mb-8" subtitle="Vacancy details" />
         <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/"
@@ -505,6 +499,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
           </section>
         ) : null}
       </div>
+      <Footer />
     </div>
   )
 }
