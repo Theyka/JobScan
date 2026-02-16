@@ -78,6 +78,7 @@ class GlorriService:
     @staticmethod
     def _clean_text(value: str) -> str:
         value = re.sub(r"(?is)<!--.*?-->", "", value)
+        value = re.sub(r"[\u200B-\u200D\u2060\uFEFF]", "", value)
         value = re.sub(r"(?is)<br\s*/?>", "\n", value)
         value = re.sub(r"(?is)<[^>]+>", "", value)
         value = unescape(value).replace("\xa0", " ")
@@ -86,9 +87,28 @@ class GlorriService:
         return value.strip()
 
     @staticmethod
+    def _remove_html_noise(value: str) -> str:
+        cleaned = value
+
+        cleaned = re.sub(r"[\u200B-\u200D\u2060\uFEFF]", "", cleaned)
+        cleaned = re.sub(r"(?is)<p>\s*(?:<br>\s*|&nbsp;|\s)*</p>", "", cleaned)
+
+        for _ in range(4):
+            cleaned = re.sub(
+                r"(?is)<(p|div|span|strong|em|li)>\s*(?:<br>\s*|&nbsp;|\s)*</\1>",
+                "",
+                cleaned,
+            )
+            cleaned = re.sub(r"(?is)<(ul|ol)>\s*</\1>", "", cleaned)
+
+        cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+        return cleaned.strip()
+
+    @staticmethod
     def _clean_html_fragment(value: str) -> str:
         value = re.sub(r"(?is)<!--.*?-->", "", value)
         value = unescape(value).replace("\xa0", " ")
+        value = re.sub(r"[\u200B-\u200D\u2060\uFEFF]", "", value)
 
         value = re.sub(
             r"(?is)<\s*([a-zA-Z0-9]+)\b[^>]*?>",
@@ -101,8 +121,7 @@ class GlorriService:
             value,
         )
         value = re.sub(r"[ \t]+", " ", value)
-        value = re.sub(r"\n{3,}", "\n\n", value)
-        return value.strip()
+        return GlorriService._remove_html_noise(value)
 
     @staticmethod
     def _extract_section_slice(html: str, heading: str) -> str:
@@ -169,6 +188,19 @@ class GlorriService:
         if not match:
             return ""
         return urljoin(detail_url, unescape(match.group(1)))
+
+    @staticmethod
+    def _merge_detail_html(description_html: str | None, requirements_html: str | None) -> str:
+        description = description_html.strip() if isinstance(description_html, str) else ""
+        requirements = requirements_html.strip() if isinstance(requirements_html, str) else ""
+
+        sections: list[str] = []
+        if description:
+            sections.append(f"<h3>Təsvir</h3>\n{description}")
+        if requirements:
+            sections.append(f"<h3>Tələblər</h3>\n{requirements}")
+
+        return GlorriService._remove_html_noise("\n\n".join(sections))
 
     def _build_detail_url(self, job: dict) -> str:
         company = job.get("company") if isinstance(job.get("company"), dict) else {}
@@ -301,13 +333,19 @@ class GlorriService:
             company = self._normalize_company(job.get("company"))
             company_key = self.repository.glorri_company_key(company)
             company_id = company_map.get(company_key)
+            description_html = (
+                job.get("description_html") if isinstance(job.get("description_html"), str) else ""
+            )
+            requirements_html = (
+                job.get("requirements_html") if isinstance(job.get("requirements_html"), str) else ""
+            )
+            combined_text_html = self._merge_detail_html(description_html, requirements_html)
 
             tech_input = "\n".join(
                 [
                     job.get("title") if isinstance(job.get("title"), str) else "",
                     job.get("jobFunction") if isinstance(job.get("jobFunction"), str) else "",
-                    job.get("description_html") if isinstance(job.get("description_html"), str) else "",
-                    job.get("requirements_html") if isinstance(job.get("requirements_html"), str) else "",
+                    combined_text_html,
                     " ".join(job.get("benefits")) if isinstance(job.get("benefits"), list) else "",
                     " ".join(str(value) for value in job.get("vacancy_about", {}).values())
                     if isinstance(job.get("vacancy_about"), dict)
@@ -325,12 +363,7 @@ class GlorriService:
                     "location": job.get("location") if isinstance(job.get("location"), str) else None,
                     "type": job.get("type") if isinstance(job.get("type"), str) else None,
                     "detail_url": job.get("detail_url") if isinstance(job.get("detail_url"), str) else None,
-                    "description_html": job.get("description_html")
-                    if isinstance(job.get("description_html"), str)
-                    else None,
-                    "requirements_html": job.get("requirements_html")
-                    if isinstance(job.get("requirements_html"), str)
-                    else None,
+                    "text": combined_text_html or None,
                     "vacancy_about": job.get("vacancy_about")
                     if isinstance(job.get("vacancy_about"), dict)
                     else None,

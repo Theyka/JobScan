@@ -2,7 +2,7 @@ TODO:
 ---
 - ~~Sepearete the code into different files~~
 - ~~Recreate backend to scrape data and store it in a database~~
-- Add duplicate checker to avoid inserting duplicate jobs into the database
+- ~~Add duplicate checker to avoid inserting duplicate jobs into the database~~
 - Create a telegram bot to send notifications about new jobs
 - Add personal notification settings to the bot for each user
 - Add admin panel with these features:
@@ -60,6 +60,7 @@ How to configure:
 
 4. Run backend scraper:
     - `python3 backend/main.py`
+    - Each cycle also runs duplicate detection and refreshes `duplicate_jobs`
 
 
 Supabase Database Schema:
@@ -85,8 +86,7 @@ create table public.glorri_vacancies (
   location text null,
   type text null,
   detail_url text null,
-  description_html text null,
-  requirements_html text null,
+  text text null,
   vacancy_about jsonb null,
   benefits jsonb null,
   apply_url text null,
@@ -128,6 +128,17 @@ create table public.js_vacancies (
   constraint vacancies_id_key unique (id),
   constraint vacancies_company_id_fkey foreign KEY (company_id) references js_companies (id) on update CASCADE on delete CASCADE
 ) TABLESPACE pg_default;
+
+create table public.duplicate_jobs (
+  glorri_id bigint not null,
+  jobsearch_id bigint not null,
+  score numeric(6, 4) not null,
+  matched_at timestamp with time zone not null default now(),
+  constraint duplicate_jobs_pkey primary key (glorri_id),
+  constraint duplicate_jobs_jobsearch_id_key unique (jobsearch_id),
+  constraint duplicate_jobs_glorri_id_fkey foreign KEY (glorri_id) references glorri_vacancies (id) on update CASCADE on delete CASCADE,
+  constraint duplicate_jobs_jobsearch_id_fkey foreign KEY (jobsearch_id) references js_vacancies (id) on update CASCADE on delete CASCADE
+) TABLESPACE pg_default;
 ```
 
 Supabase RLS (public read only):
@@ -139,6 +150,7 @@ alter table public.glorri_companies enable row level security;
 alter table public.glorri_vacancies enable row level security;
 alter table public.js_companies enable row level security;
 alter table public.js_vacancies enable row level security;
+alter table public.duplicate_jobs enable row level security;
 
 drop policy if exists "Enable read access for all users" on public.glorri_companies;
 create policy "Enable read access for all users"
@@ -164,6 +176,13 @@ using (true);
 drop policy if exists "Enable read access for all users" on public.js_vacancies;
 create policy "Enable read access for all users"
 on public.js_vacancies
+for select
+to public
+using (true);
+
+drop policy if exists "Enable read access for all users" on public.duplicate_jobs;
+create policy "Enable read access for all users"
+on public.duplicate_jobs
 for select
 to public
 using (true);

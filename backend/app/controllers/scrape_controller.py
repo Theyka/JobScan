@@ -1,13 +1,20 @@
 from datetime import datetime, timezone
 
+from app.services.duplicate_detection_service import DuplicateDetectionService
 from app.services.glorri_service import GlorriService
 from app.services.jobsearch_service import JobSearchService
 
 
 class ScrapeController:
-    def __init__(self, jobsearch_service: JobSearchService, glorri_service: GlorriService):
+    def __init__(
+        self,
+        jobsearch_service: JobSearchService,
+        glorri_service: GlorriService,
+        duplicate_detection_service: DuplicateDetectionService | None = None,
+    ):
         self.jobsearch_service = jobsearch_service
         self.glorri_service = glorri_service
+        self.duplicate_detection_service = duplicate_detection_service
 
     def run_cycle(self) -> dict:
         started_at = datetime.now(timezone.utc)
@@ -17,6 +24,7 @@ class ScrapeController:
             "started_at": started_at.isoformat(),
             "jobsearch": None,
             "glorri": None,
+            "duplicates": None,
             "errors": [],
         }
 
@@ -33,6 +41,14 @@ class ScrapeController:
             message = f"Glorri run failed: {error}"
             result["errors"].append(message)
             print(message)
+
+        if self.duplicate_detection_service is not None:
+            try:
+                result["duplicates"] = self.duplicate_detection_service.run()
+            except Exception as error:
+                message = f"Duplicate detection failed: {error}"
+                result["errors"].append(message)
+                print(message)
 
         finished_at = datetime.now(timezone.utc)
         result["finished_at"] = finished_at.isoformat()

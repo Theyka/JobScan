@@ -48,6 +48,42 @@ class SupabaseRepository:
         response.raise_for_status()
         return response
 
+    def _delete(self, table: str, params: dict[str, str]) -> requests.Response:
+        response = requests.delete(
+            f"{self.base_url}/rest/v1/{table}",
+            headers=self._headers(prefer="return=minimal"),
+            params=params,
+            timeout=self.timeout,
+        )
+        response.raise_for_status()
+        return response
+
+    def _fetch_all(self, table: str, select: str, order_by: str = "id", page_size: int = 1000) -> list[dict]:
+        rows: list[dict] = []
+        offset = 0
+
+        while True:
+            chunk = self._get(
+                table,
+                {
+                    "select": select,
+                    "order": f"{order_by}.asc",
+                    "limit": str(page_size),
+                    "offset": str(offset),
+                },
+            ).json()
+
+            if not isinstance(chunk, list) or not chunk:
+                break
+
+            rows.extend(chunk)
+            if len(chunk) < page_size:
+                break
+
+            offset += page_size
+
+        return rows
+
     @staticmethod
     def _chunk_list(values: list, size: int):
         for i in range(0, len(values), size):
@@ -192,4 +228,31 @@ class SupabaseRepository:
                 "glorri_vacancies",
                 chunk,
                 prefer="return=minimal",
+            )
+
+    # Duplicate detection methods
+    def fetch_js_companies_for_duplicate_scan(self) -> list[dict]:
+        return self._fetch_all("js_companies", "id,title")
+
+    def fetch_glorri_companies_for_duplicate_scan(self) -> list[dict]:
+        return self._fetch_all("glorri_companies", "id,name")
+
+    def fetch_js_vacancies_for_duplicate_scan(self) -> list[dict]:
+        return self._fetch_all("js_vacancies", "id,title,text,tech_stack,company_id")
+
+    def fetch_glorri_vacancies_for_duplicate_scan(self) -> list[dict]:
+        return self._fetch_all("glorri_vacancies", "id,title,text,tech_stack,company_id")
+
+    def replace_duplicate_jobs(self, duplicate_payload: list[dict]):
+        self._delete("duplicate_jobs", {"glorri_id": "not.is.null"})
+
+        if not duplicate_payload:
+            return
+
+        for chunk in self._chunk_list(duplicate_payload, 500):
+            self._post(
+                "duplicate_jobs",
+                chunk,
+                prefer="resolution=merge-duplicates,return=minimal",
+                params={"on_conflict": "glorri_id"},
             )
