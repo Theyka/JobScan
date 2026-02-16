@@ -1,0 +1,2576 @@
+[
+  {
+    "id": 132602,
+    "title": "IT Manager",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "ires-it-manager-132602",
+    "company": {
+      "title": "IRES",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4791/logo-ires-jss1.svg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132613,
+    "title": "Junior and Middle Android developer",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "turanbank-asc-junior-and-middle-android-developer-132613",
+    "company": {
+      "title": "TuranBank ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7176/turanbank.svg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132572,
+    "title": "RPA Proqramçı",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "veyseloglu-mmc-rpa-proqramci-132572",
+    "company": {
+      "title": "Veysəloğlu MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7324/veyseloglu-0.svg",
+      "first_char": "v"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132573,
+    "title": "Mobil Proqramçı",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "veyseloglu-mmc-mobil-proqramci-132573",
+    "company": {
+      "title": "Veysəloğlu MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7324/veyseloglu-0.svg",
+      "first_char": "v"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132575,
+    "title": "İT Biznes Analitik",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "veyseloglu-mmc-it-biznes-analitik-132575",
+    "company": {
+      "title": "Veysəloğlu MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7324/veyseloglu-0.svg",
+      "first_char": "v"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132579,
+    "title": "Software Automation Lead Engineer",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "carlsberg-azerbaijan-software-automation-lead-engineer-132579",
+    "company": {
+      "title": "Carlsberg Azerbaijan",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3136/carlsberg.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132580,
+    "title": "Специалист по электронике",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "aem-elektron-specialist-po-elektronike-132580",
+    "company": {
+      "title": "AEM Elektron",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1920/aem.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132581,
+    "title": "IT Meneceri",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "caspian-textile-mmc-it-meneceri-132581",
+    "company": {
+      "title": "Caspian Textile MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3205/caspian-textile.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132600,
+    "title": "1C platforması üzrə proqramçı",
+    "created_at": "2026-02-16T00:00:00+04:00",
+    "slug": "u-and-r-company-1c-platformasi-uzre-proqramci-132600",
+    "company": {
+      "title": "U and R Company",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7186/whatsapp-image-2025-11-04-at-142411-4.jpeg",
+      "first_char": "u"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132548,
+    "title": "Help Desk Specialist (Junior)",
+    "created_at": "2026-02-14T00:00:00+04:00",
+    "slug": "netto-software-help-desk-specialist-junior-132548",
+    "company": {
+      "title": "Netto Software",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/38010/whatsapp-image-2025-11-03-at-164254-2.jpeg",
+      "first_char": "n"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132472,
+    "title": "İnformasiya sistemləri üzrə mütəxəssis",
+    "created_at": "2026-02-13T00:00:00+04:00",
+    "slug": "mpay-mmc-informasiya-sistemleri-uzre-mutexessis-132472",
+    "company": {
+      "title": "Mpay MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5532/mpay.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132473,
+    "title": "Proqram təminatı təhlükəsizliyi üzrə mütəxəssis (AppSec Specialist)",
+    "created_at": "2026-02-13T00:00:00+04:00",
+    "slug": "mpay-mmc-proqram-teminati-tehlukesizliyi-uzre-mutexessis-appsec-specialist-132473",
+    "company": {
+      "title": "Mpay MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5532/mpay.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132497,
+    "title": "SQL Developer",
+    "created_at": "2026-02-13T00:00:00+04:00",
+    "slug": "kontakt-home-sql-developer-132497",
+    "company": {
+      "title": "Kontakt Home",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5012/kontakt-home.svg",
+      "first_char": "k"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132507,
+    "title": "IT Biznes analitik",
+    "created_at": "2026-02-13T00:00:00+04:00",
+    "slug": "sirab-satis-ve-dagitim-mmc-it-biznes-analitik-132507",
+    "company": {
+      "title": "Sirab Satış və Dağıtım MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6678/sirab-new.svg",
+      "first_char": "s"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132520,
+    "title": "Junior Data Analyst",
+    "created_at": "2026-02-13T00:00:00+04:00",
+    "slug": "caspian-tech-qsc-junior-data-analyst-132520",
+    "company": {
+      "title": "Caspian Tech QSC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3203/whatsapp-image-2025-10-21-at-164015-1.jpeg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132522,
+    "title": "Data Analitik və Bank Tətbiqləri üzrə Dəstək Mütəxəssisi",
+    "created_at": "2026-02-13T00:00:00+04:00",
+    "slug": "bokt-embafinans-mmc-data-analitik-ve-bank-tetbiqleri-uzre-destek-mutexessisi-132522",
+    "company": {
+      "title": "Bokt Embafinans MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2967/img-5830.PNG",
+      "first_char": "b"
+    },
+    "salary": "1500"
+  },
+  {
+    "id": 132378,
+    "title": "Texniki dəstək üzrə mütəxəssis",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "166-yukdasima-ve-logistika-texniki-destek-uzre-mutexessis-132378",
+    "company": {
+      "title": "166 Yükdaşıma və Logistika",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1810/img-4939.PNG",
+      "first_char": "1"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132384,
+    "title": "Data Analyst",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "digital-classifieds-data-analyst-132384",
+    "company": {
+      "title": "Digital Classifieds",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3585/digital-classfieds.svg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132386,
+    "title": "Data Analitika və proqram təminatı",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "ayan-mmc-data-analitika-ve-proqram-teminati-132386",
+    "company": {
+      "title": "Ayan MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2397/whatsapp-image-2026-01-15-at-105749.jpeg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132390,
+    "title": "Document Controller - Sənədlərə Nəzarət üzrə Mütəxəssis (layihə üçün nəzərdə tutulur)",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "bestcomp-group-document-controller-senedlere-nezaret-uzre-mutexessis-layihe-ucun-nezerde-tutulur-132390",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132391,
+    "title": "Middle System Engineer",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "digital-classifieds-middle-system-engineer-132391",
+    "company": {
+      "title": "Digital Classifieds",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3585/digital-classfieds.svg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132397,
+    "title": "Kompüter operatoru (istehsalat üzrə)",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "kartpak-mmc-komputer-operatoru-istehsalat-uzre-132397",
+    "company": {
+      "title": "Kartpak MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/118356/whatsapp-image-2025-11-12-at-163331-6.jpeg",
+      "first_char": "k"
+    },
+    "salary": "700"
+  },
+  {
+    "id": 132421,
+    "title": "AI Creator",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "bloom-group-ai-creator-132421",
+    "company": {
+      "title": "Bloom Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/35272/bloom-group.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132427,
+    "title": "Zəif Axın üzrə Texnik",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "azin-technology-zeif-axin-uzre-texnik-132427",
+    "company": {
+      "title": "Azin Technology",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/109369/whatsapp-image-2025-11-03-at-182301.jpeg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132439,
+    "title": "İnformasiya texnologiyaları üzrə texniki dəstək mütəxəssisi",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "iceriseher-dovlet-tarix-memarliq-qorugu-idaresi-informasiya-texnologiyalari-uzre-texniki-destek-mutexessisi-132439",
+    "company": {
+      "title": "İçərişəhər Dövlət Tarix - Memarlıq Qoruğu İdarəsi",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/115174/whatsapp-image-2026-01-13-at-124957-1.jpeg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132440,
+    "title": "Data Analyst",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "afea-group-data-analyst-132440",
+    "company": {
+      "title": "Afea Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1928/afea-group.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132313,
+    "title": "Kiçik İT auditor",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "bank-respublika-asc-kicik-it-auditor-132313",
+    "company": {
+      "title": "Bank Respublika ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/123/bank-respublika-new-logo.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132328,
+    "title": "Təftiş şöbəsinə Assistent",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "agro-west-dc-llc-teftis-sobesine-assistent-132328",
+    "company": {
+      "title": "Agro - West DC LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1961/agro-west.svg",
+      "first_char": "a"
+    },
+    "salary": "500"
+  },
+  {
+    "id": 132351,
+    "title": "MLOps Engineer",
+    "created_at": "2026-02-12T00:00:00+04:00",
+    "slug": "caspian-innovation-center-mlops-engineer-132351",
+    "company": {
+      "title": "Caspian Innovation Center",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3177/cic.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132190,
+    "title": "IT Layihə koordinatoru",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "innovativ-layiheler-merkezi-it-layihe-koordinatoru-132190",
+    "company": {
+      "title": "İnnovativ Layihələr Mərkəzi",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/41146/nnovativ-layiheler-merkezi.svg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132194,
+    "title": "Rəqəmsal həllər üzrə baş analitik",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "icbari-sigorta-burosu-reqemsal-heller-uzre-bas-analitik-132194",
+    "company": {
+      "title": "İcbari Sığorta Bürosu",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4538/img-5454.PNG",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132195,
+    "title": "Süni intellekt üzrə mühəndis (AI Engineer)",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "icbari-sigorta-burosu-suni-intellekt-uzre-muhendis-ai-engineer-132195",
+    "company": {
+      "title": "İcbari Sığorta Bürosu",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4538/img-5454.PNG",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132223,
+    "title": "İT specialist",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "lpp-azerbaijan-it-specialist-132223",
+    "company": {
+      "title": "LPP Azerbaijan",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/107037/screenshot-2025-07-29-105703-1.svg",
+      "first_char": "l"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132229,
+    "title": "Junior ERP Consultant (Microsoft Dynamics 365 – Supply Chain & Finance)",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "respect-solutions-junior-erp-consultant-microsoft-dynamics-365-supply-chain-finance-132229",
+    "company": {
+      "title": "Respect Solutions",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6352/respect-solutins.svg",
+      "first_char": "r"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132241,
+    "title": "Преподаватель по IT и кибербезопасности (русскоязычный)",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "defscope-llc-prepodavatel-po-it-i-kiberbezopasnosti-russkoiazycnyi-132241",
+    "company": {
+      "title": "DEFSCOPE LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3512/defscope.svg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132247,
+    "title": "İT üzrə Texniki Dəstək Mütəxəssisi",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "iktex-it-uzre-texniki-destek-mutexessisi-132247",
+    "company": {
+      "title": "Iktex",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/42227/iktex.svg",
+      "first_char": "i"
+    },
+    "salary": "700"
+  },
+  {
+    "id": 132260,
+    "title": "Back-End Developer",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "tt-technologies-back-end-developer-132260",
+    "company": {
+      "title": "TT Technologies",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/102191/whatsapp-image-2025-12-02-at-130049-3.jpeg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132261,
+    "title": "IT Dəstək üzrə Mütəxəssis",
+    "created_at": "2026-02-11T00:00:00+04:00",
+    "slug": "ultra-technologies-it-destek-uzre-mutexessis-132261",
+    "company": {
+      "title": "Ultra Technologies",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7208/ultra-technologies.svg",
+      "first_char": "u"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132101,
+    "title": "Backend üzrə Baş Proqramçı (.Net)",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "pasha-insurance-backend-uzre-bas-proqramci-net-132101",
+    "company": {
+      "title": "PASHA Insurance",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5962/pasha-insurance-logo.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132114,
+    "title": "IT üzrə Biznes Analitik",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "prosys-llc-it-uzre-biznes-analitik-132114",
+    "company": {
+      "title": "Prosys LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6177/whatsapp-image-2025-11-13-at-143004-1.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132177,
+    "title": "Sistem administratoru",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "pasha-insurance-sistem-administratoru-132177",
+    "company": {
+      "title": "PASHA Insurance",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5962/pasha-insurance-logo.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132180,
+    "title": "Senior Business Analyst-WFMS",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "esyasoft-cis-senior-business-analyst-wfms-132180",
+    "company": {
+      "title": "Esyasoft CIS",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/116385/img-5587.PNG",
+      "first_char": "e"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132181,
+    "title": "Instrumentaion Expert",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "esyasoft-cis-instrumentaion-expert-132181",
+    "company": {
+      "title": "Esyasoft CIS",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/116385/img-5587.PNG",
+      "first_char": "e"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132182,
+    "title": "HSE/QA Specialist",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "esyasoft-cis-hseqa-specialist-132182",
+    "company": {
+      "title": "Esyasoft CIS",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/116385/img-5587.PNG",
+      "first_char": "e"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132059,
+    "title": "Mühəndis - Proqramlaşdırıcı",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "baki-metropoliteni-muhendis-proqramlasdirici-132059",
+    "company": {
+      "title": "Bakı Metropoliteni",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/125625/whatsapp-image-2025-11-24-at-150741-3.jpeg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132075,
+    "title": "Kibertəhlükəsizlik üzrə analitik (SOC-L1)",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "global-management-kibertehlukesizlik-uzre-analitik-soc-l1-132075",
+    "company": {
+      "title": "Global Management",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4250/img-20260114-wa0024.jpg",
+      "first_char": "g"
+    },
+    "salary": ""
+  },
+  {
+    "id": 132089,
+    "title": "Python/Django DiV",
+    "created_at": "2026-02-10T00:00:00+04:00",
+    "slug": "migrationpro-pythondjango-div-132089",
+    "company": {
+      "title": "MigrationPro",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5433/migrationpro.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131933,
+    "title": "Korporativ İnfrastruktur üzrə Mühəndis (IT Manager)",
+    "created_at": "2026-02-09T00:00:00+04:00",
+    "slug": "nbco-kredaqro-korporativ-infrastruktur-uzre-muhendis-it-manager-131933",
+    "company": {
+      "title": "NBCO KredAqro",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5611/kred-agro.svg",
+      "first_char": "n"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131934,
+    "title": "Core System Mütəxəssisi",
+    "created_at": "2026-02-09T00:00:00+04:00",
+    "slug": "nbco-kredaqro-core-system-mutexessisi-131934",
+    "company": {
+      "title": "NBCO KredAqro",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5611/kred-agro.svg",
+      "first_char": "n"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131942,
+    "title": "İnformasiya Təhlükəsizliyi İdarəsinin Kibertəhlükəsizlik mühəndisliyi şöbəsinin mütəxəssisi - Kiber təhlükəsizlik mühəndisi (Cyber security engineer)",
+    "created_at": "2026-02-09T00:00:00+04:00",
+    "slug": "asc-xalq-bank-informasiya-tehlukesizliyi-idaresinin-kibertehlukesizlik-muhendisliyi-sobesinin-mutexessisi-kiber-tehlukesizlik-muhendisi-cyber-security-engineer-131942",
+    "company": {
+      "title": "Xalq Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2227/xalqbank.svg",
+      "first_char": "x"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131969,
+    "title": "System Engineer",
+    "created_at": "2026-02-09T00:00:00+04:00",
+    "slug": "technofusion-llc-system-engineer-131969",
+    "company": {
+      "title": "Technofusion LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6965/whatsapp-image-2025-10-25-at-082311-22.jpeg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131971,
+    "title": "Junior Network/System Engineer",
+    "created_at": "2026-02-09T00:00:00+04:00",
+    "slug": "technofusion-llc-junior-networksystem-engineer-131971",
+    "company": {
+      "title": "Technofusion LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6965/whatsapp-image-2025-10-25-at-082311-22.jpeg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131850,
+    "title": "Texniki işlər üzrə mütəxəssis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "emko-technologies-mmc-texniki-isler-uzre-mutexessis-131850",
+    "company": {
+      "title": "Emko Technologies MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/128885/whatsapp-image-2026-01-07-at-151231.jpeg",
+      "first_char": "e"
+    },
+    "salary": "700"
+  },
+  {
+    "id": 131858,
+    "title": "Strukturlaşdırılmış Kabel Sistemləri üzrə Mütəxəssis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "bestcomp-group-strukturlasdirilmis-kabel-sistemleri-uzre-mutexessis-131858",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131860,
+    "title": "Back-End Proqramlaşdırma üzrə Baş Mütəxəssis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "pasha-bank-back-end-proqramlasdirma-uzre-bas-mutexessis-131860",
+    "company": {
+      "title": "PASHA Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5955/pasha-bank-mini.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131862,
+    "title": "IT/Service Support specialist",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "simbrella-itservice-support-specialist-131862",
+    "company": {
+      "title": "Simbrella",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6663/whatsapp-image-2025-10-23-at-093823-3.jpeg",
+      "first_char": "s"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131882,
+    "title": "İnformasiya təhlükəsizliyi üzrə baş mütəxəssis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "baku-electronics-informasiya-tehlukesizliyi-uzre-bas-mutexessis-131882",
+    "company": {
+      "title": "Baku Electronics",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2738/baku-electronics-mini.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131885,
+    "title": "Texniki servis üzrə mütəxəssis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "oba-marketler-shebekesi-texniki-servis-uzre-mutexessis-131885",
+    "company": {
+      "title": "OBA marketlər şəbəkəsi",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/96/oba-logo-2x.svg",
+      "first_char": "o"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131893,
+    "title": "Süni intellekt və avtomatlaşdırma üzrə mühəndis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "kontakt-home-suni-intellekt-ve-avtomatlasdirma-uzre-muhendis-131893",
+    "company": {
+      "title": "Kontakt Home",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5012/kontakt-home.svg",
+      "first_char": "k"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131898,
+    "title": "Sistem operatoru (Kürdəmir)",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "azersun-holding-sistem-operatoru-kurdemir-131898",
+    "company": {
+      "title": "Azersun Holding",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2519/whatsapp-image-2025-11-25-at-132848-2.jpeg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131779,
+    "title": "İT Əməliyyatları şöbəsinin rəhbəri",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "landau-education-group-it-emeliyyatlari-sobesinin-rehberi-131779",
+    "company": {
+      "title": "Landau Education Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/90958/photo-5379999657469551476-y.jpg",
+      "first_char": "l"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131825,
+    "title": "Proqram təminatının yazılımı və istifadəçi təlimlərinin keçirilməsi üzrə Mütəxəssis",
+    "created_at": "2026-02-06T00:00:00+04:00",
+    "slug": "caspos-mmc-proqram-teminatinin-yazilimi-ve-istifadeci-telimlerinin-kecirilmesi-uzre-mutexessis-131825",
+    "company": {
+      "title": "Caspos MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3212/caspos.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131659,
+    "title": "İnformasiya Təhlükəsizliyi – Monitorinq Şöbəsi üzrə kiçik mütəxəssis",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "turanbank-asc-informasiya-tehlukesizliyi-monitorinq-sobesi-uzre-kicik-mutexessis-131659",
+    "company": {
+      "title": "TuranBank ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7176/turanbank.svg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131661,
+    "title": "İnformasiya Təhlükəsizliyi – İnsidentlərin İdarə Edilməsi üzrə kiçik mütəxəssis",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "turanbank-asc-informasiya-tehlukesizliyi-insidentlerin-idare-edilmesi-uzre-kicik-mutexessis-131661",
+    "company": {
+      "title": "TuranBank ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7176/turanbank.svg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131662,
+    "title": "CNC avadanlığı üzrə Proqramist",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "veliev-mmc-cnc-avadanligi-uzre-proqramist-131662",
+    "company": {
+      "title": "Vəliev MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7312/whatsapp-image-2026-02-06-at-121538-3.jpeg",
+      "first_char": "v"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131668,
+    "title": "QA/QC Supervisor",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "pioneer-engineering-qaqc-supervisor-131668",
+    "company": {
+      "title": "Pioneer Engineering",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6042/whatsapp-image-2025-10-25-at-082311-11.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131684,
+    "title": "IT Help Desk",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "ateshgah-sigorta-it-help-desk-131684",
+    "company": {
+      "title": "Ateshgah Sigorta",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2277/ateshgahsigorta.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131688,
+    "title": "Kiçik Data Analitik (Junior data analyst)",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "iktex-kicik-data-analitik-junior-data-analyst-131688",
+    "company": {
+      "title": "Iktex",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/42227/iktex.svg",
+      "first_char": "i"
+    },
+    "salary": "700"
+  },
+  {
+    "id": 131691,
+    "title": "QA/QC Meneceri",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "pasha-real-estate-qaqc-meneceri-131691",
+    "company": {
+      "title": "Pasha Real Estate",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/78310/pasha-real-estate.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131693,
+    "title": "Senior System Admin",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "azintelecom-senior-system-admin-131693",
+    "company": {
+      "title": "AzInTelecom",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2602/azintelecom.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131735,
+    "title": "Data Analitik (performansın idarəolunması üzrə)",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "sirab-satis-ve-dagitim-mmc-data-analitik-performansin-idareolunmasi-uzre-131735",
+    "company": {
+      "title": "Sirab Satış və Dağıtım MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6678/sirab-new.svg",
+      "first_char": "s"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131738,
+    "title": "Java Backend proqramçı",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "ultra-technologies-java-backend-proqramci-131738",
+    "company": {
+      "title": "Ultra Technologies",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7208/ultra-technologies.svg",
+      "first_char": "u"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131742,
+    "title": "Backend Developer (Middle / Senior)/ Frontend Developer (Middle / Senior)",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "digismart-tech-mmc-backend-developer-middle-senior-frontend-developer-middle-senior-131742",
+    "company": {
+      "title": "Digismart tech MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/123379/whatsapp-image-2025-10-28-at-094316-5.jpeg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131743,
+    "title": "Аналитик-оператор 1С",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "claus-marsh-analitik-operator-1s-131743",
+    "company": {
+      "title": "Claus Marsh",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3326/whatsapp-image-2025-10-23-at-114726-4.jpeg",
+      "first_char": "c"
+    },
+    "salary": "600"
+  },
+  {
+    "id": 131751,
+    "title": "Bitrix24 CRM İnteqratoru",
+    "created_at": "2026-02-05T00:00:00+04:00",
+    "slug": "omnuvex-bitrix24-crm-inteqratoru-131751",
+    "company": {
+      "title": "Omnuvex",
+      "logo": "",
+      "logo_mini": "",
+      "first_char": "o"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131602,
+    "title": "İT BA üzrə Aparıcı Mütəxəssis / İT BA üzrə Baş mütəxəssis",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "pasha-insurance-it-ba-uzre-aparici-mutexessis-it-ba-uzre-bas-mutexessis-131602",
+    "company": {
+      "title": "PASHA Insurance",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5962/pasha-insurance-logo.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131611,
+    "title": "IT Support Administrator",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "ires-it-support-administrator-131611",
+    "company": {
+      "title": "IRES",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4791/logo-ires-jss1.svg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131621,
+    "title": "Senior Frontend Developer",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "datazen-solutions-senior-frontend-developer-131621",
+    "company": {
+      "title": "Datazen Solutions",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/129873/whatsapp-image-2026-01-16-at-122806-1-0.jpeg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131622,
+    "title": "Scrum Master / Agile Transformation Lead",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "datazen-solutions-scrum-master-agile-transformation-lead-131622",
+    "company": {
+      "title": "Datazen Solutions",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/129873/whatsapp-image-2026-01-16-at-122806-1-0.jpeg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131629,
+    "title": "AML və Monitorinq üzrə Mütəxəssis",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "pasha-bank-aml-ve-monitorinq-uzre-mutexessis-131629",
+    "company": {
+      "title": "PASHA Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5955/pasha-bank-mini.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131632,
+    "title": "Network Engineer",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "ateshgah-sigorta-network-engineer-131632",
+    "company": {
+      "title": "Ateshgah Sigorta",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2277/ateshgahsigorta.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131634,
+    "title": "Lənkəran BHL-da Aviasiya təhlükəsizlik xidməti/Xidmət Rəisi",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "azerbaijan-airlines-lenkeran-bhl-da-aviasiya-tehlukesizlik-xidmetixidmet-reisi-131634",
+    "company": {
+      "title": "Azerbaijan Airlines",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/28807/untitled-design-7.png",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131502,
+    "title": "React developer (middle\\senior)",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "bank-respublika-asc-react-developer-middlesenior-131502",
+    "company": {
+      "title": "Bank Respublika ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/123/bank-respublika-new-logo.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131530,
+    "title": "System Administrator",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "azericard-system-administrator-131530",
+    "company": {
+      "title": "Azericard",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2509/azericard-new-logo.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131534,
+    "title": "Middle System Administrator",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "cyberpoint-middle-system-administrator-131534",
+    "company": {
+      "title": "Cyberpoint",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/24251/cyberpoint12.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131536,
+    "title": "Junior mütəxəssis",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "epoint-junior-mutexessis-131536",
+    "company": {
+      "title": "Epoint",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/71700/whatsapp-image-2025-11-24-at-150623-1.jpeg",
+      "first_char": "e"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131568,
+    "title": "Network engineer (Technical Assistance Center)",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "azintelecom-network-engineer-technical-assistance-center-131568",
+    "company": {
+      "title": "AzInTelecom",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2602/azintelecom.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131581,
+    "title": "QA Engineer",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "sabahhub-qa-engineer-131581",
+    "company": {
+      "title": "SABAH.HUB",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/50694/sabahhub.svg",
+      "first_char": "s"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131582,
+    "title": "Aparıcı GO Proqramçı",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "bestcomp-group-aparici-go-proqramci-131582",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131583,
+    "title": "Aparıcı PHP Proqramçı (Laravel)",
+    "created_at": "2026-02-04T00:00:00+04:00",
+    "slug": "bestcomp-group-aparici-php-proqramci-laravel-131583",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131380,
+    "title": "Head of Machinery",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "agro-dairy-head-of-machinery-131380",
+    "company": {
+      "title": "Agro Dairy",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1955/img-20260111-wa0026.jpg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131381,
+    "title": "Zəif Axın üzrə Texnik",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "azin-technology-zeif-axin-uzre-texnik-131381",
+    "company": {
+      "title": "Azin Technology",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/109369/whatsapp-image-2025-11-03-at-182301.jpeg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131387,
+    "title": "Frontend Engineer (Vue.js)",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "prodata-frontend-engineer-vuejs-131387",
+    "company": {
+      "title": "PRODATA",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/55736/prodata.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131407,
+    "title": "İntern Data Analitik",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "avant-group-intern-data-analitik-131407",
+    "company": {
+      "title": "Avant Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/48008/avant-group.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131410,
+    "title": "Account Manager - Oil & Gas Industry",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "huawei-technologies-azerbaijan-account-manager-oil-gas-industry-131410",
+    "company": {
+      "title": "Huawei Technologies Azerbaijan",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1724/huawei.svg",
+      "first_char": "h"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131419,
+    "title": "Bank Fəaliyyətinə Dəstək İdarəsinin Bank sistemlərinin fəaliyyətinə dəstək şöbəsi",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "asc-xalq-bank-bank-fealiyyetine-destek-idaresinin-bank-sistemlerinin-fealiyyetine-destek-sobesi-131419",
+    "company": {
+      "title": "Xalq Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2227/xalqbank.svg",
+      "first_char": "x"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131424,
+    "title": "Aparıcı mütəxəssis",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "azerbaycan-respublikasinin-merkezi-banki-aparici-mutexessis-131424",
+    "company": {
+      "title": "Azərbaycan Respublikasının Mərkəzi Bankı",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/81758/merkezi-bank.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131446,
+    "title": "Daxili Audit İdarəsinin İnformasiya texnologiyaları auditi şöbəsinin auditoru",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "asc-xalq-bank-daxili-audit-idaresinin-informasiya-texnologiyalari-auditi-sobesinin-auditoru-131446",
+    "company": {
+      "title": "Xalq Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2227/xalqbank.svg",
+      "first_char": "x"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131471,
+    "title": "Kibertəhlükəsizlik zəifliklərin idarəetməsi üzrə mütəxəssisi",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "azericard-kibertehlukesizlik-zeifliklerin-idareetmesi-uzre-mutexessisi-131471",
+    "company": {
+      "title": "Azericard",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2509/azericard-new-logo.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131472,
+    "title": "Front-End",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "azeronline-ltd-front-end-131472",
+    "company": {
+      "title": "Azeronline LTD",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/74229/azeronline.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131478,
+    "title": "Aparıcı iOS Developer",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "mpay-mmc-aparici-ios-developer-131478",
+    "company": {
+      "title": "Mpay MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5532/mpay.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131479,
+    "title": "Proqram təminatı və keyfiyyətinə nəzarət üzrə mütəxəssis (QA)",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "mpay-mmc-proqram-teminati-ve-keyfiyyetine-nezaret-uzre-mutexessis-qa-131479",
+    "company": {
+      "title": "Mpay MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5532/mpay.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131480,
+    "title": "Data analitik",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "mpay-mmc-data-analitik-131480",
+    "company": {
+      "title": "Mpay MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5532/mpay.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131481,
+    "title": "Data idarəetməsi üzrə mütəxəssis",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "mpay-mmc-data-idareetmesi-uzre-mutexessis-131481",
+    "company": {
+      "title": "Mpay MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5532/mpay.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131486,
+    "title": "Mobile Phone Promoter",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "phonezoaz-mobile-phone-promoter-131486",
+    "company": {
+      "title": "Phonezo.Az",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/58008/phonezoaz.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131487,
+    "title": "Məlumat Mühəndisi",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "pasha-insurance-melumat-muhendisi-131487",
+    "company": {
+      "title": "PASHA Insurance",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5962/pasha-insurance-logo.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131497,
+    "title": "Amadeus Texniki dəstək heyəti üzrə işçi",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "aviation-services-group-amadeus-texniki-destek-heyeti-uzre-isci-131497",
+    "company": {
+      "title": "Aviation Services Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/48696/asg.svg",
+      "first_char": "a"
+    },
+    "salary": "1060"
+  },
+  {
+    "id": 131499,
+    "title": "Model Validasiya qrupu üzrə Mütəxəssis",
+    "created_at": "2026-02-03T00:00:00+04:00",
+    "slug": "pasha-bank-model-validasiya-qrupu-uzre-mutexessis-131499",
+    "company": {
+      "title": "PASHA Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5955/pasha-bank-mini.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131331,
+    "title": "Aparıcı/Baş Backend mühəndisi",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "afb-bank-aparicibas-backend-muhendisi-131331",
+    "company": {
+      "title": "AFB Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1925/afb-bank.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131335,
+    "title": "Proqram təminatına dəstək üzrə aparıcı/baş mütəxəssis",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "afb-bank-proqram-teminatina-destek-uzre-aparicibas-mutexessis-131335",
+    "company": {
+      "title": "AFB Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1925/afb-bank.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131350,
+    "title": "Instrumentation Expert",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "esyasoft-cis-instrumentation-expert-131350",
+    "company": {
+      "title": "Esyasoft CIS",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/116385/img-5587.PNG",
+      "first_char": "e"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131359,
+    "title": "Middle backend developer (Proqramlaşdırma üzrə kiçik mütəxəssis/ mütəxəssis)",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "turanbank-asc-middle-backend-developer-proqramlasdirma-uzre-kicik-mutexessis-mutexessis-131359",
+    "company": {
+      "title": "TuranBank ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7176/turanbank.svg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131366,
+    "title": "Data Analyst – Smart Grid & Metering Analytics",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "esyasoft-cis-data-analyst-smart-grid-metering-analytics-131366",
+    "company": {
+      "title": "Esyasoft CIS",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/116385/img-5587.PNG",
+      "first_char": "e"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131238,
+    "title": "Information Systems Manager",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "azroksan-llc-information-systems-manager-131238",
+    "company": {
+      "title": "Azroksan LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/100930/whatsapp-image-2025-10-28-at-112902.jpeg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131244,
+    "title": "Middle iOS Developer",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "azintelecom-middle-ios-developer-131244",
+    "company": {
+      "title": "AzInTelecom",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2602/azintelecom.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131250,
+    "title": "Backend .NET Developer",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "azin-technology-backend-net-developer-131250",
+    "company": {
+      "title": "Azin Technology",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/109369/whatsapp-image-2025-11-03-at-182301.jpeg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131282,
+    "title": "Junior Next.js Developer",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "yigim-payment-system-junior-nextjs-developer-131282",
+    "company": {
+      "title": "Yığım Payment System",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/20934/whatsapp-image-2025-10-28-at-174537.jpeg",
+      "first_char": "y"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131311,
+    "title": "İT üzrə Menecer",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "mfx-trading-it-uzre-menecer-131311",
+    "company": {
+      "title": "MFX-Trading",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/88386/mfx-trading.svg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131312,
+    "title": "Full stack developer",
+    "created_at": "2026-02-02T00:00:00+04:00",
+    "slug": "tam-store-full-stack-developer-131312",
+    "company": {
+      "title": "Tam Store",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/71166/tam-store.svg",
+      "first_char": "t"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131205,
+    "title": "Data Analitika üzrə mütəxəssis",
+    "created_at": "2026-02-01T00:00:00+04:00",
+    "slug": "prosys-llc-data-analitika-uzre-mutexessis-131205",
+    "company": {
+      "title": "Prosys LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6177/whatsapp-image-2025-11-13-at-143004-1.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131206,
+    "title": "Süni İntellekt üzrə Mütəxəssis",
+    "created_at": "2026-02-01T00:00:00+04:00",
+    "slug": "prosys-llc-suni-intellekt-uzre-mutexessis-131206",
+    "company": {
+      "title": "Prosys LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6177/whatsapp-image-2025-11-13-at-143004-1.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131207,
+    "title": "Angular proqramçı",
+    "created_at": "2026-02-01T00:00:00+04:00",
+    "slug": "prosys-llc-angular-proqramci-131207",
+    "company": {
+      "title": "Prosys LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6177/whatsapp-image-2025-11-13-at-143004-1.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131208,
+    "title": ".Net developer",
+    "created_at": "2026-02-01T00:00:00+04:00",
+    "slug": "prosys-llc-net-developer-131208",
+    "company": {
+      "title": "Prosys LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6177/whatsapp-image-2025-11-13-at-143004-1.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131193,
+    "title": "Junior Full Stack PHP Developer",
+    "created_at": "2026-01-31T00:00:00+04:00",
+    "slug": "neptun-supermarket-junior-full-stack-php-developer-131193",
+    "company": {
+      "title": "Neptun Supermarket",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5619/neptun.svg",
+      "first_char": "n"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131094,
+    "title": "Müştəri Dəstəyi və Biliklərin Transferi üzrə mütəxəssis",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "bestcomp-group-musteri-desteyi-ve-biliklerin-transferi-uzre-mutexessis-131094",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131132,
+    "title": "QA engineer (automated software testing)",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "baki-fond-birjasi-qa-engineer-automated-software-testing-131132",
+    "company": {
+      "title": "Bakı Fond Birjası",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2697/img-6434.PNG",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131133,
+    "title": "System Administrator",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "baki-fond-birjasi-system-administrator-131133",
+    "company": {
+      "title": "Bakı Fond Birjası",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2697/img-6434.PNG",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131134,
+    "title": "ATM avadanlığı üzrə kiçik mütəxəssis",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "nba-technologies-international-llc-atm-avadanligi-uzre-kicik-mutexessis-131134",
+    "company": {
+      "title": "NBA Technologies International LLC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5610/nba-technologies.svg",
+      "first_char": "n"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131135,
+    "title": "Front-end Developer (Angular)",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "accfin-group-front-end-developer-angular-131135",
+    "company": {
+      "title": "ACCFİN Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/130291/whatsapp-image-2026-01-30-at-143240.jpeg",
+      "first_char": "a"
+    },
+    "salary": "2000"
+  },
+  {
+    "id": 131166,
+    "title": "Middle DevOps Engineer",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "crocusoft-middle-devops-engineer-131166",
+    "company": {
+      "title": "Crocusoft",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/119984/whatsapp-image-2025-09-19-at-092757.jpeg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131183,
+    "title": "Senior Java Spring Boot Developer (Team Lead)",
+    "created_at": "2026-01-30T00:00:00+04:00",
+    "slug": "ayes-senior-java-spring-boot-developer-team-lead-131183",
+    "company": {
+      "title": "AYES",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/75625/ayes.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131082,
+    "title": "Risklərin idarə edilməsi üzrə baş mütəxəssis (İT və İnformasiya təhlükəsizliyi üzrə)",
+    "created_at": "2026-01-29T00:00:00+04:00",
+    "slug": "icbari-sigorta-burosu-risklerin-idare-edilmesi-uzre-bas-mutexessis-it-ve-informasiya-tehlukesizliyi-uzre-131082",
+    "company": {
+      "title": "İcbari Sığorta Bürosu",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4538/img-5454.PNG",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130984,
+    "title": "Təhlükəsizlik əməliyyatları mərkəzinin mütəxəssisi",
+    "created_at": "2026-01-29T00:00:00+04:00",
+    "slug": "pasha-technology-tehlukesizlik-emeliyyatlari-merkezinin-mutexessisi-130984",
+    "company": {
+      "title": "PASHA Technology",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5967/pasha-technology.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131003,
+    "title": "Satış üzrə Baş Mütəxəssis (İT üzrə korporativ satış)",
+    "created_at": "2026-01-29T00:00:00+04:00",
+    "slug": "bakinity-satis-uzre-bas-mutexessis-it-uzre-korporativ-satis-131003",
+    "company": {
+      "title": "Bakinity Distribution MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/82992/bakinity.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131024,
+    "title": "Bazar Araşdırması üzrə Mütəxəssis",
+    "created_at": "2026-01-29T00:00:00+04:00",
+    "slug": "data-technologies-bazar-arasdirmasi-uzre-mutexessis-131024",
+    "company": {
+      "title": "Data Technologies",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3488/whatsapp-image-2025-10-23-at-114728-5.jpeg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 131040,
+    "title": "Backend (Java) üzrə aparıcı proqramçı/ Senior Backend (Java) Developer",
+    "created_at": "2026-01-29T00:00:00+04:00",
+    "slug": "azerconnect-backend-java-uzre-aparici-proqramci-senior-backend-java-developer-131040",
+    "company": {
+      "title": "Azerconnect Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2497/azerconnect27.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130854,
+    "title": "Senior Software Engineer (Full-Stack) – Startup Environment",
+    "created_at": "2026-01-28T00:00:00+04:00",
+    "slug": "recepta-senior-software-engineer-full-stack-startup-environment-130854",
+    "company": {
+      "title": "Recepta",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/19706/recepta.svg",
+      "first_char": "r"
+    },
+    "salary": "4000"
+  },
+  {
+    "id": 130866,
+    "title": "Proqramçı",
+    "created_at": "2026-01-28T00:00:00+04:00",
+    "slug": "bank-avrasiya-asc-proqramci-130866",
+    "company": {
+      "title": "Bank Avrasiya",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1746/bank-avrasiya-0.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130924,
+    "title": "Backend developer intern",
+    "created_at": "2026-01-28T00:00:00+04:00",
+    "slug": "aga-group-backend-developer-intern-130924",
+    "company": {
+      "title": "AGA Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/110/aga-group.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130964,
+    "title": "CCTV Support Specialist",
+    "created_at": "2026-01-28T00:00:00+04:00",
+    "slug": "landau-education-group-cctv-support-specialist-130964",
+    "company": {
+      "title": "Landau Education Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/90958/photo-5379999657469551476-y.jpg",
+      "first_char": "l"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130751,
+    "title": "QA tester",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "bestcomp-group-qa-tester-130751",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130752,
+    "title": "Middle Front-End",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "bestcomp-group-middle-front-end-130752",
+    "company": {
+      "title": "Bestcomp Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2880/bestcomp.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130762,
+    "title": "Data və hesabatlılıq şöbəsinin aparıcı mütəxəssisi",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "icbari-sigorta-burosu-data-ve-hesabatliliq-sobesinin-aparici-mutexessisi-130762",
+    "company": {
+      "title": "İcbari Sığorta Bürosu",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4538/img-5454.PNG",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130780,
+    "title": "Duty admin (İT Mütəxəssisi)",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "azericard-duty-admin-it-mutexessisi-130780",
+    "company": {
+      "title": "Azericard",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2509/azericard-new-logo.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130781,
+    "title": "Kibertəhlükəsizlik zəifliklərin idarəetməsi üzrə mütəxəssisi",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "azericard-kibertehlukesizlik-zeifliklerin-idareetmesi-uzre-mutexessisi-130781",
+    "company": {
+      "title": "Azericard",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2509/azericard-new-logo.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130806,
+    "title": "Kiber Təhlükəsizlik üzrə mütəxəssis",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "rabalon-kiber-tehlukesizlik-uzre-mutexessis-130806",
+    "company": {
+      "title": "Rabalon",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/79112/whatsapp-image-2025-10-29-at-123346.jpeg",
+      "first_char": "r"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130811,
+    "title": "Proqram təminatı üzrə mütəxəssis",
+    "created_at": "2026-01-27T00:00:00+04:00",
+    "slug": "zeytun-pharmaceuticals-proqram-teminati-uzre-mutexessis-130811",
+    "company": {
+      "title": "Zeytun Pharmaceuticals",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7582/zeytun.svg",
+      "first_char": "z"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130582,
+    "title": "İT üzrə mütəxəssis (Helpdesk)",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "caspian-finance-bokt-it-uzre-mutexessis-helpdesk-130582",
+    "company": {
+      "title": "Caspian Finance BOKT",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/60484/caspian-finance-bokt.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130588,
+    "title": "1C Operator",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "it-bridge-mmc-1c-operator-130588",
+    "company": {
+      "title": "IT Bridge MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/128639/whatsapp-image-2026-01-06-at-172525-2.jpeg",
+      "first_char": "i"
+    },
+    "salary": "800"
+  },
+  {
+    "id": 130592,
+    "title": "Məlumat elmi üzrə mütəxəssis",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "pasha-insurance-melumat-elmi-uzre-mutexessis-130592",
+    "company": {
+      "title": "PASHA Insurance",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5962/pasha-insurance-logo.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130619,
+    "title": "Mobil və Web tətbiqlər üzrə Keyfiyyətin Təminatı (QA) mütəxəssisi",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "bank-respublika-asc-mobil-ve-web-tetbiqler-uzre-keyfiyyetin-teminati-qa-mutexessisi-130619",
+    "company": {
+      "title": "Bank Respublika ASC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/123/bank-respublika-new-logo.svg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130624,
+    "title": "Planogram Specialist (Retail / FMCG)",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "italdizain-group-planogram-specialist-retail-fmcg-130624",
+    "company": {
+      "title": "Italdizain Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4836/italdizain-0.svg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130680,
+    "title": "GPR Data Processing Operator",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "predsol-gpr-data-processing-operator-130680",
+    "company": {
+      "title": "Predsol",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6108/predsol.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130681,
+    "title": "İT Biznes Analitik",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "landau-education-group-it-biznes-analitik-130681",
+    "company": {
+      "title": "Landau Education Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/90958/photo-5379999657469551476-y.jpg",
+      "first_char": "l"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130682,
+    "title": "GIS Operator",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "predsol-gis-operator-130682",
+    "company": {
+      "title": "Predsol",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6108/predsol.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130683,
+    "title": "GNSS/RTK Surveyor",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "predsol-gnssrtk-surveyor-130683",
+    "company": {
+      "title": "Predsol",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/6108/predsol.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130708,
+    "title": "Backend (Java) proqramlaşdırma üzrə Aparıcı Mütəxəssis",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "golden-pay-backend-java-proqramlasdirma-uzre-aparici-mutexessis-130708",
+    "company": {
+      "title": "Golden Pay",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4286/golden-pay.svg",
+      "first_char": "g"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130710,
+    "title": "Backend (Java) proqramlaşdırma üzrə Mütəxəssis",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "golden-pay-backend-java-proqramlasdirma-uzre-mutexessis-130710",
+    "company": {
+      "title": "Golden Pay",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4286/golden-pay.svg",
+      "first_char": "g"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130718,
+    "title": "Data Analitik",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "golden-pay-data-analitik-130718",
+    "company": {
+      "title": "Golden Pay",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4286/golden-pay.svg",
+      "first_char": "g"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130734,
+    "title": "Baş Data analitik",
+    "created_at": "2026-01-26T00:00:00+04:00",
+    "slug": "pasha-bank-bas-data-analitik-130734",
+    "company": {
+      "title": "PASHA Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5955/pasha-bank-mini.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130549,
+    "title": "İT texnik (kameralar üzrə)",
+    "created_at": "2026-01-24T00:00:00+04:00",
+    "slug": "kristal-it-texnik-kameralar-uzre-130549",
+    "company": {
+      "title": "Kristal",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5042/jobsearchaz-profil-1-1.svg",
+      "first_char": "k"
+    },
+    "salary": "1000"
+  },
+  {
+    "id": 130431,
+    "title": "Sayt etibarlılığı üzrə mühəndis",
+    "created_at": "2026-01-23T00:00:00+04:00",
+    "slug": "pasha-technology-sayt-etibarliligi-uzre-muhendis-130431",
+    "company": {
+      "title": "PASHA Technology",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5967/pasha-technology.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130432,
+    "title": "Bulud əməliyyatları üzrə mühəndis",
+    "created_at": "2026-01-23T00:00:00+04:00",
+    "slug": "pasha-technology-bulud-emeliyyatlari-uzre-muhendis-130432",
+    "company": {
+      "title": "PASHA Technology",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5967/pasha-technology.svg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130459,
+    "title": "IT Mühəndisi",
+    "created_at": "2026-01-23T00:00:00+04:00",
+    "slug": "caspian-textile-mmc-it-muhendisi-130459",
+    "company": {
+      "title": "Caspian Textile MMC",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/3205/caspian-textile.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130464,
+    "title": "1С Программист",
+    "created_at": "2026-01-23T00:00:00+04:00",
+    "slug": "bonne-1s-programmist-130464",
+    "company": {
+      "title": "Bonne",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/63559/whatsapp-image-2025-11-03-at-144611.jpeg",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130502,
+    "title": "1C üzrə proqramçı (1C Developer)",
+    "created_at": "2026-01-23T00:00:00+04:00",
+    "slug": "aqrar-tedaruk-ve-techizat-1c-uzre-proqramci-1c-developer-130502",
+    "company": {
+      "title": "Aqrar Tədarük və Təchizat",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/95242/img-8492.PNG",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130521,
+    "title": "Junior Backend Developer",
+    "created_at": "2026-01-23T00:00:00+04:00",
+    "slug": "azerbaycan-kredit-burosu-junior-backend-developer-130521",
+    "company": {
+      "title": "Azərbaycan Kredit Bürosu",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2550/akb-1.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130323,
+    "title": "Aparıcı Data Mühəndisi / Biznes Məlumatlarının İntellektual Emalı (Bİ) və Data Mühəndisliyi Mərkəzi",
+    "created_at": "2026-01-22T00:00:00+04:00",
+    "slug": "azerbaijan-airlines-aparici-data-muhendisi-biznes-melumatlarinin-intellektual-emali-bi-ve-data-muhendisliyi-merkezi-130323",
+    "company": {
+      "title": "Azerbaijan Airlines",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/28807/untitled-design-7.png",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130362,
+    "title": "Leading Linux System Administrator",
+    "created_at": "2026-01-22T00:00:00+04:00",
+    "slug": "pashapay-leading-linux-system-administrator-130362",
+    "company": {
+      "title": "PashaPay",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/20858/whatsapp-image-2025-11-01-at-160414.jpeg",
+      "first_char": "p"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130402,
+    "title": "Junior Kotlin Developer",
+    "created_at": "2026-01-22T00:00:00+04:00",
+    "slug": "omnitech-junior-kotlin-developer-130402",
+    "company": {
+      "title": "Omnitech",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/29992/img-20260122-wa0037.jpg",
+      "first_char": "o"
+    },
+    "salary": "800"
+  },
+  {
+    "id": 130406,
+    "title": "Veb tətbiq üzrə Keyfiyyətə Nəzarət Mütəxəssisi (QA Engineer – Web)",
+    "created_at": "2026-01-22T00:00:00+04:00",
+    "slug": "kontakt-home-veb-tetbiq-uzre-keyfiyyete-nezaret-mutexessisi-qa-engineer-web-130406",
+    "company": {
+      "title": "Kontakt Home",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5012/kontakt-home.svg",
+      "first_char": "k"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130219,
+    "title": "Proqramlaşdırma İdarəsinin İnterfeyslərin tətbiqi şöbəsinin mütəxəssisi (Frontend developer)",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "asc-xalq-bank-proqramlasdirma-idaresinin-interfeyslerin-tetbiqi-sobesinin-mutexessisi-frontend-developer-130219",
+    "company": {
+      "title": "Xalq Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2227/xalqbank.svg",
+      "first_char": "x"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130226,
+    "title": "IT HelpDesk",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "landau-education-group-it-helpdesk-130226",
+    "company": {
+      "title": "Landau Education Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/90958/photo-5379999657469551476-y.jpg",
+      "first_char": "l"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130232,
+    "title": "DevOps Lead",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "bcc-sv-devops-lead-130232",
+    "company": {
+      "title": "BCC SV",
+      "logo": "",
+      "logo_mini": "",
+      "first_char": "b"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130250,
+    "title": "IT Specialist",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "gen-pharma-caucasus-manufacturing-operations-it-specialist-130250",
+    "company": {
+      "title": "Gen Pharma Caucasus Manufacturing Operations",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/113720/28-3.png",
+      "first_char": "g"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130281,
+    "title": "IT Support Administrator",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "ires-it-support-administrator-130281",
+    "company": {
+      "title": "IRES",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4791/logo-ires-jss1.svg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130282,
+    "title": "AI Developer",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "ires-ai-developer-130282",
+    "company": {
+      "title": "IRES",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4791/logo-ires-jss1.svg",
+      "first_char": "i"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130290,
+    "title": "Back-end Developer",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "accfin-group-back-end-developer-130290",
+    "company": {
+      "title": "ACCFİN Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/130291/whatsapp-image-2026-01-30-at-143240.jpeg",
+      "first_char": "a"
+    },
+    "salary": "3500"
+  },
+  {
+    "id": 130294,
+    "title": "Senior Network Administrator",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "datazen-solutions-senior-network-administrator-130294",
+    "company": {
+      "title": "Datazen Solutions",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/129873/whatsapp-image-2026-01-16-at-122806-1-0.jpeg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130295,
+    "title": "Senior System Administrator",
+    "created_at": "2026-01-21T00:00:00+04:00",
+    "slug": "datazen-solutions-senior-system-administrator-130295",
+    "company": {
+      "title": "Datazen Solutions",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/129873/whatsapp-image-2026-01-16-at-122806-1-0.jpeg",
+      "first_char": "d"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130062,
+    "title": "Backend Developer (C#)",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "star-technologies-backend-developer-c-130062",
+    "company": {
+      "title": "Star Technologies",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/125173/photo-5251648631461319523-y.jpg",
+      "first_char": "s"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130063,
+    "title": "Frontend Developer",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "maestro-school-frontend-developer-130063",
+    "company": {
+      "title": "Maestro School",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/17338/img-5518.PNG",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130064,
+    "title": "Texniki usta",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "interkommers-texniki-usta-130064",
+    "company": {
+      "title": "İnterkommers",
+      "logo": "",
+      "logo_mini": "",
+      "first_char": "i"
+    },
+    "salary": "1000"
+  },
+  {
+    "id": 130071,
+    "title": "IT Support Specialist / Junior System Administrator",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "insol-it-support-specialist-junior-system-administrator-130071",
+    "company": {
+      "title": "InSol",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/130068/whatsapp-image-2026-01-19-at-151944.jpeg",
+      "first_char": "i"
+    },
+    "salary": "1000"
+  },
+  {
+    "id": 130074,
+    "title": "İnformasiya Texnologiyaları üzrə menecer",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "medco-hospital-group-informasiya-texnologiyalari-uzre-menecer-130074",
+    "company": {
+      "title": "Medco Hospital Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/110756/whatsapp-image-2025-10-23-at-171042.jpeg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130076,
+    "title": "Master data üzrə kiçik mütəxəssis",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "azerbaijan-supermarket-master-data-uzre-kicik-mutexessis-130076",
+    "company": {
+      "title": "Azerbaijan SuperMarket",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/2478/bravo.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130103,
+    "title": "Project Manager – ICT Infrastructure",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "cyberpoint-project-manager-ict-infrastructure-130103",
+    "company": {
+      "title": "Cyberpoint",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/24251/cyberpoint12.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130104,
+    "title": "Project Coordinator – ICT Infrastructure",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "cyberpoint-project-coordinator-ict-infrastructure-130104",
+    "company": {
+      "title": "Cyberpoint",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/24251/cyberpoint12.svg",
+      "first_char": "c"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130114,
+    "title": "UX/Uİ üzrə aparıcı mütəxəssis",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "yapi-kredi-bank-uxui-uzre-aparici-mutexessis-130114",
+    "company": {
+      "title": "Yapı Kredi Bank",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7505/whatsapp-image-2025-12-12-at-162506.jpeg",
+      "first_char": "y"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130129,
+    "title": "PHP (Laravel/TALL Stack) developer",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "company-php-laraveltall-stack-developer-130129",
+    "company": {
+      "title": "Company",
+      "logo": "",
+      "logo_mini": "",
+      "first_char": "c"
+    },
+    "salary": "850"
+  },
+  {
+    "id": 130145,
+    "title": "Süni intellekt üzrə təcrübə proqramı",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "aga-group-suni-intellekt-uzre-tecrube-proqrami-130145",
+    "company": {
+      "title": "AGA Group",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/110/aga-group.svg",
+      "first_char": "a"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130041,
+    "title": "1C Operator",
+    "created_at": "2026-01-19T00:00:00+04:00",
+    "slug": "maybo-1c-operator-130041",
+    "company": {
+      "title": "Maybo",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/5329/whatsapp-image-2025-10-23-at-093819.jpeg",
+      "first_char": "m"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130011,
+    "title": "1C platforması üzrə Proqramçı",
+    "created_at": "2026-01-17T00:00:00+04:00",
+    "slug": "u-and-r-company-1c-platformasi-uzre-proqramci-130011",
+    "company": {
+      "title": "U and R Company",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/7186/whatsapp-image-2025-11-04-at-142411-4.jpeg",
+      "first_char": "u"
+    },
+    "salary": ""
+  },
+  {
+    "id": 130021,
+    "title": "CAD Operator",
+    "created_at": "2026-01-17T00:00:00+04:00",
+    "slug": "himalay-2022-cad-operator-130021",
+    "company": {
+      "title": "Himalay 2022",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/52829/himalay.svg",
+      "first_char": "h"
+    },
+    "salary": "1000"
+  },
+  {
+    "id": 130022,
+    "title": "CAD + 3D Texniki Vizual (Hybrid)",
+    "created_at": "2026-01-17T00:00:00+04:00",
+    "slug": "himalay-2022-cad-3d-texniki-vizual-hybrid-130022",
+    "company": {
+      "title": "Himalay 2022",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/52829/himalay.svg",
+      "first_char": "h"
+    },
+    "salary": "1400"
+  },
+  {
+    "id": 130027,
+    "title": "İnformasiya Texnologiyaları üzrə menecer",
+    "created_at": "2026-01-17T00:00:00+04:00",
+    "slug": "vmf-mmc-informasiya-texnologiyalari-uzre-menecer-130027",
+    "company": {
+      "title": "VMF",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/1706/whatsapp-image-2025-10-24-at-154342-5.jpeg",
+      "first_char": "v"
+    },
+    "salary": "1000"
+  },
+  {
+    "id": 91843,
+    "title": "Leading IOS Developer",
+    "created_at": "2024-11-06T00:00:00+04:00",
+    "slug": "golden-pay-leading-ios-developer-91843",
+    "company": {
+      "title": "Golden Pay",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4286/golden-pay.svg",
+      "first_char": "g"
+    },
+    "salary": ""
+  },
+  {
+    "id": 91723,
+    "title": "İT dəstək üzrə mütəxəssis",
+    "created_at": "2024-11-05T00:00:00+04:00",
+    "slug": "golden-pay-it-destek-uzre-mutexessis-91723",
+    "company": {
+      "title": "Golden Pay",
+      "logo": "",
+      "logo_mini": "https://storage.jobsearch.az/storage/pages/4286/golden-pay.svg",
+      "first_char": "g"
+    },
+    "salary": ""
+  }
+]
