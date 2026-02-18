@@ -65,7 +65,9 @@ export default function SiteHeader({
   const [profile, setProfile] = useState<HeaderProfile | null>(null)
   const [authChecked, setAuthChecked] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement | null>(null)
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let isMounted = true
@@ -82,20 +84,21 @@ export default function SiteHeader({
         setProfile(null)
         setAuthChecked(true)
         setIsProfileMenuOpen(false)
+        setIsMobileMenuOpen(false)
         return
       }
 
       let isAdmin = false
 
       try {
-        const { data: profile, error: profileError } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('is_admin')
           .eq('id', user.id)
           .maybeSingle()
 
         if (!profileError) {
-          const profileRecord = profile as { is_admin?: unknown } | null
+          const profileRecord = profileData as { is_admin?: unknown } | null
           isAdmin = profileRecord?.is_admin === true
         }
       } catch {
@@ -127,8 +130,9 @@ export default function SiteHeader({
     }
   }, [supabase])
 
+  // Combined click-outside logic for both desktop and mobile menus
   useEffect(() => {
-    if (!isProfileMenuOpen) {
+    if (!isProfileMenuOpen && !isMobileMenuOpen) {
       return
     }
 
@@ -138,18 +142,23 @@ export default function SiteHeader({
         return
       }
 
-      if (!profileMenuRef.current?.contains(target)) {
+      if (isProfileMenuOpen && !profileMenuRef.current?.contains(target)) {
         setIsProfileMenuOpen(false)
+      }
+
+      if (isMobileMenuOpen && !mobileMenuRef.current?.contains(target)) {
+        setIsMobileMenuOpen(false)
       }
     }
 
     document.addEventListener('mousedown', handleOutsideClick)
     return () => document.removeEventListener('mousedown', handleOutsideClick)
-  }, [isProfileMenuOpen])
+  }, [isProfileMenuOpen, isMobileMenuOpen])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
     setIsProfileMenuOpen(false)
+    setIsMobileMenuOpen(false)
     router.push('/')
     router.refresh()
   }
@@ -168,7 +177,6 @@ export default function SiteHeader({
     window.localStorage.setItem('theme', nextTheme)
   }
 
-  // Hydration fix: adding a comment to force server-side re-compilation of this component
   return (
     <header className={`border-b border-gray-100/80 pb-3 sm:pb-6 dark:border-gray-800/60 ${className}`}>
       <div className="flex items-center justify-between gap-4">
@@ -192,8 +200,8 @@ export default function SiteHeader({
           </Link>
         </div>
 
-        {/* Action Components */}
-        <div className="flex items-center justify-end gap-2 sm:gap-3">
+        {/* Desktop Actions */}
+        <div className="hidden items-center justify-end gap-3 sm:flex">
           <button
             type="button"
             onClick={handleToggleTheme}
@@ -315,6 +323,146 @@ export default function SiteHeader({
           ) : (
             <div className="h-11 w-40 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-800" aria-hidden />
           )}
+        </div>
+
+        {/* Mobile Hamburger & Theme Toggle */}
+        <div className="flex items-center gap-2 sm:hidden">
+          <button
+            type="button"
+            onClick={handleToggleTheme}
+            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white/50 text-gray-500 transition-all active:scale-95 dark:border-gray-700/60 dark:bg-gray-800/40 dark:text-gray-400"
+            aria-label="Toggle theme"
+          >
+            <svg className="hidden h-5 w-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m12.728 12.728L5.122 5.122M19 12a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <svg className="block h-5 w-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+
+          <div ref={mobileMenuRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white/50 text-gray-600 transition-all active:scale-95 dark:border-gray-700/60 dark:bg-gray-800/40 dark:text-gray-400"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              )}
+            </button>
+
+            {isMobileMenuOpen ? (
+              <div
+                className="absolute top-full right-0 z-50 mt-3 w-64 origin-top-right overflow-hidden rounded-[2rem] border border-gray-100 bg-white/95 p-2 shadow-2xl backdrop-blur-xl ring-1 ring-black/5 dark:border-gray-700 dark:bg-gray-900/95"
+                role="menu"
+              >
+                {authChecked ? (
+                  profile ? (
+                    <>
+                      <div className="px-4 py-4 border-b border-gray-50 dark:border-gray-800">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">Account</p>
+                        <p className="mt-1 truncate text-base font-black text-gray-900 dark:text-white">{profile.displayName}</p>
+                        <p className="truncate text-xs font-bold text-gray-400 dark:text-gray-500">{profile.email}</p>
+                      </div>
+
+                      <div className="space-y-1 p-1">
+                        <Link
+                          href="/profile"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+                          role="menuitem"
+                        >
+                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
+                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </span>
+                          Profile Settings
+                        </Link>
+
+                        {profile.isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
+                            role="menuitem"
+                          >
+                            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
+                              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                              </svg>
+                            </span>
+                            Admin Panel
+                          </Link>
+                        )}
+                      </div>
+
+                      <div className="my-1 h-px bg-gray-50 dark:bg-gray-800" />
+
+                      <div className="p-1">
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="flex w-full items-center gap-4 rounded-2xl px-3.5 py-2.5 text-left text-sm font-bold text-red-500 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                          role="menuitem"
+                        >
+                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-50 dark:bg-red-500/10">
+                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                          </span>
+                          Sign Out
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="space-y-1 p-1">
+                        <Link
+                          href="/auth/login"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+                          role="menuitem"
+                        >
+                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
+                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                          </span>
+                          Sign In
+                        </Link>
+                        <Link
+                          href="/auth/register"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
+                          role="menuitem"
+                        >
+                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/40">
+                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                          </span>
+                          Create Account
+                        </Link>
+                      </div>
+                    </>
+                  )
+                ) : (
+                  <div className="flex h-32 items-center justify-center p-4">
+                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                  </div>
+                )}
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </header>
