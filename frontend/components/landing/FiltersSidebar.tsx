@@ -69,7 +69,7 @@ export default function FiltersSidebar({
   return (
     <>
       <aside
-        className={`fixed inset-y-0 right-0 z-[200] flex w-full transform flex-col gap-6 overflow-y-auto bg-white p-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-[#020617] sm:w-80 
+        className={`fixed inset-y-0 right-0 z-[200] lg:z-auto flex w-full transform flex-col gap-6 overflow-y-auto bg-white p-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-[#020617] sm:w-80 
           ${isMobileSidebarOpen
             ? 'translate-x-0'
             : 'translate-x-full'

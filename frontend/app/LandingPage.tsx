@@ -390,7 +390,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
       {/* NOTE: backdrop-blur is on a child div, NOT the wrapper. backdrop-filter creates a new
           stacking context which would trap the profile dropdown inside it. By isolating the blur
           to a pseudo-background child, the wrapper remains a normal stacking context. */}
-      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+      <div className="relative z-[1000] sm:sticky top-0 w-full shadow-sm">
         {/* Blurred background layer */}
         <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
         {/* Content layer (above the blur, no stacking context issues) */}
