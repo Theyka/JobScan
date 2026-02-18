@@ -75,10 +75,10 @@ export default function CustomDatePicker({ name, defaultValue = '', label }: Cus
                 type="button"
                 onClick={() => handleSelectDate(d)}
                 className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/20 dark:hover:text-indigo-300 ${isSelected(d)
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white'
-                        : isToday(d)
-                            ? 'text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30'
-                            : 'text-slate-600 dark:text-slate-400'
+                    ? 'bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:text-white'
+                    : isToday(d)
+                        ? 'text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30'
+                        : 'text-slate-600 dark:text-slate-400'
                     }`}
             >
                 {d}
@@ -101,7 +101,7 @@ export default function CustomDatePicker({ name, defaultValue = '', label }: Cus
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-0 z-[60] mt-3 w-64 origin-top-left rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+                <div className="absolute top-full right-0 sm:left-0 z-[60] mt-3 w-64 origin-top-right sm:origin-top-left rounded-2xl border border-slate-200 bg-white p-4 shadow-xl dark:border-slate-800 dark:bg-slate-900">
                     <div className="mb-4 flex items-center justify-between">
                         <button
                             type="button"

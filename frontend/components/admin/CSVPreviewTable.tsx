@@ -59,10 +59,11 @@ export default function CSVPreviewTable({ rows }: CSVPreviewTableProps) {
                                 #
                             </th>
                             {HEADERS.map((h) => (
-                                <th key={h.field} className="border-b border-slate-200 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:border-slate-700/50 dark:text-slate-500 whitespace-nowrap">
+                                <th key={h.field} className="border-b border-slate-200 px-4 sm:px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:border-slate-700/50 dark:text-slate-500 whitespace-nowrap">
                                     {h.label}
                                 </th>
                             ))}
+
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/40">
@@ -78,12 +79,13 @@ export default function CSVPreviewTable({ rows }: CSVPreviewTableProps) {
                                     </span>
                                 </td>
                                 {HEADERS.map((h) => (
-                                    <td key={h.field} className="px-6 py-4">
-                                        <div className="max-w-[20rem] truncate font-mono text-[11px] font-medium text-slate-600 dark:text-slate-300" title={item[h.field]}>
+                                    <td key={h.field} className="px-4 sm:px-6 py-4">
+                                        <div className="max-w-[15rem] sm:max-w-[20rem] truncate font-mono text-[11px] font-medium text-slate-600 dark:text-slate-300" title={item[h.field]}>
                                             {item[h.field] || '-'}
                                         </div>
                                     </td>
                                 ))}
+
                             </tr>
                         ))}
                     </tbody>

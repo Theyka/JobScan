@@ -39,7 +39,7 @@ export default function StatsCards({ data }: StatsCardsProps) {
   return (
     <div className="mb-10 grid grid-cols-2 gap-5 lg:grid-cols-4">
       {stats.map((stat) => (
-        <div key={stat.label} className="group relative rounded-3xl border border-slate-300/60 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/40">
+        <div key={stat.label} className="group relative rounded-3xl border border-slate-300/60 bg-white p-4 sm:p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/40">
           <div className="flex flex-col gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-indigo-600 transition-colors group-hover:border-indigo-500/20 group-hover:bg-indigo-600 group-hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400 dark:group-hover:bg-indigo-500">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,8 +47,8 @@ export default function StatsCards({ data }: StatsCardsProps) {
               </svg>
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">{stat.label}</p>
-              <p className="mt-1 text-2xl font-black tracking-tight text-slate-900 dark:text-white lg:text-3xl">
+              <p className="text-[10px] font-black uppercase tracking-tight text-slate-400 dark:text-slate-500">{stat.label}</p>
+              <p className="mt-1 text-xl font-black tracking-tight text-slate-900 sm:text-2xl dark:text-white lg:text-3xl">
                 {typeof stat.value === 'number' ? new Intl.NumberFormat('en-US').format(stat.value) : stat.value}
               </p>
             </div>

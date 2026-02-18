@@ -15,13 +15,15 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
       {/* Sticky Header Wrapper */}
-      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
-        <div className="container mx-auto max-w-7xl px-4">
+      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
+        <div className="relative container mx-auto max-w-7xl px-4">
           <SiteHeader
-            className="border-none !pb-4 !pt-4"
+            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
           />
         </div>
       </div>
+
 
       <main className="flex-grow">
         <div className="container mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-16 sm:py-24">
@@ -63,7 +65,7 @@ export default function LoginPage() {
                         autoComplete="email"
                         required
                         placeholder="name@example.com"
-                        className="h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-400"
+                        className="h-12 sm:h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-400 dark:focus:bg-slate-900"
                       />
                     </div>
                   </div>
@@ -85,7 +87,7 @@ export default function LoginPage() {
                         autoComplete="current-password"
                         required
                         placeholder="••••••••"
-                        className="h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-400"
+                        className="h-12 sm:h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-12 pr-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-600 dark:focus:border-indigo-400 dark:focus:bg-slate-900"
                       />
                     </div>
                   </div>
@@ -93,7 +95,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={isPending}
-                    className="group relative h-14 w-full overflow-hidden rounded-2xl bg-indigo-600 font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-700 hover:shadow-indigo-700/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                    className="group relative h-12 sm:h-14 w-full overflow-hidden rounded-2xl bg-indigo-600 font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-700 hover:shadow-indigo-700/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       {isPending ? 'Authenticating...' : (

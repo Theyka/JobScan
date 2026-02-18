@@ -47,15 +47,17 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   return (
     <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
       {/* Sticky Full-Width Header */}
-      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
-        <div className="container mx-auto max-w-7xl px-4">
+      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
+        <div className="relative container mx-auto max-w-7xl px-4">
           <SiteHeader
-            className="border-none !pb-4 !pt-4"
+            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
             title="Analytics Hub"
             subtitle={`Platform performance for ${dateRangeLabel(filters.from, filters.to)}`}
           />
         </div>
       </div>
+
 
       <div className="container mx-auto max-w-7xl px-4 py-12">
         <AdminSectionNav current="stats" />
@@ -177,8 +179,8 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           </div>
 
           {analytics.trend.length ? (
-            <div className="pb-6">
-              <div className="flex items-end gap-2 px-2">
+            <div className="overflow-x-auto pb-6 custom-scrollbar">
+              <div className="flex items-end gap-2 px-2 min-w-[700px] sm:min-w-0">
                 {analytics.trend.map((entry) => {
                   const visitsPercent = (entry.visits / maxSeriesValue) * 100
 

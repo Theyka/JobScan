@@ -23,11 +23,10 @@ export default function AdminSectionNav({ current }: AdminSectionNavProps) {
             <Link
               key={link.id}
               href={link.href}
-              className={`inline-flex h-10 items-center rounded-xl px-4 text-xs font-black uppercase tracking-widest transition-colors ${
-                isActive
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
-              }`}
+              className={`inline-flex h-10 items-center rounded-xl px-4 text-xs font-black uppercase tracking-widest transition-colors ${isActive
+                ? 'bg-indigo-600 text-white'
+                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
+                }`}
               aria-current={isActive ? 'page' : undefined}
             >
               {link.label}

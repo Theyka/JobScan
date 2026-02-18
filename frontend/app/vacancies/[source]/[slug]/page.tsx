@@ -195,7 +195,7 @@ function renderInfoCards(detail: VacancyDetail) {
       {infoEntries.map((entry) => (
         <div
           key={`${entry.label}-${entry.value}`}
-          className="rounded-2xl border border-slate-200/60 bg-slate-50/50 p-4 transition-all hover:bg-slate-50 dark:border-slate-800/60 dark:bg-slate-900/40"
+          className="rounded-2xl border border-slate-200/60 bg-slate-50/50 p-4 transition-all hover:bg-slate-50 dark:border-slate-800/60 dark:bg-slate-900/40 dark:hover:bg-slate-800/60"
         >
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
@@ -418,15 +418,17 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
       {/* Sticky Header Wrapper */}
-      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
-        <div className="container mx-auto max-w-7xl px-4">
+      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
+        <div className="relative container mx-auto max-w-7xl px-4">
           <SiteHeader
-            className="border-none !pb-4 !pt-4"
+            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
             title="JobScan"
             subtitle="Vacancy Intelligence"
           />
         </div>
       </div>
+
 
       <div className="container mx-auto max-w-7xl grow px-4 py-8 lg:py-12">
         <header className="mb-8 flex flex-wrap items-center justify-between gap-4">

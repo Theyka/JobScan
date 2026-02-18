@@ -86,7 +86,7 @@ export default function ProfileForm({
               defaultValue={initialFirstName}
               required
               placeholder="e.g. Abutalıb"
-              className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50"
+              className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50 dark:focus:bg-slate-800"
             />
           </div>
 
@@ -101,7 +101,7 @@ export default function ProfileForm({
               defaultValue={initialLastName}
               required
               placeholder="e.g. Şiriyev"
-              className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50"
+              className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 px-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50 dark:focus:bg-slate-800"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function ProfileForm({
                 defaultValue={initialUsername}
                 required
                 placeholder="e.g. abutalib"
-                className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 pl-11 pr-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50"
+                className="w-full h-12 rounded-xl border border-slate-100 bg-slate-50 pl-11 pr-4 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50 dark:focus:bg-slate-800"
               />
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function ProfileForm({
         <button
           type="submit"
           disabled={isPending}
-          className="flex h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-2xl bg-indigo-600 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex h-12 sm:h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-2xl bg-indigo-600 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-700 hover:-translate-y-0.5 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isPending ? (
             <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">

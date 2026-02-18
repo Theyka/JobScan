@@ -28,15 +28,17 @@ export default async function ProfilePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
-      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
-        <div className="container mx-auto max-w-7xl px-4">
+      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
+        <div className="relative container mx-auto max-w-7xl px-4">
           <SiteHeader
-            className="border-none !pb-4 !pt-4"
+            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
             title="JobScan"
             subtitle="Personal Identity"
           />
         </div>
       </div>
+
 
       <main className="flex-grow py-12 lg:py-20">
         <div className="container mx-auto max-w-4xl px-4">

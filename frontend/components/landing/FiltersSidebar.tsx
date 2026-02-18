@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { CountItem, SalaryRange, SourceFilter } from '@/lib/datatypes/landing-page.types'
 
 type FiltersSidebarProps = {
@@ -53,11 +54,28 @@ export default function FiltersSidebar({
   activeTech,
   onToggleTech,
 }: FiltersSidebarProps) {
+  // Prevent background scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (isMobileSidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMobileSidebarOpen])
+
   return (
     <>
       <aside
-        className={`fixed inset-y-0 right-0 z-40 flex w-85 transform flex-col gap-6 overflow-y-auto border-l border-slate-200 bg-white p-8 shadow-2xl transition-transform duration-500 ease-out dark:border-slate-800 dark:bg-slate-950 lg:static lg:h-auto lg:w-1/4 lg:translate-x-0 lg:overflow-visible lg:border-l-0 lg:bg-transparent lg:p-0 lg:shadow-none ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+        className={`fixed inset-y-0 right-0 z-[200] flex w-full transform flex-col gap-6 overflow-y-auto bg-white p-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-[#020617] sm:w-80 
+          ${isMobileSidebarOpen
+            ? 'translate-x-0'
+            : 'translate-x-full'
+          }
+          lg:static lg:flex lg:h-auto lg:w-1/4 lg:translate-x-0 lg:opacity-100 lg:pointer-events-auto lg:overflow-visible lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none
+        `}
       >
         <div className="flex items-center justify-between lg:hidden mb-4">
           <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">Filters</h2>
@@ -266,12 +284,6 @@ export default function FiltersSidebar({
         </div>
       </aside>
 
-      {/* Backdrop for mobile */}
-      <div
-        className={`fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-md transition-opacity duration-500 lg:hidden ${isMobileSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-          }`}
-        onClick={onCloseMobileSidebar}
-      />
     </>
   )
 }

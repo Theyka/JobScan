@@ -47,14 +47,14 @@ export default function SourceBreakdown({ data }: SourceBreakdownProps) {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {sources.map((source) => (
-          <div key={source.label} className={`flex flex-col items-center gap-3 rounded-2xl border p-5 transition-all hover:shadow-md ${source.bg}`}>
-            <div className="flex items-center gap-2">
-              {source.icon && <img src={source.icon} className="h-4 w-4 rounded-sm" alt="" />}
-              <span className={`text-[10px] font-black uppercase tracking-widest ${source.color}`}>
+          <div key={source.label} className={`flex flex-col items-center gap-3 rounded-2xl border p-3 sm:p-5 transition-all hover:shadow-md ${source.bg}`}>
+            <div className="flex min-w-0 items-center justify-center gap-2 text-center">
+              {source.icon && <img src={source.icon} className="h-4 w-4 shrink-0 rounded-sm" alt="" />}
+              <span className={`truncate text-[9px] font-black uppercase tracking-tight sm:text-[10px] ${source.color}`}>
                 {source.label}
               </span>
             </div>
-            <span className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white">
+            <span className="text-2xl font-black tracking-tighter text-slate-900 sm:text-3xl dark:text-white">
               {new Intl.NumberFormat('en-US').format(source.value)}
             </span>
           </div>

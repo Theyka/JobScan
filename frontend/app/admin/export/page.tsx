@@ -40,10 +40,11 @@ export default async function AdminExportPage() {
   return (
     <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
       {/* Sticky Header Wrapper */}
-      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
-        <div className="container mx-auto max-w-7xl px-4">
+      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
+        <div className="relative container mx-auto max-w-7xl px-4">
           <SiteHeader
-            className="border-none !pb-4 !pt-4"
+            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
             title="Export Hub"
             subtitle="Platform data extraction and review"
           />
@@ -71,15 +72,15 @@ export default async function AdminExportPage() {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex items-center gap-6 rounded-2xl bg-slate-50 border border-slate-200 p-3 px-6 dark:bg-slate-800 dark:border-slate-700">
+              <div className="flex flex-row items-center gap-3 rounded-2xl bg-slate-50 border border-slate-200 p-2.5 px-4 dark:bg-slate-800 dark:border-slate-700 sm:gap-6 sm:p-3 sm:px-6">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Available</span>
-                  <span className="text-xl font-black text-slate-900 dark:text-white">{formatNumber(totalRows)}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 sm:text-[10px]">Total Available</span>
+                  <span className="text-lg font-black text-slate-900 dark:text-white sm:text-xl">{formatNumber(totalRows)}</span>
                 </div>
                 <div className="h-8 w-px bg-slate-200 dark:bg-slate-700" />
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Previewing First</span>
-                  <span className="text-xl font-black text-slate-900 dark:text-white">{formatNumber(previewRows)}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 sm:text-[10px]">Previewing First</span>
+                  <span className="text-lg font-black text-slate-900 dark:text-white sm:text-xl">{formatNumber(previewRows)}</span>
                 </div>
               </div>
 

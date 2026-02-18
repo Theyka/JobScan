@@ -387,14 +387,21 @@ export default function LandingPage({ data }: { data: LandingData }) {
   return (
     <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
       {/* Sticky Full-Width Header */}
-      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
-        <div className="container mx-auto max-w-7xl px-4">
+      {/* NOTE: backdrop-blur is on a child div, NOT the wrapper. backdrop-filter creates a new
+          stacking context which would trap the profile dropdown inside it. By isolating the blur
+          to a pseudo-background child, the wrapper remains a normal stacking context. */}
+      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
+        {/* Blurred background layer */}
+        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
+        {/* Content layer (above the blur, no stacking context issues) */}
+        <div className="relative container mx-auto max-w-7xl px-4">
           <SiteHeader
-            className="border-none pb-4! pt-4!"
+            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
             onToggleTheme={toggleTheme}
           />
         </div>
       </div>
+
 
       <div className="container mx-auto flex max-w-7xl grow flex-col px-4 py-12">
         <div className="w-full">

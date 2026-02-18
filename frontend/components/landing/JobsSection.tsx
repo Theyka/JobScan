@@ -77,13 +77,14 @@ export default function JobsSection({
         <button
           type="button"
           onClick={onOpenMobileFilters}
-          className="mt-6 flex w-full items-center justify-center gap-3 rounded-[1.25rem] border border-indigo-200 bg-indigo-50/30 py-4 text-xs font-black uppercase tracking-widest text-indigo-600 shadow-sm transition-all hover:bg-indigo-50 active:scale-95 dark:border-indigo-500/20 dark:bg-indigo-500/5 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
+          className="mt-6 flex w-full items-center justify-center gap-3 rounded-[1.25rem] border border-indigo-200 bg-indigo-50/30 px-4 py-4 text-xs font-black uppercase tracking-widest text-indigo-600 shadow-sm transition-all hover:bg-indigo-50 active:scale-95 dark:border-indigo-500/20 dark:bg-indigo-500/5 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
           </svg>
-          Show Companies & Techs Filters
+          <span className="truncate">Show Companies & Techs Filters</span>
         </button>
+
       </div>
 
       <div className="mb-12">
@@ -168,10 +169,11 @@ export default function JobsSection({
                       )
                     })}
                     {job.technologies.length > 4 && (
-                      <span className="rounded-lg bg-slate-50 px-2 pyr-1 text-[10px] font-black tracking-tighter text-slate-400 group-hover:bg-white dark:bg-slate-800 dark:group-hover:bg-slate-700">
+                      <span className="flex items-center justify-center rounded-lg bg-slate-50 px-2 text-[10px] font-black tracking-tighter text-slate-400 group-hover:bg-white dark:bg-slate-800 dark:group-hover:bg-slate-700">
                         +{job.technologies.length - 4}
                       </span>
                     )}
+
                   </div>
 
                   <div className="relative flex items-center justify-between border-t border-slate-50 pt-5 transition-colors group-hover:border-slate-100 dark:border-slate-800/50">
