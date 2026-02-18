@@ -1,8 +1,10 @@
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import Footer from '@/components/landing/Footer'
+import Footer from '@/components/shared/Footer'
 import SiteHeader from '@/components/shared/SiteHeader'
+import { incrementVacancyVisitCounter } from '@/lib/vacancy-visit-tracker'
 import { getVacancyDetail, normalizeRouteSource } from '@/lib/vacancy-detail-data'
 import type { VacancyDetail } from '@/lib/datatypes/vacancy-detail-data.types'
 import type { VacancyPageProps } from '@/lib/datatypes/vacancy-page.types'
@@ -18,6 +20,58 @@ function decodeParam(value: string): string {
   } catch {
     return raw
   }
+}
+
+function normalizeIpCandidate(value: string | null): string {
+  const raw = String(value ?? '').trim()
+  if (!raw) {
+    return ''
+  }
+
+  const first = raw.split(',')[0]?.trim() ?? ''
+  if (!first) {
+    return ''
+  }
+
+  if (first.startsWith('::ffff:')) {
+    return first.slice(7)
+  }
+
+  return first
+}
+
+function getVisitorIpFromHeaders(requestHeaders: Headers): string {
+  const candidates = [
+    requestHeaders.get('cf-connecting-ip'),
+    requestHeaders.get('x-forwarded-for'),
+    requestHeaders.get('x-real-ip'),
+    requestHeaders.get('x-client-ip'),
+    requestHeaders.get('true-client-ip'),
+    requestHeaders.get('x-vercel-forwarded-for'),
+  ]
+
+  for (const candidate of candidates) {
+    const normalized = normalizeIpCandidate(candidate)
+    if (normalized) {
+      return normalized
+    }
+  }
+
+  return ''
+}
+
+function isPrefetchRequest(requestHeaders: Headers): boolean {
+  const purpose = requestHeaders.get('purpose')?.toLowerCase() ?? ''
+  const secPurpose = requestHeaders.get('sec-purpose')?.toLowerCase() ?? ''
+  const nextRouterPrefetch = requestHeaders.get('next-router-prefetch')
+  const middlewarePrefetch = requestHeaders.get('x-middleware-prefetch')
+
+  return (
+    purpose.includes('prefetch') ||
+    secPurpose.includes('prefetch') ||
+    nextRouterPrefetch !== null ||
+    middlewarePrefetch !== null
+  )
 }
 
 function formatDateLabel(value: string): string {
@@ -53,6 +107,21 @@ function normalizeSafeUrl(url: string): string {
   }
 
   return ''
+}
+
+function buildTrackedClickUrl(source: string, vacancyId: number | null, slug: string, targetUrl: string): string {
+  if (!vacancyId || vacancyId <= 0) {
+    return targetUrl
+  }
+
+  const params = new URLSearchParams({
+    source,
+    vacancy_id: String(vacancyId),
+    slug: String(slug ?? '').trim(),
+    target: targetUrl,
+  })
+
+  return `/track/click?${params.toString()}`
 }
 
 function sanitizeHtml(html: string): string {
@@ -122,18 +191,20 @@ function renderInfoCards(detail: VacancyDetail) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div className="flex flex-col gap-4">
       {infoEntries.map((entry) => (
         <div
           key={`${entry.label}-${entry.value}`}
-          className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900/50"
+          className="rounded-2xl border border-slate-200/60 bg-slate-50/50 p-4 transition-all hover:bg-slate-50 dark:border-slate-800/60 dark:bg-slate-900/40"
         >
-          <p className="mb-1 text-xs font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">
-            {entry.label}
-          </p>
-          <p className={`text-sm font-medium break-words text-gray-900 dark:text-gray-100 ${entry.valueClass ?? ''}`}>
-            {entry.value}
-          </p>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+              {entry.label}
+            </span>
+            <p className={`text-sm font-bold text-right break-words text-slate-900 dark:text-white ${entry.valueClass ?? ''}`}>
+              {entry.value}
+            </p>
+          </div>
         </div>
       ))}
     </div>
@@ -186,10 +257,10 @@ function renderCompanyMeta(detail: VacancyDetail) {
   }
 
   return (
-    <section className="mt-8 overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white shadow-sm dark:border-gray-700 dark:from-gray-900 dark:to-gray-800/80">
-      <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-teal-500 to-orange-400" />
-      <div className="p-4 md:p-6">
-        <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">About Company</h3>
+    <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
+      <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+      <div className="p-6">
+        <h3 className="mb-6 text-sm font-black tracking-widest uppercase text-slate-400 dark:text-slate-500">About Company</h3>
 
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {companyCreatedAt ? (
@@ -322,6 +393,19 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
     notFound()
   }
 
+  const requestHeaders = await headers()
+  if (!isPrefetchRequest(requestHeaders)) {
+    const visitorIp = getVisitorIpFromHeaders(requestHeaders)
+    if (visitorIp) {
+      await incrementVacancyVisitCounter({
+        source: detail.source,
+        vacancyId: detail.vacancyId,
+        slug: detail.slug,
+        visitorIp,
+      })
+    }
+  }
+
   const descriptionHtml = sanitizeHtml(detail.descriptionHtml)
   const descriptionIsHtml = hasHtmlTags(descriptionHtml)
   const requirementsHtml = sanitizeHtml(detail.requirementsHtml)
@@ -332,172 +416,200 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
     .filter((entry) => entry.url)
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-50">
-      <div className="container mx-auto max-w-6xl px-4 py-8">
-        <SiteHeader className="mb-8" subtitle="Vacancy details" />
-        <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
+      {/* Sticky Header Wrapper */}
+      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
+        <div className="container mx-auto max-w-7xl px-4">
+          <SiteHeader
+            className="border-none !pb-4 !pt-4"
+            title="JobScan"
+            subtitle="Vacancy Intelligence"
+          />
+        </div>
+      </div>
+
+      <div className="container mx-auto max-w-7xl grow px-4 py-8 lg:py-12">
+        <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 dark:hover:text-indigo-400"
           >
             <svg aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 5h6v6H4V5zm10 0h6v6h-6V5zM4 15h6v4H4v-4zm10 0h6v4h-6v-4z"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            Back to Dashboard
+            Back to Hub
           </Link>
 
           {detail.isDuplicate ? (
-            <span className="inline-flex items-center rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700 dark:border-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+            <div className="flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-amber-700 shadow-sm dark:border-amber-500/20 dark:bg-amber-900/30 dark:text-amber-400">
+              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.334-.398-1.817a1 1 0 00-1.514-.857 7.028 7.028 0 00-2.73 5.154 4.635 4.635 0 001.222 3.296 4.645 4.645 0 00.318.308c.5.447 1.053.939 1.585 1.47 1.078 1.073 2.224 2.146 3.603 2.146a4.474 4.474 0 003.51-1.747 4.472 4.472 0 001.19-3.007c0-1.136-.212-2.17-.556-2.796a4.411 4.411 0 00-1.259-1.518c-.147-.113-.318-.23-.51-.358a1 1 0 00-1.263.15c-.242.238-.428.525-.567.8a1 1 0 001.766.947c.1-.2.204-.377.302-.512.166.113.338.252.5.39.426.362.805.811 1.042 1.238.243.438.38 1.07.38 1.81 0 1.135-.352 2.206-1.235 2.594-.598.262-1.235.034-1.77-.5a15.723 15.723 0 01-1.391-1.584c-.45-.58-.848-1.166-1.225-1.725-.378-.56-.693-1.071-.933-1.518-.112-.208-.204-.395-.278-.564.444-.453.935-.893 1.456-1.312.441-.355.885-.68 1.309-.968.455-.308.868-.54 1.189-.663A1 1 0 0012.395 2.553z" clipRule="evenodd" />
+              </svg>
               {duplicateScoreLabel(detail.duplicateScore)}
-            </span>
+            </div>
           ) : null}
         </header>
 
-        <article className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          {detail.source === 'jobsearch' && detail.company.cover ? (
-            <div className="relative h-44 md:h-56 lg:h-64">
-              <img
-                src={detail.company.cover}
-                alt={`${detail.company.name} cover`}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-transparent" />
-            </div>
-          ) : null}
-
-          <div className="p-6 md:p-8">
-            <h1 className="mb-4 text-2xl leading-tight font-bold break-words text-gray-900 md:text-3xl dark:text-white">
-              {detail.title}
-            </h1>
-
-            <div className="mb-6 flex items-center gap-4">
-              {detail.company.logo ? (
-                <img
-                  src={detail.company.logo}
-                  alt={detail.company.name}
-                  className="h-12 w-12 flex-shrink-0 rounded-lg border border-gray-200 bg-white p-1 object-contain md:h-16 md:w-16 dark:border-gray-600"
-                />
-              ) : (
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-100 text-xl font-bold text-blue-600 uppercase md:h-16 md:w-16 md:text-2xl dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                  {(detail.company.name.slice(0, 1) || 'U').toUpperCase()}
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
+          {/* Main Content (Left) */}
+          <div className="flex-1 space-y-8">
+            <article className="overflow-hidden rounded-[2.5rem] border border-slate-300/60 bg-white shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900/40 dark:shadow-none">
+              {detail.source === 'jobsearch' && detail.company.cover ? (
+                <div className="relative h-44 md:h-56 lg:h-64">
+                  <img
+                    src={detail.company.cover}
+                    alt={`${detail.company.name} cover`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-transparent" />
                 </div>
-              )}
+              ) : null}
 
-              <div className="min-w-0 flex-1">
-                <h2 className="text-lg font-semibold break-words text-gray-800 md:text-xl dark:text-gray-100">{detail.company.name}</h2>
+              <div className="p-6 md:p-8">
+                <h1 className="mb-6 text-2xl font-black leading-tight tracking-tight text-slate-900 md:text-4xl dark:text-white">
+                  {detail.title}
+                </h1>
 
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {detail.sourceBadges.map((badge) => (
-                    <div
-                      key={`${badge.source}-${badge.label}`}
-                      className="flex items-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-2 py-1 dark:border-gray-600 dark:bg-gray-700/50"
-                      title={badge.label}
-                    >
-                      <img src={badge.icon} className="h-3.5 w-3.5 rounded-sm" alt="" />
-                      <span className="hidden text-[10px] font-medium text-gray-500 sm:inline dark:text-gray-400">
-                        {badge.label}
-                      </span>
+                <div className="mb-8 flex items-center gap-5">
+                  {detail.company.logo ? (
+                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-100 bg-white p-2 shadow-sm dark:border-slate-800 dark:bg-slate-800">
+                      <img
+                        src={detail.company.logo}
+                        alt={detail.company.name}
+                        className="h-full w-full object-contain"
+                      />
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                  ) : (
+                    <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-2xl font-black text-indigo-600 uppercase dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
+                      {(detail.company.name.slice(0, 1) || 'U').toUpperCase()}
+                    </div>
+                  )}
 
-            {renderInfoCards(detail)}
-
-            {detail.techStack.length ? (
-              <div className="mt-6">
-                <h3 className="mb-3 text-sm font-semibold tracking-wide text-gray-500 uppercase dark:text-gray-400">Technologies</h3>
-                <div className="flex flex-wrap gap-2">
-                  {detail.techStack.map((tech) => (
-                    <span
-                      key={`tech-${tech}`}
-                      className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{detail.company.name}</h2>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {detail.sourceBadges.map((badge) => (
+                        <div
+                          key={`${badge.source}-${badge.label}`}
+                          className="flex items-center gap-1.5 rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 dark:border-slate-700/50 dark:bg-slate-800/50"
+                          title={badge.label}
+                        >
+                          <img src={badge.icon} className="h-3.5 w-3.5 rounded-sm" alt="" />
+                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                            {badge.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+
+                {detail.techStack.length ? (
+                  <div className="mt-8 border-t border-slate-100 pt-8 dark:border-slate-800/50">
+                    <h3 className="mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Essential Tech Stack</h3>
+                    <div className="flex flex-wrap gap-2.5">
+                      {detail.techStack.map((tech) => (
+                        <span
+                          key={`tech-${tech}`}
+                          className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-white dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
+            </article>
+
+            <section className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 md:p-10">
+              <h2 className="mb-8 flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                <span className="h-2 w-2 rounded-full bg-indigo-600" />
+                Job Description
+              </h2>
+              <div className="job-description prose prose-slate max-w-none prose-sm sm:prose-base dark:prose-invert text-slate-600 dark:text-slate-400">
+                {hasRenderableContent(descriptionHtml) ? (
+                  descriptionIsHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                  ) : (
+                    <p className="whitespace-pre-line leading-relaxed">{descriptionHtml}</p>
+                  )
+                ) : (
+                  <p className="italic text-slate-400 dark:text-slate-500">Description is not available.</p>
+                )}
+              </div>
+            </section>
+
+            {hasRenderableContent(requirementsHtml) ? (
+              <section className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 md:p-10">
+                <h2 className="mb-8 flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                  <span className="h-2 w-2 rounded-full bg-purple-600" />
+                  Requirements
+                </h2>
+                <div className="job-description prose prose-slate max-w-none prose-sm sm:prose-base dark:prose-invert text-slate-600 dark:text-slate-400">
+                  {requirementsIsHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: requirementsHtml }} />
+                  ) : (
+                    <p className="whitespace-pre-line leading-relaxed">{requirementsHtml}</p>
+                  )}
+                </div>
+              </section>
             ) : null}
 
+            {benefits.length ? (
+              <section className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 md:p-10">
+                <h2 className="mb-8 flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  Benefits
+                </h2>
+                <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {benefits.map((benefit) => (
+                    <li key={benefit} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-sm font-bold text-slate-700 dark:border-slate-800 dark:bg-slate-800/40 dark:text-slate-300 transition-all hover:bg-slate-50">
+                      <svg className="h-5 w-5 flex-shrink-0 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {sourceLinks.length ? (
+              <section className="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-900 shadow-2xl shadow-indigo-500/10 dark:border-slate-700 dark:bg-[#0f172a]">
+                <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-800 dark:divide-slate-700">
+                  {sourceLinks.map((link) => {
+                    const trackedHref = buildTrackedClickUrl(link.source, detail.vacancyId, detail.slug, link.url)
+                    return (
+                      <a
+                        key={`${link.source}-${link.url}`}
+                        href={trackedHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex flex-1 items-center justify-center gap-4 px-6 py-5 text-sm font-black uppercase tracking-widest text-white transition-all hover:bg-white/5 active:scale-95"
+                      >
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
+                          <img src={link.icon} className="h-5 w-5 rounded-sm brightness-110" alt="" />
+                        </div>
+                        <span>Quick Apply on {link.label}</span>
+                      </a>
+                    )
+                  })}
+                </div>
+              </section>
+            ) : null}
+          </div>
+
+          {/* Sidebar (Right) */}
+          <aside className="sticky top-[108px] w-full space-y-8 lg:w-80">
+            <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
+              <h3 className="mb-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">Job Details</h3>
+              {renderInfoCards(detail)}
+            </section>
+
             {renderCompanyMeta(detail)}
-          </div>
-        </article>
-
-        <section className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 md:p-8">
-          <h2 className="mb-6 border-b border-gray-200 pb-4 text-xl font-bold text-gray-900 dark:border-gray-700 dark:text-white">
-            Job Description
-          </h2>
-
-          <div className="job-description text-base leading-relaxed break-words text-gray-700 dark:text-gray-300">
-            {hasRenderableContent(descriptionHtml) ? (
-              descriptionIsHtml ? (
-                <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-              ) : (
-                <p className="whitespace-pre-line">{descriptionHtml}</p>
-              )
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">Description is not available.</p>
-            )}
-          </div>
-        </section>
-
-        {hasRenderableContent(requirementsHtml) ? (
-          <section className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 md:p-8">
-            <h2 className="mb-6 border-b border-gray-200 pb-4 text-xl font-bold text-gray-900 dark:border-gray-700 dark:text-white">
-              Requirements
-            </h2>
-            <div
-              className="job-description text-base leading-relaxed break-words text-gray-700 dark:text-gray-300"
-            >
-              {requirementsIsHtml ? (
-                <div dangerouslySetInnerHTML={{ __html: requirementsHtml }} />
-              ) : (
-                <p className="whitespace-pre-line">{requirementsHtml}</p>
-              )}
-            </div>
-          </section>
-        ) : null}
-
-        {benefits.length ? (
-          <section className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 md:p-8">
-            <h2 className="mb-6 border-b border-gray-200 pb-4 text-xl font-bold text-gray-900 dark:border-gray-700 dark:text-white">
-              Benefits
-            </h2>
-            <ul className="list-disc space-y-2 pl-5 text-gray-700 dark:text-gray-300">
-              {benefits.map((benefit) => (
-                <li key={benefit}>{benefit}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        {sourceLinks.length ? (
-          <section className="mt-8 overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 shadow-2xl dark:border-gray-700 dark:bg-gray-800">
-            <div className="flex flex-col md:flex-row">
-              {sourceLinks.map((link, index) => (
-                <a
-                  key={`${link.source}-${link.url}`}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`group flex flex-1 items-center justify-center gap-3 px-8 py-5 text-base font-bold text-white transition-all hover:bg-white/10 active:opacity-90 ${
-                    index < sourceLinks.length - 1 ? 'border-b border-gray-800 md:border-r md:border-b-0 dark:border-gray-700' : ''
-                  }`}
-                >
-                  <img src={link.icon} className="h-6 w-6 rounded-sm brightness-125" alt="" />
-                  <span>Apply on {link.label}</span>
-                </a>
-              ))}
-            </div>
-          </section>
-        ) : null}
+          </aside>
+        </div>
       </div>
       <Footer />
     </div>

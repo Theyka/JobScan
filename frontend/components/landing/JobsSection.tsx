@@ -47,30 +47,22 @@ export default function JobsSection({
   onNextPage,
 }: JobsSectionProps) {
   return (
-    <>
-      <div className="mb-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 lg:hidden">
-        <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-white">
-          <span className="rounded-lg bg-gray-100 p-1 text-gray-600 dark:bg-gray-700/50 dark:text-gray-300">
+    <div className="mt-10">
+      {/* Mobile Search - Redesigned */}
+      <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 lg:hidden">
+        <div className="mb-6 flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </span>
-          Search
-        </h2>
-        <div className="relative">
-          <span className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400">
+          <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Search</h2>
+        </div>
+
+        <div className="relative group">
+          <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-indigo-500">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </span>
           <input
@@ -78,44 +70,42 @@ export default function JobsSection({
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Title, company, or tech..."
-            className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pr-4 pl-10 text-gray-900 transition-all placeholder-gray-500 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+            className="w-full h-14 rounded-2xl border border-slate-200 bg-slate-50 px-6 pl-14 text-sm font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600 dark:focus:border-indigo-500/50"
           />
         </div>
-      </div>
 
-      <div className="mb-8 lg:hidden">
         <button
           type="button"
           onClick={onOpenMobileFilters}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white py-3 font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+          className="mt-6 flex w-full items-center justify-center gap-3 rounded-[1.25rem] border border-indigo-200 bg-indigo-50/30 py-4 text-xs font-black uppercase tracking-widest text-indigo-600 shadow-sm transition-all hover:bg-indigo-50 active:scale-95 dark:border-indigo-500/20 dark:bg-indigo-500/5 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
         >
-          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-            />
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
           </svg>
-          Show Companies &amp; Techs Filters
+          Show Companies & Techs Filters
         </button>
       </div>
 
-      <div className="mb-12 border-t border-gray-200 pt-8 dark:border-gray-700">
-        <div className="mb-6 flex items-center justify-between px-2">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Jobs ({filteredJobs.length})</h2>
+      <div className="mb-12">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-2">
+          <div className="flex items-center gap-3">
+            <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white">Jobs ({new Intl.NumberFormat('en-US').format(filteredJobs.length)})</h2>
+          </div>
+
           <div
-            className={`items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-400 ${
-              activeFilterParts.length ? 'flex' : 'hidden'
-            }`}
+            className={`items-center gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400 ${activeFilterParts.length ? 'flex' : 'hidden'
+              }`}
           >
-            <span className="mr-2">{activeFilterParts.join(' | ')}</span>
+            <span>{activeFilterParts.join(' • ')}</span>
+            <div className="h-4 w-px bg-indigo-200 dark:bg-indigo-500/20" />
             <button
               type="button"
               onClick={clearFilter}
-              className="text-lg leading-none hover:text-blue-800 focus:outline-none dark:hover:text-blue-200"
+              className="flex h-5 w-5 items-center justify-center rounded-lg bg-indigo-100 transition-colors hover:bg-indigo-200 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30"
             >
-              &times;
+              <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
         </div>
@@ -135,44 +125,32 @@ export default function JobsSection({
                   href={href}
                   target={isExternalDetail ? '_blank' : undefined}
                   rel={isExternalDetail ? 'noopener noreferrer' : undefined}
-                  className="group flex h-full flex-col rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:border-blue-300 hover:bg-gray-50 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-700 dark:hover:bg-gray-700"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-300/60 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/40 dark:hover:border-indigo-500/50"
                 >
-                  <div className="mb-3 flex items-start justify-between">
-                    <h3
-                      className="line-clamp-2-custom text-lg leading-tight font-bold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400"
-                      title={job.title}
-                    >
+                  <div className="relative mb-5 flex items-start justify-between">
+                    <h3 className="line-clamp-2 min-h-[3rem] text-lg font-black leading-tight tracking-tight text-slate-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
                       {job.title}
                     </h3>
-                    <span className="ml-3 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium whitespace-nowrap text-gray-500 transition-colors group-hover:bg-white group-hover:text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:group-hover:bg-gray-600 dark:group-hover:text-gray-200">
-                      {job.created_at}
-                    </span>
                   </div>
 
-                  <div className="mb-4 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {job.company_logo ? (
-                      <img
-                        src={job.company_logo}
-                        alt=""
-                        className="h-6 w-6 rounded-md border border-gray-100 bg-white p-0.5 object-contain"
-                      />
-                    ) : (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gray-100 dark:bg-gray-700">
-                        <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                          />
+                  <div className="relative mb-6 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-100 bg-slate-50 p-1.5 shadow-sm transition-all group-hover:bg-white dark:border-slate-800 dark:bg-slate-900">
+                      {job.company_logo ? (
+                        <img src={job.company_logo} alt="" className="h-full w-full object-contain" />
+                      ) : (
+                        <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
-                      </div>
-                    )}
-                    <span className="truncate">{job.company}</span>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-black tracking-tight text-slate-900 dark:text-white">{job.company}</span>
+                      <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{job.created_at}</span>
+                    </div>
                   </div>
 
-                  <div className="mb-3 mt-auto flex flex-wrap gap-2">
-                    {job.technologies.slice(0, 5).map((tech) => {
+                  <div className="relative mb-6 mt-auto flex flex-wrap gap-2">
+                    {job.technologies.slice(0, 4).map((tech) => {
                       const isActive =
                         (activeTech && tech.toLowerCase() === activeTech.toLowerCase()) ||
                         (normalizedSearch && tech.toLowerCase().includes(normalizedSearch))
@@ -180,39 +158,31 @@ export default function JobsSection({
                       return (
                         <span
                           key={`${job.uid}-${tech}`}
-                          className={`inline-flex items-center rounded border px-2.5 py-1 text-xs font-medium ${
-                            isActive
-                              ? 'border-yellow-200 bg-yellow-100 text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200'
-                              : 'border-gray-200 bg-gray-100 text-gray-600 transition-colors group-hover:bg-white dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:group-hover:bg-gray-600'
-                          }`}
+                          className={`rounded-lg border px-2.5 py-1 text-[10px] font-black uppercase tracking-wider transition-all ${isActive
+                            ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-500/20'
+                            : 'bg-slate-50 text-slate-500 border-slate-200 group-hover:bg-white dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:group-hover:bg-slate-700'
+                            }`}
                         >
                           {tech}
                         </span>
                       )
                     })}
-                    {job.technologies.length > 5 ? (
-                      <span className="inline-flex items-center rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-medium text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
-                        +{job.technologies.length - 5}
+                    {job.technologies.length > 4 && (
+                      <span className="rounded-lg bg-slate-50 px-2 pyr-1 text-[10px] font-black tracking-tighter text-slate-400 group-hover:bg-white dark:bg-slate-800 dark:group-hover:bg-slate-700">
+                        +{job.technologies.length - 4}
                       </span>
-                    ) : null}
+                    )}
                   </div>
 
-                  <div className="mt-2 flex items-center justify-between border-t border-gray-100 pt-3 text-xs text-gray-400 transition-colors group-hover:border-gray-200 dark:border-gray-700 dark:text-gray-500 dark:group-hover:border-gray-600">
-                    <div className="flex max-w-[70%] flex-wrap gap-1.5">
+                  <div className="relative flex items-center justify-between border-t border-slate-50 pt-5 transition-colors group-hover:border-slate-100 dark:border-slate-800/50">
+                    <div className="flex gap-2">
                       {job.sources.map((source) => (
-                        <div
-                          key={`${job.uid}-${source.key}`}
-                          className="flex items-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-2 py-1 dark:border-gray-600 dark:bg-gray-700/50"
-                          title={source.name}
-                        >
-                          <img src={source.icon} className="h-3.5 w-3.5 rounded-sm" alt="" />
-                          <span className="hidden text-[10px] font-medium text-gray-500 sm:inline dark:text-gray-400">
-                            {source.name}
-                          </span>
+                        <div key={`${job.uid}-${source.key}`} className="relative h-6 w-6 rounded-lg border border-slate-100 bg-white p-1 shadow-sm transition-transform group-hover:scale-110 dark:border-slate-800 dark:bg-slate-900">
+                          <img src={source.icon} className="h-full w-full object-contain" alt="" title={source.name} />
                         </div>
                       ))}
                     </div>
-                    <span className="inline-block rounded-md border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium whitespace-nowrap text-blue-600 transition-all group-hover:bg-blue-600 group-hover:text-white dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-400 dark:group-hover:bg-blue-500 dark:group-hover:text-white">
+                    <span className="flex h-9 items-center rounded-xl bg-indigo-600 px-5 text-[10px] font-black uppercase tracking-widest text-white transition-all group-hover:bg-indigo-700 group-hover:shadow-lg group-hover:shadow-indigo-500/20 active:scale-95">
                       Details
                     </span>
                   </div>
@@ -220,13 +190,14 @@ export default function JobsSection({
               )
             })
           ) : (
-            <div className="col-span-full py-12 text-center text-gray-500 dark:text-gray-400">
-              No jobs match your filters.
+            <div className="col-span-full flex flex-col items-center justify-center py-20 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800/30">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-300 dark:text-slate-700">Null Results Found</p>
             </div>
           )}
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        {/* Pagination - Redesigned */}
+        <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row">
           <div ref={selectRef} className="relative">
             <button
               type="button"
@@ -234,71 +205,57 @@ export default function JobsSection({
                 event.stopPropagation()
                 onTogglePageSizeMenu()
               }}
-              className="group flex h-11 min-w-32.5 cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-white px-4 shadow-sm transition-all hover:ring-2 hover:ring-blue-300 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:ring-blue-800"
+              className="group flex h-14 min-w-[10rem] items-center justify-between rounded-2xl border border-slate-300/60 bg-white px-6 shadow-sm transition-all hover:border-indigo-500/30 hover:ring-4 hover:ring-indigo-500/5 dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="pointer-events-none flex items-center gap-2">
-                <span className="text-[10px] font-black tracking-widest text-gray-500 uppercase dark:text-gray-400">
-                  Show
-                </span>
-                <span className="text-sm font-black text-blue-600 dark:text-blue-400">{itemsPerPage}</span>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Show</span>
+                <span className="text-sm font-black text-indigo-600 dark:text-indigo-400">{itemsPerPage}</span>
               </div>
-              <div className="pointer-events-none flex h-5 w-5 items-center justify-center rounded-lg bg-gray-50 transition-colors group-hover:bg-blue-50 dark:bg-gray-700/50 dark:group-hover:bg-blue-900/30">
-                <svg
-                  className="h-3 w-3 text-gray-400 transition-colors group-hover:text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              <svg className={`h-4 w-4 text-slate-400 transition-transform duration-300 ${isSelectOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+              </svg>
             </button>
 
-            <div
-              className={`custom-scrollbar absolute bottom-full left-0 z-60 mb-2 w-full origin-bottom overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-xl transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 ${
-                isSelectOpen ? 'scale-100 opacity-100' : 'pointer-events-none scale-95 opacity-0'
-              }`}
-            >
-              <div className="p-1">
-                {pageSizeOptions.map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => onSetPageSize(option)}
-                    className="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-bold text-gray-700 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:text-gray-200 dark:hover:bg-blue-900/30 dark:hover:text-blue-400"
-                  >
-                    {option} per page
-                  </button>
-                ))}
-              </div>
+            <div className={`absolute bottom-full left-0 z-[70] mb-3 w-full origin-bottom rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl transition-all duration-200 dark:border-slate-800 dark:bg-slate-900 ${isSelectOpen ? 'scale-100 opacity-100' : 'pointer-events-none scale-95 opacity-0'
+              }`}>
+              {pageSizeOptions.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => onSetPageSize(option)}
+                  className="flex w-full items-center px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
+                >
+                  {option} Entries
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="flex h-11 items-center gap-2">
+          <div className="flex h-14 items-center gap-3 rounded-2xl border border-slate-300/60 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <button
               type="button"
               disabled={safeCurrentPage === 1}
               onClick={onPrevPage}
-              className="h-full cursor-pointer rounded-xl border border-gray-200 bg-white px-5 text-sm font-bold text-gray-700 shadow-sm transition-all hover:border-blue-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-600 dark:hover:bg-gray-700"
+              className="flex h-full items-center rounded-xl bg-slate-50 px-5 text-[10px] font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-slate-100 disabled:opacity-30 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
             >
               Prev
             </button>
-            <div className="flex h-full items-center rounded-xl border border-gray-200 bg-white px-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <span className="text-sm font-bold whitespace-nowrap text-gray-800 dark:text-gray-100">
-                Page {safeCurrentPage} of {totalPages}
+            <div className="flex h-full items-center px-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white">
+                {safeCurrentPage} / {totalPages}
               </span>
             </div>
             <button
               type="button"
               disabled={safeCurrentPage >= totalPages}
               onClick={onNextPage}
-              className="h-full cursor-pointer rounded-xl border border-gray-200 bg-white px-5 text-sm font-bold text-gray-700 shadow-sm transition-all hover:border-blue-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-600 dark:hover:bg-gray-700"
+              className="flex h-full items-center rounded-xl bg-slate-50 px-5 text-[10px] font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-slate-100 disabled:opacity-30 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
             >
               Next
             </button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

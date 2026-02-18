@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import Chart from '@/components/landing/Chart'
 import FiltersSidebar from '@/components/landing/FiltersSidebar'
-import Footer from '@/components/landing/Footer'
+import Footer from '@/components/shared/Footer'
 import JobsSection from '@/components/landing/JobsSection'
 import SourceBreakdown from '@/components/landing/SourceBreakdown'
 import StatsCards from '@/components/landing/StatsCards'
@@ -12,7 +12,7 @@ import SiteHeader from '@/components/shared/SiteHeader'
 import type { LandingData, LandingJob } from '@/lib/datatypes/landing-data.types'
 import type { CountItem, PageSizeOption, SalaryRange, SourceFilter } from '@/lib/datatypes/landing-page.types'
 
-const PAGE_SIZE_OPTIONS: PageSizeOption[] = [20, 40, 60, 80]
+const PAGE_SIZE_OPTIONS: PageSizeOption[] = [18, 36, 54, 72]
 
 const SALARY_RANGES: SalaryRange[] = [
   { id: 'salary-all', label: 'All Salaries', min: null, max: null },
@@ -100,7 +100,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
   const [salaryMin, setSalaryMin] = useState<number | null>(null)
   const [salaryMax, setSalaryMax] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PageSizeOption>(20)
+  const [itemsPerPage, setItemsPerPage] = useState<PageSizeOption>(18)
   const [isSelectOpen, setIsSelectOpen] = useState(false)
   const [showAllTechs, setShowAllTechs] = useState(true)
   const [showAllCompanies, setShowAllCompanies] = useState(true)
@@ -385,13 +385,21 @@ export default function LandingPage({ data }: { data: LandingData }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-50">
-      <div className="container mx-auto flex max-w-7xl grow px-4 py-8">
-        <div className="w-full">
-          <SiteHeader className="mb-8" onToggleTheme={toggleTheme} />
+    <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
+      {/* Sticky Full-Width Header */}
+      <div className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md shadow-sm dark:border-slate-800 dark:bg-[#0f172a]/80">
+        <div className="container mx-auto max-w-7xl px-4">
+          <SiteHeader
+            className="border-none pb-4! pt-4!"
+            onToggleTheme={toggleTheme}
+          />
+        </div>
+      </div>
 
+      <div className="container mx-auto flex max-w-7xl grow flex-col px-4 py-12">
+        <div className="w-full">
           {data.error ? (
-            <div className="mb-8 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-900/20 dark:text-red-300">
+            <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-900/20 dark:text-red-300">
               Could not load landing data from database: {data.error}
             </div>
           ) : null}
@@ -399,7 +407,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
           <StatsCards data={data} />
           <SourceBreakdown data={data} />
 
-          <div className="flex flex-col gap-8 lg:flex-row">
+          <div className="mt-12 flex flex-col gap-8 lg:flex-row">
             <main className="grow lg:w-3/4">
               <div className="mb-8 grid grid-cols-1 gap-8">
                 <Chart topTechs={topTechs} theme={theme} activeTech={activeTech} onToggleTech={toggleTechFilter} />
@@ -455,7 +463,11 @@ export default function LandingPage({ data }: { data: LandingData }) {
           </div>
         </div>
       </div>
-      <Footer />
+
+      {/* Full-Width Footer Container */}
+      <div className="w-full bg-white border-t border-slate-200 dark:bg-slate-900/50 dark:border-slate-800">
+        <Footer />
+      </div>
     </div>
   )
 }

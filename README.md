@@ -6,31 +6,30 @@ TODO:
 - Create a telegram bot to send notifications about new jobs
 - Add personal notification settings to the bot for each user
 - Add admin panel with these features:
-    - Login page for admin
-        - I'm not going to implement reset password feature because I don't have smtp server and I don't want to rely on gmail etc (Hate to use gmail for this kind of things its not secure)
-    - Export data to csv file:
-        - Company name
-        - Job title
-        - Stack/Technologies used in the job
-        - Source (Glorri or JobSearch)
-        - Posted date
-        - Deadline (if available)
-        - Location (if available)
-        - Employment type (Full-time, Part-time, etc)
-        - Salary (if available)
-        - Views count (ONLY IN OUR WEBSITE, NOT FROM THE SOURCE PLATFORMS)
-    - Dashboard Analytics:
-        - Website visits
-        - From-To Calendar
-        - Filter preset buttons:
-            - Current month (default)
-                - Sepeare bar for each day
-            - Current Year
-                - Sepeare bar for each month
-        - Top 10 positions:
-            - Top 10 positions by visit and interaction (clicks)
-            - Top 10 companies by visit and interaction (clicks)
-        For analytics we can use https://plausible.io/ its open source and we can self host it, so we don't need to rely on third party services for analytics, also it has a nice dashboard and it provides all the features we need for analytics. OR we can build our own analytics dashboard using the data we have in our database, but it will take more time and effort to build it from scratch, so I think using plausible is a better option for this project. (will consider this later)
+    - ~~Login page for admin~~
+        - ~~I'm not going to implement reset password feature because I don't have smtp server and I don't want to rely on gmail etc (Hate to use gmail for this kind of things its not secure)~~
+    - ~~Export data to csv file~~:
+        - ~~Company name~~
+        - ~~Job title~~
+        - ~~Stack/Technologies used in the job~~
+        - ~~Source (Glorri or JobSearch)~~
+        - ~~Posted date~~
+        - ~~Deadline (if available)~~
+        - ~~Location (if available)~~
+        - ~~Employment type (Full-time, Part-time, etc)~~
+        - ~~Salary (if available)~~
+        - ~~Views count (ONLY IN OUR WEBSITE, NOT FROM THE SOURCE PLATFORMS)~~
+    - ~~Dashboard Analytics:~~
+        - ~~Website visits~~
+        - ~~From-To Calendar~~
+        - ~~Filter preset buttons:~~
+            - ~~Current month (default)~~
+                - ~~Sepeare bar for each day~~
+            - ~~Current Year~~
+                - ~~Sepeare bar for each month~~
+        - ~~Top 10 positions:~~
+            - ~~Top 10 positions by visit and interaction (clicks)~~
+            - ~~Top 10 companies by visit and interaction (clicks)~~
 
 Tech Stack:
 ---
@@ -139,6 +138,82 @@ create table public.duplicate_jobs (
   constraint duplicate_jobs_glorri_id_fkey foreign KEY (glorri_id) references glorri_vacancies (id) on update CASCADE on delete CASCADE,
   constraint duplicate_jobs_jobsearch_id_fkey foreign KEY (jobsearch_id) references js_vacancies (id) on update CASCADE on delete CASCADE
 ) TABLESPACE pg_default;
+
+create table public.vacancy_visits (
+  source text not null,
+  vacancy_id bigint not null,
+  visit_day date not null,
+  visitor_hash text not null,
+  slug text not null default '',
+  created_at timestamp with time zone not null default now(),
+  constraint vacancy_visits_pkey primary key (source, vacancy_id, visit_day, visitor_hash),
+  constraint vacancy_visits_source_check check (source in ('jobsearch', 'glorri'))
+) TABLESPACE pg_default;
+
+create or replace function public.increment_vacancy_visit(
+  p_source text,
+  p_vacancy_id bigint,
+  p_slug text default '',
+  p_visitor_ip text default ''
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  normalized_source text := lower(btrim(coalesce(p_source, '')));
+  normalized_slug text := btrim(coalesce(p_slug, ''));
+  normalized_ip text := btrim(coalesce(p_visitor_ip, ''));
+  normalized_visit_day date := (now() at time zone 'utc')::date;
+  hashed_visitor text;
+begin
+  if normalized_source not in ('jobsearch', 'glorri') then
+    raise exception 'Invalid source: %', p_source;
+  end if;
+
+  if p_vacancy_id is null or p_vacancy_id <= 0 then
+    raise exception 'Invalid vacancy id: %', p_vacancy_id;
+  end if;
+
+  if normalized_ip = '' then
+    return;
+  end if;
+
+  hashed_visitor := md5(normalized_ip);
+
+  insert into public.vacancy_visits (
+    source,
+    vacancy_id,
+    visit_day,
+    visitor_hash,
+    slug,
+    created_at
+  )
+  values (
+    normalized_source,
+    p_vacancy_id,
+    normalized_visit_day,
+    hashed_visitor,
+    normalized_slug,
+    now()
+  )
+  on conflict (source, vacancy_id, visit_day, visitor_hash)
+  do nothing;
+end;
+$$;
+
+create table public.vacancy_clicks (
+  id bigint generated by default as identity not null,
+  source text not null,
+  vacancy_id bigint not null,
+  slug text not null default '',
+  visitor_hash text not null default '',
+  target_url text not null default '',
+  clicked_at timestamp with time zone not null default now(),
+  constraint vacancy_clicks_pkey primary key (id),
+  constraint vacancy_clicks_source_check check (source in ('jobsearch', 'glorri'))
+) TABLESPACE pg_default;
 ```
 
 Supabase RLS (public read only):
@@ -151,6 +226,8 @@ alter table public.glorri_vacancies enable row level security;
 alter table public.js_companies enable row level security;
 alter table public.js_vacancies enable row level security;
 alter table public.duplicate_jobs enable row level security;
+alter table public.vacancy_visits enable row level security;
+alter table public.vacancy_clicks enable row level security;
 
 drop policy if exists "Enable read access for all users" on public.glorri_companies;
 create policy "Enable read access for all users"
@@ -186,4 +263,10 @@ on public.duplicate_jobs
 for select
 to public
 using (true);
+
+revoke all on function public.increment_vacancy_visit(text, bigint, text, text) from public;
+grant execute on function public.increment_vacancy_visit(text, bigint, text, text) to service_role;
 ```
+
+`vacancy_visits` and `vacancy_clicks` intentionally have no public read/write policy. They are written from the server using the service role.
+`views_count` now represents unique visitor IPs per vacancy per UTC day (not raw hits).

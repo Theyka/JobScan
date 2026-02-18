@@ -37,6 +37,7 @@ export type VacancyCompany = {
 
 export type VacancyDetail = {
   source: VacancyRouteSource
+  vacancyId: number | null
   sourceLabel: string
   title: string
   slug: string

@@ -18,13 +18,14 @@ type HeaderProfile = {
   displayName: string
   email: string
   initials: string
+  isAdmin: boolean
 }
 
 function pickText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : ''
 }
 
-function profileFromUser(user: User | null): HeaderProfile | null {
+function profileFromUser(user: User | null, isAdmin = false): HeaderProfile | null {
   if (!user) {
     return null
   }
@@ -49,6 +50,7 @@ function profileFromUser(user: User | null): HeaderProfile | null {
     displayName,
     email,
     initials: initials || 'P',
+    isAdmin,
   }
 }
 
@@ -67,28 +69,56 @@ export default function SiteHeader({
 
   useEffect(() => {
     let isMounted = true
+    let latestRequestId = 0
 
-    const applyUser = (user: User | null) => {
+    const applyUser = async (user: User | null) => {
+      const requestId = ++latestRequestId
+
       if (!isMounted) {
         return
       }
 
-      setProfile(profileFromUser(user))
-      setAuthChecked(true)
       if (!user) {
+        setProfile(null)
+        setAuthChecked(true)
         setIsProfileMenuOpen(false)
+        return
       }
+
+      let isAdmin = false
+
+      try {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (!profileError) {
+          const profileRecord = profile as { is_admin?: unknown } | null
+          isAdmin = profileRecord?.is_admin === true
+        }
+      } catch {
+        isAdmin = false
+      }
+
+      if (!isMounted || requestId !== latestRequestId) {
+        return
+      }
+
+      setProfile(profileFromUser(user, isAdmin))
+      setAuthChecked(true)
     }
 
     const loadCurrentUser = async () => {
       const { data } = await supabase.auth.getUser()
-      applyUser(data.user ?? null)
+      void applyUser(data.user ?? null)
     }
 
     loadCurrentUser()
 
     const { data: authSubscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      applyUser(session?.user ?? null)
+      void applyUser(session?.user ?? null)
     })
 
     return () => {
@@ -155,7 +185,7 @@ export default function SiteHeader({
                 <button
                   type="button"
                   onClick={() => setIsProfileMenuOpen((open) => !open)}
-                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-2.5 py-1.5 text-left shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+                  className="flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-2.5 text-left shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
                   aria-expanded={isProfileMenuOpen}
                   aria-haspopup="menu"
                 >
@@ -172,24 +202,57 @@ export default function SiteHeader({
 
                 {isProfileMenuOpen ? (
                   <div
-                    className="absolute top-full right-0 z-40 mt-2 w-44 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+                    className="absolute top-full right-0 z-50 mt-3 w-56 origin-top-right rounded-2xl border border-gray-200 bg-white p-2 shadow-xl ring-1 ring-black/5 focus:outline-none dark:border-gray-700 dark:bg-gray-800"
                     role="menu"
                   >
-                    <Link
-                      href="/profile"
-                      onClick={() => setIsProfileMenuOpen(false)}
-                      className="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-                      role="menuitem"
-                    >
-                      Profile
-                    </Link>
+                    <div className="mb-2 px-3 py-2.5">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Account</p>
+                      <p className="mt-1 truncate text-sm font-bold text-gray-900 dark:text-white">{profile.displayName}</p>
+                      <p className="truncate text-[10px] font-medium text-gray-500 dark:text-gray-400">{profile.email}</p>
+                    </div>
+
+                    <div className="h-px bg-gray-100 dark:bg-gray-700/50" />
+
+                    <div className="mt-1.5 space-y-0.5">
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                        className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-slate-50 hover:text-blue-600 dark:text-gray-200 dark:hover:bg-gray-700/50 dark:hover:text-blue-400"
+                        role="menuitem"
+                      >
+                        <svg className="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Profile Settings
+                      </Link>
+
+                      {profile.isAdmin ? (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsProfileMenuOpen(false)}
+                          className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-gray-700 transition-all hover:bg-slate-50 hover:text-blue-600 dark:text-gray-200 dark:hover:bg-gray-700/50 dark:hover:text-blue-400"
+                          role="menuitem"
+                        >
+                          <svg className="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                          Admin Panel
+                        </Link>
+                      ) : null}
+                    </div>
+
+                    <div className="my-1.5 h-px bg-gray-100 dark:bg-gray-700/50" />
+
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="block w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-900/20"
+                      className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-semibold text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                       role="menuitem"
                     >
-                      Logout
+                      <svg className="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Sign Out
                     </button>
                   </div>
                 ) : null}
@@ -198,13 +261,13 @@ export default function SiteHeader({
               <div className="flex items-center gap-2">
                 <Link
                   href="/auth/login"
-                  className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                  className="inline-flex h-11 items-center rounded-lg border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
                 >
                   Login
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                  className="inline-flex h-11 items-center rounded-lg bg-blue-600 px-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
                   Register
                 </Link>
@@ -217,11 +280,11 @@ export default function SiteHeader({
           <button
             type="button"
             onClick={handleToggleTheme}
-            className="cursor-pointer rounded-xl border border-gray-200 bg-white p-2 text-gray-600 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-white text-xl leading-none text-gray-600 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             aria-label="Toggle theme"
           >
-            <span className="hidden text-xl dark:block">☀️</span>
-            <span className="block text-xl dark:hidden">🌙</span>
+            <span className="hidden dark:block">☀️</span>
+            <span className="block dark:hidden">🌙</span>
           </button>
         </div>
       </div>

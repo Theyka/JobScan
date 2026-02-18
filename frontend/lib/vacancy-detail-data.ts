@@ -553,6 +553,7 @@ async function getJobSearchDetail(supabase: SupabaseLikeClient, slug: string): P
 
   return {
     source: 'jobsearch',
+    vacancyId,
     sourceLabel: 'JobSearch.az',
     title: String(vacancy.title ?? '').trim() || 'Untitled',
     slug: normalizedSlug,
@@ -660,6 +661,7 @@ async function getGlorriDetail(supabase: SupabaseLikeClient, slug: string): Prom
 
   return {
     source: 'glorri',
+    vacancyId,
     sourceLabel: 'Glorri',
     title: String(vacancy.title ?? '').trim() || 'Untitled',
     slug: normalizedSlug,
