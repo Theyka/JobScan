@@ -23,55 +23,69 @@ export type ChartTooltipOptions = {
   borderColor: string
   borderWidth: number
   padding: number
+  displayColors?: boolean
+  cornerRadius?: number
+  [key: string]: unknown
+}
+
+type ChartFont = {
+  weight?: string | number
+  size?: number
+}
+
+type ChartAxisGrid = {
+  display?: boolean
+  color?: string
+  drawBorder?: boolean
+  drawTicks?: boolean
+  [key: string]: unknown
+}
+
+type ChartAxisTicks = {
+  color?: string
+  stepSize?: number
+  font?: ChartFont
+  [key: string]: unknown
+}
+
+type ChartAxis = {
+  grid: ChartAxisGrid
+  border: {
+    display?: boolean
+    [key: string]: unknown
+  }
+  ticks: ChartAxisTicks
+  [key: string]: unknown
 }
 
 export type ChartOptions = {
   responsive: boolean
   maintainAspectRatio: boolean
-  onClick: (event: unknown, elements: Array<{ index: number }>) => void
+  onClick: (event: unknown, elements: Array<{ index?: number }>) => void
   plugins: {
     legend: {
       display: boolean
     }
     tooltip: ChartTooltipOptions
+    [key: string]: unknown
   }
   scales: {
-    x: {
-      grid: {
-        display: boolean
-        drawBorder: boolean
-        drawTicks: boolean
-      }
-      border: {
-        display: boolean
-      }
-      ticks: {
-        color: string
-      }
-    }
-    y: {
-      grid: {
-        display: boolean
-        color: string
-        drawBorder: boolean
-        drawTicks: boolean
-      }
-      border: {
-        display: boolean
-      }
-      ticks: {
-        color: string
-        stepSize: number
-      }
-    }
+    x: ChartAxis
+    y: ChartAxis
+    [key: string]: ChartAxis
   }
+  [key: string]: unknown
 }
+
+type ChartColor = string | CanvasGradient | CanvasPattern
 
 export type ChartDataset = {
   label: string
   data: number[]
-  backgroundColor: string | string[]
-  borderRadius: number
+  backgroundColor: ChartColor | ChartColor[]
+  borderRadius?: number
+  hoverBackgroundColor?: ChartColor | ChartColor[]
+  [key: string]: unknown
 }
 
 export type ChartData = {
