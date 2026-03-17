@@ -2,11 +2,16 @@
 
 import { useState, useCallback, useEffect } from 'react'
 
+import type { JobsCsvPreview } from '@/lib/admin/jobs-export'
+
+type CsvPreviewRow = JobsCsvPreview['rows'][number]
+type CsvPreviewField = keyof CsvPreviewRow
+
 interface CSVPreviewTableProps {
-    rows: any[]
+    rows: CsvPreviewRow[]
 }
 
-const HEADERS = [
+const HEADERS: ReadonlyArray<{ label: string; field: CsvPreviewField }> = [
     { label: 'Source', field: 'source' },
     { label: 'ID', field: 'vacancy_id' },
     { label: 'Views', field: 'views_count' },
@@ -30,9 +35,9 @@ const HEADERS = [
 ]
 
 export default function CSVPreviewTable({ rows }: CSVPreviewTableProps) {
-    const [selectedRow, setSelectedRow] = useState<any | null>(null)
+    const [selectedRow, setSelectedRow] = useState<CsvPreviewRow | null>(null)
 
-    const handleRowDoubleClick = useCallback((row: any) => {
+    const handleRowDoubleClick = useCallback((row: CsvPreviewRow) => {
         setSelectedRow(row)
     }, [])
 

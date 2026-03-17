@@ -6,6 +6,7 @@ import LandingTopBar from '@/components/landing/LandingTopBar'
 import Footer from '@/components/shared/Footer'
 import { getCurrentUserAccess } from '@/lib/admin/access'
 import { buildJobsCsvPreview } from '@/lib/admin/jobs-export'
+import type { JobsCsvPreview } from '@/lib/admin/jobs-export'
 
 function formatNumber(value: number): string {
   return new Intl.NumberFormat('en-US').format(value)
@@ -23,7 +24,7 @@ export default async function AdminExportPage() {
   }
 
   const previewLimit = 10
-  let rows: any[] = []
+  let rows: JobsCsvPreview['rows'] = []
   let totalRows = 0
   let previewRows = 0
   let previewError = ''

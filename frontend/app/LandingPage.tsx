@@ -78,39 +78,6 @@ function hasSource(job: LandingJob, source: SourceFilter): boolean {
   return job.sources.some((entry) => entry.key === source)
 }
 
-function sourceLabelForBadge(source: SourceFilter): string {
-  if (source === 'duplicates') {
-    return 'Duplicates'
-  }
-
-  return source === 'glorri' ? 'Glorri' : 'JS.AZ'
-}
-
-function formatLastUpdated(value: string | null): string {
-  const raw = String(value ?? '').trim()
-  if (!raw) {
-    return 'Awaiting latest sync'
-  }
-
-  const parsed = new Date(raw)
-  if (Number.isNaN(parsed.getTime())) {
-    return raw
-  }
-
-  return new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(parsed)
-}
-
-function getSalaryRangeId(min: number | null, max: number | null): string {
-  const matched = SALARY_RANGES.find((range) => range.min === min && range.max === max)
-  return matched?.id ?? SALARY_RANGES[0].id
-}
-
 type IndexedLandingJob = {
   job: LandingJob
   companyLower: string
@@ -329,13 +296,6 @@ export default function LandingPage({ data }: { data: LandingData }) {
 
     return availableCompanies.filter((item) => item.name.toLowerCase().includes(normalizedCompanyInput))
   }, [availableCompanies, normalizedCompanyInput])
-
-  const topTechs = useMemo(() => availableTechs.slice(0, 15), [availableTechs])
-  const uniqueCompaniesCount = useMemo(
-    () => new Set(data.recent_jobs.map((job) => job.company.trim()).filter(Boolean)).size,
-    [data.recent_jobs]
-  )
-  const selectedSalaryRangeId = useMemo(() => getSalaryRangeId(salaryMin, salaryMax), [salaryMax, salaryMin])
 
   const totalPages = Math.max(1, Math.ceil(filteredJobs.length / itemsPerPage))
   const safeCurrentPage = Math.min(Math.max(currentPage, 1), totalPages)

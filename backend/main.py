@@ -10,6 +10,7 @@ from app.scheduler.interval_scheduler import IntervalScheduler
 from app.services.duplicate_detection_service import DuplicateDetectionService
 from app.services.glorri_service import GlorriService
 from app.services.jobsearch_service import JobSearchService
+from app.services.telegram_bot_service import TelegramBotService
 from app.services.telegram_service import TelegramService
 from app.services.technology_service import TechnologyService
 
@@ -52,6 +53,13 @@ def main():
         settings.telegram_bot_username,
         settings.telegram_timezone,
     )
+    telegram_bot_service = TelegramBotService(
+        repository,
+        settings.telegram_bot_token,
+        settings.telegram_digest_limit,
+        settings.telegram_timezone,
+        settings.telegram_bot_username,
+    )
     controller = ScrapeController(jobsearch_service, glorri_service, duplicate_detection_service)
 
     if not repository.is_configured:
@@ -68,6 +76,20 @@ def main():
     if args.send_telegram_digest_now:
         telegram_service.send_latest_jobs_digest()
         return
+
+    if telegram_bot_service.is_bot_configured:
+        Thread(target=telegram_bot_service.start_polling, daemon=True).start()
+        daily_user_scheduler = DailyScheduler(
+            settings.telegram_digest_time,
+            settings.telegram_timezone,
+        )
+        Thread(
+            target=daily_user_scheduler.run_forever,
+            args=(telegram_bot_service.send_daily_user_digests,),
+            daemon=True,
+        ).start()
+    else:
+        print("Telegram bot disabled: set TELEGRAM_BOT_TOKEN and Supabase config to enable it.")
 
     if telegram_service.is_configured:
         daily_scheduler = DailyScheduler(

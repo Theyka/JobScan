@@ -26,6 +26,9 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
+  "optionalDependencies": {
+    "lightningcss-linux-arm64-gnu": "1.31.1"
+  },
   "ignoreScripts": [
     "sharp",
     "unrs-resolver"

@@ -92,6 +92,7 @@ export default function CustomDatePicker({ name, defaultValue = '', label }: Cus
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
+                aria-label={label || name}
                 className="flex items-center gap-2 rounded-xl bg-transparent text-xs font-bold tracking-tight text-slate-700 outline-none transition-colors hover:text-[#8a6a43] dark:text-slate-200 dark:hover:text-[#d7b37a]"
             >
                 <svg className="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">

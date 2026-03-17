@@ -1,4 +1,5 @@
 import { headers } from 'next/headers'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -434,9 +435,12 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
             <article className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
               {detail.source === 'jobsearch' && detail.company.cover ? (
                 <div className="relative h-44 md:h-56 lg:h-64">
-                  <img
+                  <Image
                     src={detail.company.cover}
                     alt={`${detail.company.name} cover`}
+                    fill
+                    unoptimized
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 896px, 896px"
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/35" />
@@ -451,9 +455,12 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
                 <div className="mb-8 flex items-center gap-5">
                   {detail.company.logo ? (
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-2 dark:border-white/8 dark:bg-white/6">
-                      <img
+                      <Image
                         src={detail.company.logo}
                         alt={detail.company.name}
+                        width={48}
+                        height={48}
+                        unoptimized
                         className="h-full w-full object-contain"
                       />
                     </div>
@@ -553,7 +560,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
                         className="group flex flex-1 items-center justify-center gap-4 px-6 py-5 text-sm font-black uppercase tracking-widest text-white transition-all hover:bg-white/5 active:scale-95"
                       >
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
-                          <img src={link.icon} className="h-5 w-5 rounded-sm brightness-110" alt="" />
+                          <Image src={link.icon} className="h-5 w-5 rounded-sm brightness-110" alt="" width={20} height={20} unoptimized />
                         </div>
                         <span className="transition-colors group-hover:text-[#d7b37a]">Quick Apply on {link.label}</span>
                       </a>

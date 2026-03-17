@@ -108,6 +108,17 @@ class SupabaseRepository:
         response.raise_for_status()
         return response
 
+    def _patch(self, table: str, payload: dict, params: dict[str, str]) -> requests.Response:
+        response = requests.patch(
+            f"{self.base_url}/rest/v1/{table}",
+            headers=self._headers(prefer="return=representation"),
+            params=params,
+            json=payload,
+            timeout=self.timeout,
+        )
+        response.raise_for_status()
+        return response
+
     def _fetch_all(self, table: str, select: str, order_by: str = "id", page_size: int = 1000) -> list[dict]:
         rows: list[dict] = []
         offset = 0
@@ -328,7 +339,7 @@ class SupabaseRepository:
     def fetch_latest_glorri_vacancies(self, limit: int) -> list[dict]:
         return self._fetch_latest(
             "glorri_vacancies",
-            "id,title,slug,postedDate,detail_url,location,vacancy_about,company_id,tech_stack",
+            "id,title,slug,postedDate,detail_url,location,type,vacancy_about,company_id,tech_stack",
             "postedDate",
             limit,
         )
@@ -336,7 +347,7 @@ class SupabaseRepository:
     def fetch_glorri_vacancies_between(self, start_iso: str, end_iso: str, limit: int) -> list[dict]:
         return self._fetch_latest_with_filters(
             "glorri_vacancies",
-            "id,title,slug,postedDate,detail_url,location,vacancy_about,company_id,tech_stack",
+            "id,title,slug,postedDate,detail_url,location,type,vacancy_about,company_id,tech_stack",
             "postedDate",
             limit,
             [f"postedDate.gte.{start_iso}", f"postedDate.lt.{end_iso}"],
@@ -390,3 +401,69 @@ class SupabaseRepository:
                     duplicate_ids.add(int(glorri_id))
 
         return duplicate_ids
+
+    def fetch_all_js_vacancies_for_bot(self) -> list[dict]:
+        rows = self._fetch_all(
+            "js_vacancies",
+            "id,title,created_at,slug,salary,deadline_at,company_id,tech_stack",
+            order_by="created_at",
+        )
+        rows.reverse()
+        return rows
+
+    def fetch_all_glorri_vacancies_for_bot(self) -> list[dict]:
+        rows = self._fetch_all(
+            "glorri_vacancies",
+            "id,title,slug,postedDate,detail_url,location,type,vacancy_about,company_id,tech_stack",
+            order_by="postedDate",
+        )
+        rows.reverse()
+        return rows
+
+    # Telegram bot methods
+    def fetch_telegram_user(self, chat_id: int) -> dict | None:
+        rows = self._get(
+            "telegram_user_settings",
+            {
+                "select": "*",
+                "chat_id": f"eq.{int(chat_id)}",
+                "limit": "1",
+            },
+        ).json()
+        if isinstance(rows, list) and rows:
+            return rows[0]
+        return None
+
+    def upsert_telegram_user(self, payload: dict):
+        if not payload:
+            return
+        self._post(
+            "telegram_user_settings",
+            payload,
+            prefer="resolution=merge-duplicates,return=representation",
+            params={"on_conflict": "chat_id"},
+        )
+
+    def update_telegram_user(self, chat_id: int, payload: dict) -> dict | None:
+        if not payload:
+            return self.fetch_telegram_user(chat_id)
+        rows = self._patch(
+            "telegram_user_settings",
+            payload,
+            {"chat_id": f"eq.{int(chat_id)}"},
+        ).json()
+        if isinstance(rows, list) and rows:
+            return rows[0]
+        return None
+
+    def fetch_active_telegram_users(self) -> list[dict]:
+        rows = self._get(
+            "telegram_user_settings",
+            {
+                "select": "*",
+                "active": "eq.true",
+                "onboarding_step": "eq.completed",
+                "order": "updated_at.asc",
+            },
+        ).json()
+        return rows if isinstance(rows, list) else []

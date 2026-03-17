@@ -243,6 +243,7 @@ class TelegramService:
                     "title": row.get("title") if isinstance(row.get("title"), str) else "Untitled",
                     "company": company_title or "Unknown company",
                     "location": self._compact_location(company_address),
+                    "employment_type": "",
                     "published_at": row.get("created_at"),
                     "deadline": row.get("deadline_at"),
                     "tech_stack": row.get("tech_stack"),
@@ -281,6 +282,7 @@ class TelegramService:
                     "title": row.get("title") if isinstance(row.get("title"), str) else "Untitled",
                     "company": company_map.get(int(row.get("company_id"))) if row.get("company_id") is not None else "Unknown company",
                     "location": self._compact_location(row.get("location") if isinstance(row.get("location"), str) else ""),
+                    "employment_type": row.get("type") if isinstance(row.get("type"), str) else "",
                     "published_at": row.get("postedDate"),
                     "deadline": vacancy_about.get("deadline") if isinstance(vacancy_about.get("deadline"), str) else "",
                     "tech_stack": row.get("tech_stack"),
@@ -304,17 +306,13 @@ class TelegramService:
         for index, job in enumerate(jobs, start=1):
             title = escape(str(job.get("title") or "Untitled"))
             company = escape(str(job.get("company") or "Unknown company"))
-            location = escape(str(job.get("location") or ""))
             deadline = escape(self._format_deadline(job.get("deadline")))
             salary_value = self._format_salary(job.get("salary"))
             salary = escape(salary_value)
             url = str(job.get("url") or "").strip()
 
             lines.append(self._render_title_line(index, title, url))
-            if location:
-                lines.append(f"🏢 {company} • {location}")
-            else:
-                lines.append(f"🏢 {company}")
+            lines.append(f"🏢 {company}")
             if deadline:
                 lines.append(f"📅 Son tarix: {deadline}")
             lines.append(f"💰 Maaş: {salary}")
