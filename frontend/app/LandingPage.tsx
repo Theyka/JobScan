@@ -2,17 +2,15 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import Chart from '@/components/landing/Chart'
 import FiltersSidebar from '@/components/landing/FiltersSidebar'
+import LandingTopBar from '@/components/landing/LandingTopBar'
 import Footer from '@/components/shared/Footer'
 import JobsSection from '@/components/landing/JobsSection'
-import SourceBreakdown from '@/components/landing/SourceBreakdown'
-import StatsCards from '@/components/landing/StatsCards'
-import SiteHeader from '@/components/shared/SiteHeader'
 import type { LandingData, LandingJob } from '@/lib/datatypes/landing-data.types'
 import type { CountItem, PageSizeOption, SalaryRange, SourceFilter } from '@/lib/datatypes/landing-page.types'
 
 const PAGE_SIZE_OPTIONS: PageSizeOption[] = [18, 36, 54, 72]
+type SortOption = 'latest' | 'oldest' | 'salary-desc' | 'salary-asc' | 'company-asc'
 
 const SALARY_RANGES: SalaryRange[] = [
   { id: 'salary-all', label: 'All Salaries', min: null, max: null },
@@ -88,9 +86,48 @@ function sourceLabelForBadge(source: SourceFilter): string {
   return source === 'glorri' ? 'Glorri' : 'JS.AZ'
 }
 
+function formatLastUpdated(value: string | null): string {
+  const raw = String(value ?? '').trim()
+  if (!raw) {
+    return 'Awaiting latest sync'
+  }
+
+  const parsed = new Date(raw)
+  if (Number.isNaN(parsed.getTime())) {
+    return raw
+  }
+
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(parsed)
+}
+
+function getSalaryRangeId(min: number | null, max: number | null): string {
+  const matched = SALARY_RANGES.find((range) => range.min === min && range.max === max)
+  return matched?.id ?? SALARY_RANGES[0].id
+}
+
+type IndexedLandingJob = {
+  job: LandingJob
+  companyLower: string
+  titleLower: string
+  technologiesLower: string[]
+  salaryRange: { min: number | null; max: number | null }
+  createdAtTs: number
+}
+
+function applyTheme(theme: 'light' | 'dark') {
+  const root = document.documentElement
+  root.classList.toggle('dark', theme === 'dark')
+  root.classList.toggle('light', theme === 'light')
+  root.style.colorScheme = theme
+}
+
 export default function LandingPage({ data }: { data: LandingData }) {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
-  const [hasExplicitTheme, setHasExplicitTheme] = useState(false)
   const [search, setSearch] = useState('')
   const [activeTech, setActiveTech] = useState<string | null>(null)
   const [activeCompanyTag, setActiveCompanyTag] = useState<string | null>(null)
@@ -101,68 +138,27 @@ export default function LandingPage({ data }: { data: LandingData }) {
   const [salaryMax, setSalaryMax] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState<PageSizeOption>(18)
+  const [sortBy, setSortBy] = useState<SortOption>('latest')
   const [isSelectOpen, setIsSelectOpen] = useState(false)
   const [showAllTechs, setShowAllTechs] = useState(true)
   const [showAllCompanies, setShowAllCompanies] = useState(true)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
-  const [prefsHydrated, setPrefsHydrated] = useState(false)
 
   const selectRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem('theme')
-    const hasSavedTheme = savedTheme === 'dark' || savedTheme === 'light'
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    const resolvedTheme = hasSavedTheme ? savedTheme : systemTheme
+    const resolvedTheme = savedTheme === 'dark' ? 'dark' : 'light'
 
     const savedItems = Number.parseInt(window.localStorage.getItem('itemsPerPage') || '', 10)
 
     window.requestAnimationFrame(() => {
-      setTheme(resolvedTheme)
-      setHasExplicitTheme(hasSavedTheme)
+      applyTheme(resolvedTheme)
       if (isPageSizeOption(savedItems)) {
         setItemsPerPage(savedItems)
       }
-      setPrefsHydrated(true)
     })
   }, [])
-
-  useEffect(() => {
-    if (!prefsHydrated) {
-      return
-    }
-
-    const root = document.documentElement
-    root.classList.toggle('dark', theme === 'dark')
-    root.classList.toggle('light', theme === 'light')
-    root.style.colorScheme = theme
-    if (hasExplicitTheme) {
-      window.localStorage.setItem('theme', theme)
-    } else {
-      window.localStorage.removeItem('theme')
-    }
-  }, [hasExplicitTheme, prefsHydrated, theme])
-
-  useEffect(() => {
-    if (!prefsHydrated || hasExplicitTheme) {
-      return
-    }
-
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-
-    const applySystemTheme = (isDark: boolean) => {
-      setTheme(isDark ? 'dark' : 'light')
-    }
-
-    applySystemTheme(media.matches)
-
-    const onChange = (event: MediaQueryListEvent) => {
-      applySystemTheme(event.matches)
-    }
-
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
-  }, [hasExplicitTheme, prefsHydrated])
 
   useEffect(() => {
     const onDocumentClick = (event: MouseEvent) => {
@@ -188,11 +184,28 @@ export default function LandingPage({ data }: { data: LandingData }) {
   const normalizedCompanyInput = companyInput.trim().toLowerCase()
   const normalizedTechInput = techInput.trim().toLowerCase()
 
+  const indexedJobs = useMemo<IndexedLandingJob[]>(() => {
+    return data.recent_jobs.map((job) => {
+      const createdAtTs = Date.parse(job.created_at || '')
+
+      return {
+        job,
+        companyLower: job.company.toLowerCase(),
+        titleLower: job.title.toLowerCase(),
+        technologiesLower: job.technologies.map((tech) => tech.toLowerCase()),
+        salaryRange: parseSalaryRange(job.salary),
+        createdAtTs: Number.isNaN(createdAtTs) ? 0 : createdAtTs,
+      }
+    })
+  }, [data.recent_jobs])
+
   const filteredJobs = useMemo(() => {
-    return data.recent_jobs.filter((job) => {
+    const activeTechLower = activeTech?.toLowerCase() ?? null
+
+    const matches = indexedJobs.filter(({ job, companyLower, titleLower, technologiesLower, salaryRange }) => {
       if (
-        activeTech &&
-        !job.technologies.some((tech) => tech.toLowerCase() === activeTech.toLowerCase())
+        activeTechLower &&
+        !technologiesLower.some((tech) => tech === activeTechLower)
       ) {
         return false
       }
@@ -206,9 +219,8 @@ export default function LandingPage({ data }: { data: LandingData }) {
       }
 
       if (salaryMin !== null || salaryMax !== null) {
-        const salary = parseSalaryRange(job.salary)
-        const resolvedMin = Number.isFinite(salary.min) ? salary.min : null
-        const resolvedMax = Number.isFinite(salary.max) ? salary.max : null
+        const resolvedMin = Number.isFinite(salaryRange.min) ? salaryRange.min : null
+        const resolvedMax = Number.isFinite(salaryRange.max) ? salaryRange.max : null
 
         if (resolvedMin === null && resolvedMax === null) {
           return false
@@ -223,14 +235,14 @@ export default function LandingPage({ data }: { data: LandingData }) {
         }
       }
 
-      if (normalizedCompanyInput && !job.company.toLowerCase().includes(normalizedCompanyInput)) {
+      if (normalizedCompanyInput && !companyLower.includes(normalizedCompanyInput)) {
         return false
       }
 
       if (normalizedSearch) {
-        const inTitle = job.title.toLowerCase().includes(normalizedSearch)
-        const inCompany = job.company.toLowerCase().includes(normalizedSearch)
-        const inTech = job.technologies.some((tech) => tech.toLowerCase().includes(normalizedSearch))
+        const inTitle = titleLower.includes(normalizedSearch)
+        const inCompany = companyLower.includes(normalizedSearch)
+        const inTech = technologiesLower.some((tech) => tech.includes(normalizedSearch))
 
         if (!inTitle && !inCompany && !inTech) {
           return false
@@ -239,15 +251,40 @@ export default function LandingPage({ data }: { data: LandingData }) {
 
       return true
     })
+
+    const sorted = [...matches]
+
+    sorted.sort((left, right) => {
+      const leftJob = left.job
+      const rightJob = right.job
+
+      if (sortBy === 'company-asc') {
+        return leftJob.company.localeCompare(rightJob.company)
+      }
+
+      if (sortBy === 'salary-desc' || sortBy === 'salary-asc') {
+        const leftSalary = left.salaryRange
+        const rightSalary = right.salaryRange
+        const leftValue = leftSalary.max ?? leftSalary.min ?? -1
+        const rightValue = rightSalary.max ?? rightSalary.min ?? -1
+
+        return sortBy === 'salary-desc' ? rightValue - leftValue : leftValue - rightValue
+      }
+
+      return sortBy === 'oldest' ? left.createdAtTs - right.createdAtTs : right.createdAtTs - left.createdAtTs
+    })
+
+    return sorted.map((entry) => entry.job)
   }, [
     activeCompanyTag,
     activeSource,
     activeTech,
-    data.recent_jobs,
+    indexedJobs,
     normalizedCompanyInput,
     normalizedSearch,
     salaryMax,
     salaryMin,
+    sortBy,
   ])
 
   const availableTechs = useMemo(() => {
@@ -294,6 +331,11 @@ export default function LandingPage({ data }: { data: LandingData }) {
   }, [availableCompanies, normalizedCompanyInput])
 
   const topTechs = useMemo(() => availableTechs.slice(0, 15), [availableTechs])
+  const uniqueCompaniesCount = useMemo(
+    () => new Set(data.recent_jobs.map((job) => job.company.trim()).filter(Boolean)).size,
+    [data.recent_jobs]
+  )
+  const selectedSalaryRangeId = useMemo(() => getSalaryRangeId(salaryMin, salaryMax), [salaryMax, salaryMin])
 
   const totalPages = Math.max(1, Math.ceil(filteredJobs.length / itemsPerPage))
   const safeCurrentPage = Math.min(Math.max(currentPage, 1), totalPages)
@@ -303,178 +345,165 @@ export default function LandingPage({ data }: { data: LandingData }) {
     return filteredJobs.slice(start, start + itemsPerPage)
   }, [filteredJobs, itemsPerPage, safeCurrentPage])
 
-  const activeFilterParts = [
-    activeTech ? `Tech: ${activeTech}` : null,
-    activeCompanyTag ? `Company: ${activeCompanyTag}` : null,
-    activeSource ? `Source: ${sourceLabelForBadge(activeSource)}` : null,
-  ].filter((part): part is string => part !== null)
-
   const toggleTechFilter = useCallback((techName: string) => {
     setActiveTech((prev) => (prev?.toLowerCase() === techName.toLowerCase() ? null : techName))
     setCurrentPage(1)
   }, [])
 
-  const setPageSize = (nextSize: PageSizeOption) => {
+  const setPageSize = useCallback((nextSize: PageSizeOption) => {
     setItemsPerPage(nextSize)
     setCurrentPage(1)
     setIsSelectOpen(false)
     window.localStorage.setItem('itemsPerPage', String(nextSize))
-  }
+  }, [])
 
-  const setSalaryRange = (min: number | null, max: number | null) => {
+  const setSalaryRange = useCallback((min: number | null, max: number | null) => {
     setSalaryMin(min)
     setSalaryMax(max)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const toggleTheme = () => {
-    setHasExplicitTheme(true)
-    setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
-  }
+  const toggleTheme = useCallback(() => {
+    const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
+    applyTheme(nextTheme)
+    window.localStorage.setItem('theme', nextTheme)
+  }, [])
 
-  const clearFilter = () => {
+  const clearFilter = useCallback(() => {
     setActiveTech(null)
     setActiveCompanyTag(null)
     setActiveSource(null)
+    setSearch('')
+    setCompanyInput('')
+    setTechInput('')
+    setSalaryMin(null)
+    setSalaryMax(null)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const setSearchValue = (value: string) => {
+  const setSearchValue = useCallback((value: string) => {
     setSearch(value)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const openMobileSidebar = () => {
+  const openMobileSidebar = useCallback(() => {
     setIsMobileSidebarOpen(true)
-  }
+  }, [])
 
-  const closeMobileSidebar = () => {
+  const closeMobileSidebar = useCallback(() => {
     setIsMobileSidebarOpen(false)
-  }
+  }, [])
 
-  const setSourceFilter = (value: SourceFilter | null) => {
+  const setSourceFilter = useCallback((value: SourceFilter | null) => {
     setActiveSource(value)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const toggleCompanyFilter = (value: string) => {
+  const toggleCompanyFilter = useCallback((value: string) => {
     setActiveCompanyTag((prev) => (prev === value ? null : value))
     setCurrentPage(1)
-  }
+  }, [])
 
-  const setCompanyFilterInput = (value: string) => {
+  const setCompanyFilterInput = useCallback((value: string) => {
     setCompanyInput(value)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const setTechFilterInput = (value: string) => {
+  const setTechFilterInput = useCallback((value: string) => {
     setTechInput(value)
     setCurrentPage(1)
-  }
+  }, [])
 
-  const togglePageSizeMenu = () => {
+  const togglePageSizeMenu = useCallback(() => {
     setIsSelectOpen((open) => !open)
-  }
+  }, [])
 
-  const goToPrevPage = () => {
+  const goToPrevPage = useCallback(() => {
     setCurrentPage((page) => Math.max(1, Math.min(page, totalPages) - 1))
-  }
+  }, [totalPages])
 
-  const goToNextPage = () => {
+  const goToNextPage = useCallback(() => {
     setCurrentPage((page) => Math.min(totalPages, Math.max(1, page) + 1))
-  }
+  }, [totalPages])
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
-      {/* Sticky Full-Width Header */}
-      {/* NOTE: backdrop-blur is on a child div, NOT the wrapper. backdrop-filter creates a new
-          stacking context which would trap the profile dropdown inside it. By isolating the blur
-          to a pseudo-background child, the wrapper remains a normal stacking context. */}
-      <div className="relative z-[1000] sm:sticky top-0 w-full shadow-sm">
-        {/* Blurred background layer */}
-        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
-        {/* Content layer (above the blur, no stacking context issues) */}
-        <div className="relative container mx-auto max-w-7xl px-4">
-          <SiteHeader
-            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
-            onToggleTheme={toggleTheme}
-          />
+    <div className="relative min-h-screen overflow-x-hidden bg-white text-foreground transition-colors duration-300 dark:bg-[#111111]">
+      <div className="sticky top-0 z-50 w-full bg-[#151515] border-b border-black/20">
+        <div className="mx-auto max-w-345 px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <LandingTopBar onToggleTheme={toggleTheme} />
         </div>
       </div>
 
+      <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+        {data.error ? (
+          <div className="mb-8 rounded-2xl border border-red-200/80 bg-red-50/90 px-5 py-4 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
+            Could not load landing data from database: {data.error}
+          </div>
+        ) : null}
 
-      <div className="container mx-auto flex max-w-7xl grow flex-col px-4 py-12">
-        <div className="w-full">
-          {data.error ? (
-            <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-900/20 dark:text-red-300">
-              Could not load landing data from database: {data.error}
-            </div>
-          ) : null}
-
-          <StatsCards data={data} />
-          <SourceBreakdown data={data} />
-
-          <div className="mt-12 flex flex-col gap-8 lg:flex-row">
-            <main className="grow lg:w-3/4">
-              <div className="mb-8 grid grid-cols-1 gap-8">
-                <Chart topTechs={topTechs} theme={theme} activeTech={activeTech} onToggleTech={toggleTechFilter} />
-              </div>
-              <JobsSection
-                filteredJobs={filteredJobs}
-                pageJobs={pageJobs}
-                activeFilterParts={activeFilterParts}
-                clearFilter={clearFilter}
-                activeTech={activeTech}
-                normalizedSearch={normalizedSearch}
+        <section className="px-0 py-2 transition-colors duration-300 max-sm:dark:rounded-2xl max-sm:dark:px-2 max-sm:dark:py-3 sm:rounded-2xl sm:p-4">
+          <div className="grid h-full gap-4 xl:grid-cols-[290px_minmax(0,1fr)]">
+            <div className="min-w-0 lg:overflow-hidden lg:rounded-xl lg:transition-colors lg:duration-300 dark:lg:bg-transparent">
+              <FiltersSidebar
+                isMobileSidebarOpen={isMobileSidebarOpen}
+                onCloseMobileSidebar={closeMobileSidebar}
+                onClearFilters={clearFilter}
                 search={search}
                 onSearchChange={setSearchValue}
-                onOpenMobileFilters={openMobileSidebar}
-                pageSizeOptions={PAGE_SIZE_OPTIONS}
-                itemsPerPage={itemsPerPage}
-                isSelectOpen={isSelectOpen}
-                onTogglePageSizeMenu={togglePageSizeMenu}
-                onSetPageSize={setPageSize}
-                selectRef={selectRef}
-                safeCurrentPage={safeCurrentPage}
-                totalPages={totalPages}
-                onPrevPage={goToPrevPage}
-                onNextPage={goToNextPage}
+                activeSource={activeSource}
+                onSetActiveSource={setSourceFilter}
+                salaryRanges={SALARY_RANGES}
+                salaryMin={salaryMin}
+                salaryMax={salaryMax}
+                onSetSalaryRange={setSalaryRange}
+                showAllCompanies={showAllCompanies}
+                onToggleShowAllCompanies={() => setShowAllCompanies((open) => !open)}
+                companyInput={companyInput}
+                onCompanyInputChange={setCompanyFilterInput}
+                displayCompanies={displayCompanies}
+                activeCompanyTag={activeCompanyTag}
+                onToggleCompanyTag={toggleCompanyFilter}
+                showAllTechs={showAllTechs}
+                onToggleShowAllTechs={() => setShowAllTechs((open) => !open)}
+                techInput={techInput}
+                onTechInputChange={setTechFilterInput}
+                displayTechs={displayTechs}
+                activeTech={activeTech}
+                onToggleTech={toggleTechFilter}
               />
-            </main>
-            <FiltersSidebar
-              isMobileSidebarOpen={isMobileSidebarOpen}
-              onCloseMobileSidebar={closeMobileSidebar}
-              search={search}
-              onSearchChange={setSearchValue}
-              activeSource={activeSource}
-              onSetActiveSource={setSourceFilter}
-              salaryRanges={SALARY_RANGES}
-              salaryMin={salaryMin}
-              salaryMax={salaryMax}
-              onSetSalaryRange={setSalaryRange}
-              showAllCompanies={showAllCompanies}
-              onToggleShowAllCompanies={() => setShowAllCompanies((open) => !open)}
-              companyInput={companyInput}
-              onCompanyInputChange={setCompanyFilterInput}
-              displayCompanies={displayCompanies}
-              activeCompanyTag={activeCompanyTag}
-              onToggleCompanyTag={toggleCompanyFilter}
-              showAllTechs={showAllTechs}
-              onToggleShowAllTechs={() => setShowAllTechs((open) => !open)}
-              techInput={techInput}
-              onTechInputChange={setTechFilterInput}
-              displayTechs={displayTechs}
-              activeTech={activeTech}
-              onToggleTech={toggleTechFilter}
-            />
-          </div>
-        </div>
-      </div>
+            </div>
 
-      {/* Full-Width Footer Container */}
-      <div className="w-full bg-white border-t border-slate-200 dark:bg-slate-900/50 dark:border-slate-800">
-        <Footer />
-      </div>
+            <div className="min-w-0 rounded-xl p-0 transition-colors duration-300 sm:p-4">
+              <div id="open-roles">
+                <JobsSection
+                  filteredJobs={filteredJobs}
+                  pageJobs={pageJobs}
+                  activeTech={activeTech}
+                  normalizedSearch={normalizedSearch}
+                  search={search}
+                  onSearchChange={setSearchValue}
+                  onOpenMobileFilters={openMobileSidebar}
+                  pageSizeOptions={PAGE_SIZE_OPTIONS}
+                  itemsPerPage={itemsPerPage}
+                  isSelectOpen={isSelectOpen}
+                  onTogglePageSizeMenu={togglePageSizeMenu}
+                  onSetPageSize={setPageSize}
+                  selectRef={selectRef}
+                  safeCurrentPage={safeCurrentPage}
+                  totalPages={totalPages}
+                  onPrevPage={goToPrevPage}
+                  onNextPage={goToNextPage}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <Footer />
     </div>
   )
 }

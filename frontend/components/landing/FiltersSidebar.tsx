@@ -1,9 +1,13 @@
-import { useEffect } from 'react'
+/* eslint-disable @next/next/no-img-element */
+
+import { memo } from 'react'
+
 import type { CountItem, SalaryRange, SourceFilter } from '@/lib/datatypes/landing-page.types'
 
 type FiltersSidebarProps = {
   isMobileSidebarOpen: boolean
   onCloseMobileSidebar: () => void
+  onClearFilters: () => void
   search: string
   onSearchChange: (value: string) => void
   activeSource: SourceFilter | null
@@ -28,9 +32,10 @@ type FiltersSidebarProps = {
   onToggleTech: (value: string) => void
 }
 
-export default function FiltersSidebar({
+function FiltersSidebar({
   isMobileSidebarOpen,
   onCloseMobileSidebar,
+  onClearFilters,
   search,
   onSearchChange,
   activeSource,
@@ -54,76 +59,65 @@ export default function FiltersSidebar({
   activeTech,
   onToggleTech,
 }: FiltersSidebarProps) {
-  // Prevent background scroll when sidebar is open on mobile
-  useEffect(() => {
-    if (isMobileSidebarOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isMobileSidebarOpen])
+  const visibleCompanies = displayCompanies
+  const visibleTechs = displayTechs
 
   return (
     <>
       <aside
-        className={`fixed inset-y-0 right-0 z-[200] lg:z-auto flex w-full transform flex-col gap-6 overflow-y-auto bg-white p-8 shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-[#020617] sm:w-80 
-          ${isMobileSidebarOpen
-            ? 'translate-x-0'
-            : 'translate-x-full'
-          }
-          lg:static lg:flex lg:h-auto lg:w-1/4 lg:translate-x-0 lg:opacity-100 lg:pointer-events-auto lg:overflow-visible lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none
-        `}
+        className={`fixed inset-x-3 bottom-3 top-3 z-200 flex transform flex-col rounded-xl bg-[#f6f4f0] transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] dark:bg-[#151515] sm:left-auto sm:w-100 lg:static lg:top-6 lg:z-auto lg:w-full lg:translate-x-0 lg:bg-transparent dark:lg:bg-transparent xl:sticky ${
+          isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-[110%] pointer-events-none lg:pointer-events-auto'
+        }`}
       >
-        <div className="flex items-center justify-between lg:hidden mb-4">
-          <h2 className="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">Filters</h2>
-          <button
-            type="button"
-            onClick={onCloseMobileSidebar}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-50 text-slate-500 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-400"
-          >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Global Search in Sidebar for Desktop */}
-        <div className="hidden rounded-[2rem] border border-slate-300 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 lg:block">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        {/* Mobile header – never scrolls away */}
+        <div className="flex shrink-0 items-center justify-between p-4 pb-0 lg:hidden">
+          <h2 className="text-2xl font-semibold tracking-[-0.05em] text-foreground">Filters</h2>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={onClearFilters}
+              className="inline-flex h-11 items-center rounded-xl border border-black/10 px-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-black/54 hover:border-black/20 hover:bg-white hover:text-black dark:border-white/10 dark:text-white/58 dark:hover:border-white/18 dark:hover:bg-white/10 dark:hover:text-white"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={onCloseMobileSidebar}
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-black/10 bg-black/5 text-foreground dark:border-white/10 dark:bg-white/8"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </span>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Search</h2>
-          </div>
-          <div className="relative group">
-            <input
-              type="text"
-              value={search}
-              onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Title, company, or tech..."
-              className="w-full h-12 rounded-xl border border-slate-200 bg-slate-50 px-4 text-xs font-bold text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-indigo-500/30 focus:bg-white dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-600"
-            />
+            </button>
           </div>
         </div>
 
-        {/* Sources Selection */}
-        <div className="rounded-[2rem] border border-slate-300 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-              </svg>
-            </span>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Sources</h2>
-          </div>
-          <div className="flex flex-col gap-2">
+        {/* Scrollable content */}
+        <div className="custom-scrollbar min-h-0 flex-1 overflow-y-scroll overscroll-contain p-4 lg:overflow-visible lg:p-0" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="rounded-xl border border-black/8 bg-white p-5 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
+          <div className="mt-2 rounded-lg bg-[#f8f6f3] p-4 transition-colors duration-300 dark:bg-white/5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/46 dark:text-white/48">Search</p>
+              <label className="relative mt-3 block">
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-black/35 dark:text-white/34">
+                  <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(event) => onSearchChange(event.target.value)}
+                  placeholder="Search jobs"
+                  className="h-11 w-full rounded-xl border border-black/8 bg-white px-4 pl-10 text-sm text-[#151515] outline-none placeholder:text-black/32 focus:border-black/16 dark:border-white/10 dark:bg-white/6 dark:text-white dark:placeholder:text-white/32 dark:focus:border-white/18"
+                />
+              </label>
+            </div>
+
+          <div className="mt-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/46 dark:text-white/48">Source filter</p>
+            <div className="mt-3 flex flex-col gap-2">
             {[
-              { id: null, label: 'All Sources' },
+              { id: null, label: 'All sources' },
               { id: 'duplicates', label: 'Duplicates', char: 'D' },
               { id: 'jobsearch.az', label: 'JobSearch.az', icon: 'https://jobsearch.az/favicon.ico' },
               { id: 'glorri', label: 'Glorri', icon: 'https://jobs.glorri.com/favicon.ico' },
@@ -133,157 +127,146 @@ export default function FiltersSidebar({
                 <button
                   key={String(source.id)}
                   type="button"
-                  onClick={() => onSetActiveSource(source.id as any)}
-                  className={`group flex items-center justify-between rounded-xl border px-4 h-11 transition-all ${isActive
-                    ? 'border-indigo-500/20 bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
-                    : 'border-slate-200 bg-slate-50/50 text-slate-600 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400 dark:hover:bg-slate-800'
-                    }`}
+                  onClick={() => onSetActiveSource(source.id as SourceFilter | null)}
+                  className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left transition-colors ${
+                    isActive
+                      ? 'border-[#151515] bg-[#151515] text-white dark:border-white/16 dark:bg-white dark:text-[#151515]'
+                      : 'border-black/8 bg-[#f8f6f3] text-black/66 hover:border-black/14 hover:bg-white hover:text-black dark:border-white/8 dark:bg-white/5 dark:text-white/72 dark:hover:border-white/14 dark:hover:bg-white/8 dark:hover:text-white'
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    {source.icon && <img src={source.icon} className="h-4 w-4 rounded-sm" alt="" />}
-                    {source.char && (
-                      <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-indigo-100 text-[10px] font-black text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                  <span className="flex items-center gap-3">
+                    {source.icon ? <img src={source.icon} className="h-4 w-4 rounded-sm" alt="" /> : null}
+                    {source.char ? (
+                      <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-white/14 text-[9px] font-semibold">
                         {source.char}
                       </span>
-                    )}
-                    <span className="text-xs font-bold tracking-tight">{source.label}</span>
-                  </div>
-                  <div className={`h-1.5 w-1.5 rounded-full transition-transform ${isActive ? 'scale-100 bg-indigo-500' : 'scale-0 bg-slate-300'}`} />
+                    ) : null}
+                    <span className="text-sm font-semibold">{source.label}</span>
+                  </span>
+                  <span className={`h-2.5 w-2.5 rounded-full ${isActive ? 'bg-white dark:bg-[#151515]' : 'bg-black/18 dark:bg-white/20'}`} />
                 </button>
               )
             })}
           </div>
         </div>
 
-        {/* Salary Projections */}
-        <div className="rounded-[2rem] border border-slate-300 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-50 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </span>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Salary Range</h2>
-          </div>
-          <div className="flex flex-col gap-2">
+          <div className="mt-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/46 dark:text-white/48">Salary range</p>
+            <div className="mt-3 flex flex-col gap-2">
             {salaryRanges.map((range) => {
               const isActive = salaryMin === range.min && salaryMax === range.max
+
               return (
                 <button
                   key={range.id}
                   type="button"
                   onClick={() => onSetSalaryRange(range.min, range.max)}
-                  className={`group flex items-center justify-between rounded-xl border px-4 h-11 transition-all ${isActive
-                    ? 'border-indigo-500/20 bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400'
-                    : 'border-slate-200 bg-slate-50/50 text-slate-600 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400 dark:hover:bg-slate-800'
-                    }`}
+                  className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left transition-colors ${
+                    isActive
+                      ? 'border-[#151515] bg-[#151515] text-white dark:border-white/16 dark:bg-white dark:text-[#151515]'
+                      : 'border-black/8 bg-[#f8f6f3] text-black/66 hover:border-black/14 hover:bg-white hover:text-black dark:border-white/8 dark:bg-white/5 dark:text-white/72 dark:hover:border-white/14 dark:hover:bg-white/8 dark:hover:text-white'
+                  }`}
                 >
-                  <span className="text-xs font-bold tracking-tight">{range.label}</span>
-                  <div className={`h-1.5 w-1.5 rounded-full transition-transform ${isActive ? 'scale-100 bg-indigo-500' : 'scale-0 bg-slate-300'}`} />
+                  <span className="text-sm font-semibold">{range.label}</span>
+                  <span className={`h-2.5 w-2.5 rounded-full ${isActive ? 'bg-white dark:bg-[#151515]' : 'bg-black/18 dark:bg-white/20'}`} />
                 </button>
               )
             })}
           </div>
-        </div>
+          </div>
 
-        {/* Dynamic Aggregations (Companies & Techs) */}
-        <div className="flex flex-col gap-6">
-          <div className="rounded-[2.5rem] border border-slate-300 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Companies</h2>
-              <button
-                type="button"
-                onClick={onToggleShowAllCompanies}
-                className="rounded-lg bg-slate-50 border border-slate-200 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
-              >
-                {showAllCompanies ? 'Hide All' : 'Show All'}
-              </button>
-            </div>
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/46 dark:text-white/48">Companies</p>
+            <button
+              type="button"
+              onClick={onToggleShowAllCompanies}
+              className="rounded-xl border border-black/8 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-black/56 transition hover:border-black/20 hover:bg-[#f8f6f3] hover:text-black dark:border-white/8 dark:text-white/58 dark:hover:border-white/14 dark:hover:bg-white/6 dark:hover:text-white"
+            >
+              {showAllCompanies ? 'Collapse' : 'Expand'}
+            </button>
+          </div>
 
-            {showAllCompanies && (
-              <div className="mb-6">
-                <input
-                  type="text"
-                  value={companyInput}
-                  onChange={(event) => onCompanyInputChange(event.target.value)}
-                  placeholder="Filter company..."
-                  className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50 px-4 text-xs font-bold text-slate-900 outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-white"
-                />
-              </div>
-            )}
-
-            {showAllCompanies && (
-              <div className="custom-scrollbar flex flex-wrap gap-2 overflow-y-auto max-h-60 pr-2">
-                {displayCompanies.map((company) => {
+          {showAllCompanies ? (
+            <>
+              <input
+                type="text"
+                value={companyInput}
+                onChange={(event) => onCompanyInputChange(event.target.value)}
+                placeholder="Filter company"
+                className="mt-4 h-11 w-full rounded-xl border border-black/8 bg-[#f8f6f3] px-4 text-sm text-foreground outline-none placeholder:text-black/34 focus:border-black/16 dark:border-white/10 dark:bg-white/6 dark:text-white dark:placeholder:text-white/32 dark:focus:border-white/18"
+              />
+              <div className="custom-scrollbar mt-4 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
+                {visibleCompanies.map((company) => {
                   const isActive = activeCompanyTag === company.name
+
                   return (
                     <button
                       key={company.name}
                       type="button"
                       onClick={() => onToggleCompanyTag(company.name)}
-                      className={`rounded-full border px-3.5 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all ${isActive
-                        ? 'bg-indigo-600 text-white border-indigo-700 shadow-lg shadow-indigo-500/30'
-                        : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
-                        }`}
+                          className={`rounded-xl border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${
+                        isActive
+                            ? 'border-[#151515] bg-[#151515] text-white dark:border-white/16 dark:bg-white dark:text-[#151515]'
+                            : 'border-black/8 bg-[#f8f6f3] text-black/60 hover:border-black/14 hover:bg-white hover:text-black dark:border-white/8 dark:bg-white/5 dark:text-white/72 dark:hover:border-white/14 dark:hover:bg-white/8 dark:hover:text-white'
+                      }`}
                     >
                       {company.name}
-                      <span className={`ml-1.5 opacity-60 ${isActive ? 'text-white' : ''}`}>({company.count})</span>
+                      <span className="ml-1.5 opacity-70">({company.count})</span>
                     </button>
                   )
                 })}
               </div>
-            )}
+            </>
+          ) : null}
+
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/46 dark:text-white/48">Technology</p>
+            <button
+              type="button"
+              onClick={onToggleShowAllTechs}
+              className="rounded-xl border border-black/8 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-black/56 transition hover:border-black/20 hover:bg-[#f8f6f3] hover:text-black dark:border-white/8 dark:text-white/58 dark:hover:border-white/14 dark:hover:bg-white/6 dark:hover:text-white"
+            >
+              {showAllTechs ? 'Collapse' : 'Expand'}
+            </button>
           </div>
 
-          <div className="rounded-[2.5rem] border border-slate-300/60 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Techs</h2>
-              <button
-                type="button"
-                onClick={onToggleShowAllTechs}
-                className="rounded-lg bg-slate-50 border border-slate-200 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
-              >
-                {showAllTechs ? 'Hide All' : 'Show All'}
-              </button>
-            </div>
-
-            {showAllTechs && (
-              <div className="mb-6">
-                <input
-                  type="text"
-                  value={techInput}
-                  onChange={(event) => onTechInputChange(event.target.value)}
-                  placeholder="Filter tech..."
-                  className="w-full h-10 rounded-xl border border-slate-200 bg-slate-50 px-4 text-xs font-bold text-slate-900 outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-white"
-                />
-              </div>
-            )}
-
-            {showAllTechs && (
-              <div className="custom-scrollbar flex flex-wrap gap-2 overflow-y-auto max-h-60 pr-2">
-                {displayTechs.map((tech) => {
+          {showAllTechs ? (
+            <>
+              <input
+                type="text"
+                value={techInput}
+                onChange={(event) => onTechInputChange(event.target.value)}
+                placeholder="Filter technology"
+                className="mt-4 h-11 w-full rounded-xl border border-black/8 bg-[#f8f6f3] px-4 text-sm text-foreground outline-none placeholder:text-black/34 focus:border-black/16 dark:border-white/10 dark:bg-white/6 dark:text-white dark:placeholder:text-white/32 dark:focus:border-white/18"
+              />
+              <div className="custom-scrollbar mt-4 flex max-h-60 flex-wrap gap-2 overflow-y-auto pr-1">
+                {visibleTechs.map((tech) => {
                   const isActive = activeTech === tech.name
+
                   return (
                     <button
                       key={tech.name}
                       type="button"
                       onClick={() => onToggleTech(tech.name)}
-                      className={`rounded-full border px-3.5 py-1.5 text-[10px] font-black uppercase tracking-wider transition-all ${isActive
-                        ? 'bg-amber-500 text-white border-amber-600 shadow-lg shadow-amber-500/30'
-                        : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
-                        }`}
+                          className={`rounded-xl border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${
+                        isActive
+                            ? 'border-[#151515] bg-[#151515] text-white dark:border-white/16 dark:bg-white dark:text-[#151515]'
+                            : 'border-black/8 bg-[#f8f6f3] text-black/60 hover:border-black/14 hover:bg-white hover:text-black dark:border-white/8 dark:bg-white/5 dark:text-white/72 dark:hover:border-white/14 dark:hover:bg-white/8 dark:hover:text-white'
+                      }`}
                     >
                       {tech.name}
-                      <span className={`ml-1.5 opacity-60 ${isActive ? 'text-white' : ''}`}>({tech.count})</span>
+                      <span className="ml-1.5 opacity-70">({tech.count})</span>
                     </button>
                   )
                 })}
               </div>
-            )}
-          </div>
+            </>
+          ) : null}
+        </div>
         </div>
       </aside>
-
     </>
   )
 }
+
+export default memo(FiltersSidebar)

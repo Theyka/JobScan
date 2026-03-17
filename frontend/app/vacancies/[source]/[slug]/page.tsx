@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import Footer from '@/components/shared/Footer'
-import SiteHeader from '@/components/shared/SiteHeader'
+import LandingTopBar from '@/components/landing/LandingTopBar'
 import { incrementVacancyVisitCounter } from '@/lib/vacancy-visit-tracker'
 import { getVacancyDetail, normalizeRouteSource } from '@/lib/vacancy-detail-data'
 import type { VacancyDetail } from '@/lib/datatypes/vacancy-detail-data.types'
@@ -161,17 +161,10 @@ function normalizeTextForCompare(value: string): string {
     .trim()
 }
 
-function duplicateScoreLabel(score: number | null): string {
-  if (score === null || !Number.isFinite(score)) {
-    return 'Duplicate Match'
-  }
-
-  return `Duplicate Match ${Math.round(score * 100)}%`
-}
-
 function renderInfoCards(detail: VacancyDetail) {
   const locationValue = String(detail.location ?? '').trim()
   const addressValue = String(detail.company.address ?? '').trim()
+  const salaryValue = String(detail.salaryText ?? '').trim()
   const shouldHideLocation =
     Boolean(locationValue) &&
     Boolean(addressValue) &&
@@ -180,7 +173,7 @@ function renderInfoCards(detail: VacancyDetail) {
   const infoEntries: Array<{ label: string; value: string; valueClass?: string }> = [
     { label: 'Posted', value: formatDateLabel(detail.postedAt) },
     { label: 'Deadline', value: formatDateLabel(detail.deadlineAt), valueClass: 'text-red-500 dark:text-red-400' },
-    { label: 'Salary', value: detail.salaryText || 'Not specified' },
+    { label: 'Salary', value: salaryValue },
     { label: 'Location', value: shouldHideLocation ? '' : locationValue },
     { label: 'Type', value: detail.jobType },
     ...detail.about.map((entry) => ({ label: entry.label, value: entry.value })),
@@ -195,7 +188,7 @@ function renderInfoCards(detail: VacancyDetail) {
       {infoEntries.map((entry) => (
         <div
           key={`${entry.label}-${entry.value}`}
-          className="rounded-2xl border border-slate-200/60 bg-slate-50/50 p-4 transition-all hover:bg-slate-50 dark:border-slate-800/60 dark:bg-slate-900/40 dark:hover:bg-slate-800/60"
+          className="rounded-xl border border-black/8 bg-white p-4 transition-colors hover:bg-[#f8f6f3] dark:border-white/8 dark:bg-white/6 dark:hover:bg-white/8"
         >
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
@@ -257,32 +250,30 @@ function renderCompanyMeta(detail: VacancyDetail) {
   }
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
-      <div className="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+    <section className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
       <div className="p-6">
         <h3 className="mb-6 text-sm font-black tracking-widest uppercase text-slate-400 dark:text-slate-500">About Company</h3>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="flex flex-col gap-3">
           {companyCreatedAt ? (
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-4 dark:border-gray-700 dark:bg-gray-950/50">
-              <p className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
+            <div className="rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-4 dark:border-white/8 dark:bg-white/6">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                 Created At
               </p>
-              <p className="mt-2 text-sm font-semibold break-words text-gray-900 dark:text-white">{companyCreatedAt}</p>
+              <p className="mt-2 break-words text-sm font-semibold text-slate-900 dark:text-white">{companyCreatedAt}</p>
             </div>
           ) : null}
 
           {phones.length ? (
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-4 dark:border-gray-700 dark:bg-gray-950/50">
-              <p className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">Phones</p>
-              <p className="mt-2 text-sm font-semibold break-words text-gray-900 dark:text-white">
+            <div className="rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-4 dark:border-white/8 dark:bg-white/6">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">Phones</p>
+              <div className="mt-2 flex flex-col gap-1.5 break-words text-sm font-semibold text-slate-900 dark:text-white">
                 {phones.map((phone, index) => {
                   const href = normalizeSafeUrl(`tel:${phone}`)
                   return (
                     <span key={`phone-${phone}-${index}`}>
-                      {index ? <span className="text-gray-400 dark:text-gray-500">, </span> : null}
                       {href ? (
-                        <a href={href} className="text-blue-600 hover:underline dark:text-blue-300">
+                        <a href={href} className="text-[#8a6a43] transition-colors hover:underline dark:text-[#d7b37a]">
                           {phone}
                         </a>
                       ) : (
@@ -291,21 +282,20 @@ function renderCompanyMeta(detail: VacancyDetail) {
                     </span>
                   )
                 })}
-              </p>
+              </div>
             </div>
           ) : null}
 
           {emails.length ? (
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-4 dark:border-gray-700 dark:bg-gray-950/50">
-              <p className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">Emails</p>
-              <p className="mt-2 text-sm font-semibold break-words text-gray-900 dark:text-white">
+            <div className="rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-4 dark:border-white/8 dark:bg-white/6">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">Emails</p>
+              <div className="mt-2 flex flex-col gap-1.5 break-words text-sm font-semibold text-slate-900 dark:text-white">
                 {emails.map((email, index) => {
                   const href = normalizeSafeUrl(`mailto:${email}`)
                   return (
                     <span key={`email-${email}-${index}`}>
-                      {index ? <span className="text-gray-400 dark:text-gray-500">, </span> : null}
                       {href ? (
-                        <a href={href} className="text-blue-600 hover:underline dark:text-blue-300">
+                        <a href={href} className="text-[#8a6a43] transition-colors hover:underline dark:text-[#d7b37a]">
                           {email}
                         </a>
                       ) : (
@@ -314,37 +304,36 @@ function renderCompanyMeta(detail: VacancyDetail) {
                     </span>
                   )
                 })}
-              </p>
+              </div>
             </div>
           ) : null}
 
           {sites.length ? (
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-4 dark:border-gray-700 dark:bg-gray-950/50">
-              <p className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">Sites</p>
-              <p className="mt-2 text-sm font-semibold break-words text-gray-900 dark:text-white">
+            <div className="rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-4 dark:border-white/8 dark:bg-white/6">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">Sites</p>
+              <div className="mt-2 flex flex-col gap-1.5 break-words text-sm font-semibold text-slate-900 dark:text-white">
                 {sites.map((site, index) => (
                   <span key={`site-${site.url}-${index}`}>
-                    {index ? <span className="text-gray-400 dark:text-gray-500">, </span> : null}
-                    <a href={site.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline dark:text-blue-300">
+                    <a href={site.url} target="_blank" rel="noopener noreferrer" className="text-[#8a6a43] transition-colors hover:underline dark:text-[#d7b37a]">
                       {site.label}
                     </a>
                   </span>
                 ))}
-              </p>
+              </div>
             </div>
           ) : null}
 
           {company.address ? (
-            <div className="rounded-xl border border-gray-200 bg-white/80 p-4 md:col-span-2 dark:border-gray-700 dark:bg-gray-950/50">
-              <p className="text-[11px] font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">Address</p>
-              <p className="mt-2 text-sm font-semibold break-words text-gray-900 dark:text-white">{company.address}</p>
+            <div className="rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-4 dark:border-white/8 dark:bg-white/6">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">Address</p>
+              <p className="mt-2 break-words text-sm font-semibold text-slate-900 dark:text-white">{company.address}</p>
             </div>
           ) : null}
         </div>
 
         {hasCoordinates ? (
           <div className="mt-5">
-            <div className="h-64 w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
+            <div className="h-64 w-full overflow-hidden rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] dark:border-white/8 dark:bg-white/6">
               <iframe
                 src={osmEmbedUrl}
                 className="h-full w-full border-0"
@@ -354,7 +343,7 @@ function renderCompanyMeta(detail: VacancyDetail) {
               />
             </div>
             {googleMapsUrl ? (
-              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex text-sm font-medium text-blue-600 hover:underline dark:text-blue-300">
+              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex text-sm font-medium text-[#8a6a43] transition-colors hover:underline dark:text-[#d7b37a]">
                 Open in Google Maps
               </a>
             ) : null}
@@ -364,11 +353,11 @@ function renderCompanyMeta(detail: VacancyDetail) {
         {hasCompanyDescription ? (
           companyDescriptionIsHtml ? (
             <div
-              className="job-description mt-5 border-t border-gray-200 pt-5 text-base leading-relaxed text-gray-700 dark:border-gray-700 dark:text-gray-300"
+              className="job-description mt-5 border-t border-black/8 pt-5 text-base leading-relaxed text-slate-700 dark:border-white/8 dark:text-slate-300"
               dangerouslySetInnerHTML={{ __html: companyDescriptionHtml }}
             />
           ) : (
-            <p className="job-description mt-5 border-t border-gray-200 pt-5 text-base leading-relaxed whitespace-pre-line text-gray-700 dark:border-gray-700 dark:text-gray-300">
+            <p className="job-description mt-5 whitespace-pre-line border-t border-black/8 pt-5 text-base leading-relaxed text-slate-700 dark:border-white/8 dark:text-slate-300">
               {companyDescriptionHtml}
             </p>
           )
@@ -416,46 +405,33 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
     .filter((entry) => entry.url)
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-slate-950">
+    <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-[#111111]">
       {/* Sticky Header Wrapper */}
-      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
-        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
-        <div className="relative container mx-auto max-w-7xl px-4">
-          <SiteHeader
-            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
-            title="JobScan"
-            subtitle="Vacancy Intelligence"
-          />
+      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
+        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+          <LandingTopBar />
         </div>
       </div>
 
 
-      <div className="container mx-auto max-w-7xl grow px-4 py-8 lg:py-12">
-        <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <main className="relative mx-auto flex max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+        <section className="px-0 py-2 transition-colors duration-300 sm:p-4">
+        <header className="mb-6 flex flex-wrap items-center gap-4">
           <Link
             href="/"
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 dark:hover:text-indigo-400"
+            className="inline-flex h-11 items-center gap-2 rounded-[0.85rem] border border-black/8 bg-white px-5 text-sm font-bold text-slate-700 transition-colors hover:bg-[#f8f6f3] hover:text-[#8a6a43] dark:border-white/8 dark:bg-white/6 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-[#d7b37a]"
           >
             <svg aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Hub
           </Link>
-
-          {detail.isDuplicate ? (
-            <div className="flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-amber-700 shadow-sm dark:border-amber-500/20 dark:bg-amber-900/30 dark:text-amber-400">
-              <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.334-.398-1.817a1 1 0 00-1.514-.857 7.028 7.028 0 00-2.73 5.154 4.635 4.635 0 001.222 3.296 4.645 4.645 0 00.318.308c.5.447 1.053.939 1.585 1.47 1.078 1.073 2.224 2.146 3.603 2.146a4.474 4.474 0 003.51-1.747 4.472 4.472 0 001.19-3.007c0-1.136-.212-2.17-.556-2.796a4.411 4.411 0 00-1.259-1.518c-.147-.113-.318-.23-.51-.358a1 1 0 00-1.263.15c-.242.238-.428.525-.567.8a1 1 0 001.766.947c.1-.2.204-.377.302-.512.166.113.338.252.5.39.426.362.805.811 1.042 1.238.243.438.38 1.07.38 1.81 0 1.135-.352 2.206-1.235 2.594-.598.262-1.235.034-1.77-.5a15.723 15.723 0 01-1.391-1.584c-.45-.58-.848-1.166-1.225-1.725-.378-.56-.693-1.071-.933-1.518-.112-.208-.204-.395-.278-.564.444-.453.935-.893 1.456-1.312.441-.355.885-.68 1.309-.968.455-.308.868-.54 1.189-.663A1 1 0 0012.395 2.553z" clipRule="evenodd" />
-              </svg>
-              {duplicateScoreLabel(detail.duplicateScore)}
-            </div>
-          ) : null}
         </header>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
           {/* Main Content (Left) */}
           <div className="flex-1 space-y-8">
-            <article className="overflow-hidden rounded-[2.5rem] border border-slate-300/60 bg-white shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900/40 dark:shadow-none">
+            <article className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
               {detail.source === 'jobsearch' && detail.company.cover ? (
                 <div className="relative h-44 md:h-56 lg:h-64">
                   <img
@@ -463,7 +439,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
                     alt={`${detail.company.name} cover`}
                     className="absolute inset-0 h-full w-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-transparent" />
+                  <div className="absolute inset-0 bg-black/35" />
                 </div>
               ) : null}
 
@@ -474,7 +450,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
 
                 <div className="mb-8 flex items-center gap-5">
                   {detail.company.logo ? (
-                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-100 bg-white p-2 shadow-sm dark:border-slate-800 dark:bg-slate-800">
+                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-2 dark:border-white/8 dark:bg-white/6">
                       <img
                         src={detail.company.logo}
                         alt={detail.company.name}
@@ -482,38 +458,24 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
                       />
                     </div>
                   ) : (
-                    <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-2xl font-black text-indigo-600 uppercase dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
+                    <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-[0.85rem] border border-indigo-100 bg-indigo-50 text-2xl font-black uppercase text-indigo-600 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
                       {(detail.company.name.slice(0, 1) || 'U').toUpperCase()}
                     </div>
                   )}
 
                   <div className="min-w-0 flex-1">
                     <h2 className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{detail.company.name}</h2>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {detail.sourceBadges.map((badge) => (
-                        <div
-                          key={`${badge.source}-${badge.label}`}
-                          className="flex items-center gap-1.5 rounded-full border border-slate-100 bg-slate-50 px-2.5 py-1 dark:border-slate-700/50 dark:bg-slate-800/50"
-                          title={badge.label}
-                        >
-                          <img src={badge.icon} className="h-3.5 w-3.5 rounded-sm" alt="" />
-                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                            {badge.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
                   </div>
                 </div>
 
                 {detail.techStack.length ? (
-                  <div className="mt-8 border-t border-slate-100 pt-8 dark:border-slate-800/50">
+                  <div className="mt-8 border-t border-black/8 pt-8 dark:border-white/8">
                     <h3 className="mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">Essential Tech Stack</h3>
                     <div className="flex flex-wrap gap-2.5">
                       {detail.techStack.map((tech) => (
                         <span
                           key={`tech-${tech}`}
-                          className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-white dark:border-slate-800 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                          className="rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] px-4 py-1.5 text-xs font-black uppercase tracking-widest text-slate-500 transition-colors hover:bg-white dark:border-white/8 dark:bg-white/6 dark:text-slate-400 dark:hover:bg-white/10"
                         >
                           {tech}
                         </span>
@@ -524,7 +486,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
               </div>
             </article>
 
-            <section className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 md:p-10">
+            <section className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-8 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] md:p-10">
               <h2 className="mb-8 flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
                 <span className="h-2 w-2 rounded-full bg-indigo-600" />
                 Job Description
@@ -543,7 +505,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
             </section>
 
             {hasRenderableContent(requirementsHtml) ? (
-              <section className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 md:p-10">
+              <section className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-8 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] md:p-10">
                 <h2 className="mb-8 flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
                   <span className="h-2 w-2 rounded-full bg-purple-600" />
                   Requirements
@@ -559,14 +521,14 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
             ) : null}
 
             {benefits.length ? (
-              <section className="overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/40 md:p-10">
+              <section className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-8 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] md:p-10">
                 <h2 className="mb-8 flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
                   Benefits
                 </h2>
                 <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {benefits.map((benefit) => (
-                    <li key={benefit} className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 text-sm font-bold text-slate-700 dark:border-slate-800 dark:bg-slate-800/40 dark:text-slate-300 transition-all hover:bg-slate-50">
+                    <li key={benefit} className="flex items-center gap-3 rounded-[0.85rem] border border-black/8 bg-[#f8f6f3] p-4 text-sm font-bold text-slate-700 transition-colors hover:bg-white dark:border-white/8 dark:bg-white/6 dark:text-slate-300 dark:hover:bg-white/10">
                       <svg className="h-5 w-5 flex-shrink-0 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
@@ -578,8 +540,8 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
             ) : null}
 
             {sourceLinks.length ? (
-              <section className="overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-900 shadow-2xl shadow-indigo-500/10 dark:border-slate-700 dark:bg-[#0f172a]">
-                <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-800 dark:divide-slate-700">
+              <section className="overflow-hidden rounded-[1.5rem] border border-white/8 bg-[#151515] transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
+                <div className="divide-y divide-white/8 md:flex md:flex-row md:divide-x md:divide-y-0">
                   {sourceLinks.map((link) => {
                     const trackedHref = buildTrackedClickUrl(link.source, detail.vacancyId, detail.slug, link.url)
                     return (
@@ -593,7 +555,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors">
                           <img src={link.icon} className="h-5 w-5 rounded-sm brightness-110" alt="" />
                         </div>
-                        <span>Quick Apply on {link.label}</span>
+                        <span className="transition-colors group-hover:text-[#d7b37a]">Quick Apply on {link.label}</span>
                       </a>
                     )
                   })}
@@ -604,7 +566,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
 
           {/* Sidebar (Right) */}
           <aside className="sticky top-[108px] w-full space-y-8 lg:w-80">
-            <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
+            <section className="overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-6 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
               <h3 className="mb-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">Job Details</h3>
               {renderInfoCards(detail)}
             </section>
@@ -612,7 +574,8 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
             {renderCompanyMeta(detail)}
           </aside>
         </div>
-      </div>
+        </section>
+      </main>
       <Footer />
     </div>
   )

@@ -56,6 +56,12 @@ class Settings:
     supabase_url: str
     supabase_service_key: str
     scrape_interval_seconds: int
+    telegram_bot_token: str
+    telegram_channel_id: str
+    telegram_bot_username: str
+    telegram_digest_time: str
+    telegram_timezone: str
+    telegram_digest_limit: int
 
 
 
@@ -76,9 +82,24 @@ def load_settings(env_path: Path | None = None) -> Settings:
 
     interval_raw = os.getenv("SCRAPE_TIME_INTERVAL") or env_values.get("SCRAPE_TIME_INTERVAL", "")
     scrape_interval_seconds = _parse_positive_int(interval_raw, DEFAULT_SCRAPE_INTERVAL_SECONDS)
+    telegram_bot_token = os.getenv("TELEGRAM_BOT_TOKEN") or env_values.get("TELEGRAM_BOT_TOKEN") or ""
+    telegram_channel_id = os.getenv("TELEGRAM_CHANNEL_ID") or env_values.get("TELEGRAM_CHANNEL_ID") or ""
+    telegram_bot_username = os.getenv("TELEGRAM_BOT_USERNAME") or env_values.get("TELEGRAM_BOT_USERNAME") or ""
+    telegram_digest_time = os.getenv("TELEGRAM_DIGEST_TIME") or env_values.get("TELEGRAM_DIGEST_TIME") or "09:00"
+    telegram_timezone = os.getenv("TELEGRAM_TIMEZONE") or env_values.get("TELEGRAM_TIMEZONE") or "Asia/Baku"
+    telegram_digest_limit = _parse_positive_int(
+        os.getenv("TELEGRAM_DIGEST_LIMIT") or env_values.get("TELEGRAM_DIGEST_LIMIT", ""),
+        5,
+    )
 
     return Settings(
         supabase_url=supabase_url,
         supabase_service_key=supabase_service_key,
         scrape_interval_seconds=scrape_interval_seconds,
+        telegram_bot_token=telegram_bot_token,
+        telegram_channel_id=telegram_channel_id,
+        telegram_bot_username=telegram_bot_username,
+        telegram_digest_time=telegram_digest_time,
+        telegram_timezone=telegram_timezone,
+        telegram_digest_limit=telegram_digest_limit,
     )

@@ -1,6 +1,7 @@
 'use client'
 
 import type { User } from '@supabase/supabase-js'
+import { BriefcaseBusiness } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -54,9 +55,27 @@ function profileFromUser(user: User | null, isAdmin = false): HeaderProfile | nu
   }
 }
 
+function ThemeButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex h-11 w-11 items-center justify-center rounded-lg border border-(--line) bg-(--surface-strong) text-[color-mix(in_srgb,var(--foreground)_70%,transparent)] hover:border-(--accent) hover:text-(--accent)"
+      aria-label="Toggle theme"
+    >
+      <svg className="hidden h-5 w-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M19 12a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <svg className="block h-5 w-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+    </button>
+  )
+}
+
 export default function SiteHeader({
-  title = 'JobScan Dashboard',
-  subtitle = 'Merged vacancies from JobSearch.az and Glorri',
+  title = 'JobScan Intelligence',
+  subtitle = 'Corporate-grade monitoring of Azerbaijan technology hiring',
   className = '',
   onToggleTheme,
 }: SiteHeaderProps) {
@@ -118,7 +137,7 @@ export default function SiteHeader({
       void applyUser(data.user ?? null)
     }
 
-    loadCurrentUser()
+    void loadCurrentUser()
 
     const { data: authSubscription } = supabase.auth.onAuthStateChange((_event, session) => {
       void applyUser(session?.user ?? null)
@@ -130,7 +149,6 @@ export default function SiteHeader({
     }
   }, [supabase])
 
-  // Combined click-outside logic for both desktop and mobile menus
   useEffect(() => {
     if (!isProfileMenuOpen && !isMobileMenuOpen) {
       return
@@ -177,287 +195,261 @@ export default function SiteHeader({
     window.localStorage.setItem('theme', nextTheme)
   }
 
-  return (
-    <header className={`border-b border-gray-100/80 pb-3 sm:pb-6 dark:border-gray-800/60 ${className}`}>
-      <div className="flex items-center justify-between gap-4">
-        {/* Modern Stylized Logo */}
-        <div className="group relative shrink-0">
-          <Link href="/" className="flex items-center gap-2 transition-transform duration-300 active:scale-95 sm:gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25 transition-transform group-hover:rotate-6 sm:h-11 sm:w-11">
-              <svg className="h-5 w-5 text-white sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-lg font-black tracking-tight text-gray-900 sm:text-2xl dark:text-white">
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Job</span>
-                <span>Scan</span>
-              </h1>
-              <p className="hidden text-[11px] font-bold uppercase tracking-[0.1em] text-gray-400 sm:block dark:text-gray-500">
-                {subtitle}
+  const authArea = authChecked ? (
+    profile ? (
+      <div ref={profileMenuRef} className="relative">
+        <button
+          type="button"
+          onClick={() => setIsProfileMenuOpen((open) => !open)}
+          className="flex h-11 items-center gap-3 rounded-lg border border-(--line) bg-(--surface-strong) px-2.5 pl-3 text-left hover:border-(--accent)"
+          aria-expanded={isProfileMenuOpen}
+          aria-haspopup="menu"
+        >
+          <div className="hidden min-w-0 sm:block">
+            <p className="max-w-35 truncate text-sm font-semibold text-foreground">
+              {profile.displayName}
+            </p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-[color-mix(in_srgb,var(--foreground)_44%,transparent)]">
+              {profile.isAdmin ? 'Administrator' : 'Workspace'}
+            </p>
+          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent) text-[11px] font-semibold text-white">
+            {profile.initials}
+          </div>
+        </button>
+
+        {isProfileMenuOpen ? (
+          <div
+            className="absolute right-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-xl border border-(--line) bg-(--surface-strong) p-2 backdrop-blur-xl"
+            role="menu"
+          >
+            <div className="border-b border-(--line) px-4 py-4">
+              <p className="corporate-kicker">Account</p>
+              <p className="mt-2 truncate text-base font-semibold text-foreground">{profile.displayName}</p>
+              <p className="truncate text-sm text-[color-mix(in_srgb,var(--foreground)_56%,transparent)]">
+                {profile.email}
               </p>
             </div>
-          </Link>
+
+            <div className="space-y-1 p-1">
+              <Link
+                href="/profile"
+                onClick={() => setIsProfileMenuOpen(false)}
+                className="flex items-center gap-4 rounded-lg px-3.5 py-3 text-sm font-semibold text-[color-mix(in_srgb,var(--foreground)_74%,transparent)] hover:bg-(--accent-soft) hover:text-(--accent)"
+                role="menuitem"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--surface-muted)">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </span>
+                Profile settings
+              </Link>
+
+              {profile.isAdmin ? (
+                <Link
+                  href="/admin"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                  className="flex items-center gap-4 rounded-lg px-3.5 py-3 text-sm font-semibold text-[color-mix(in_srgb,var(--foreground)_74%,transparent)] hover:bg-(--accent-soft) hover:text-(--accent)"
+                  role="menuitem"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--surface-muted)">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </span>
+                  Admin panel
+                </Link>
+              ) : null}
+            </div>
+
+            <div className="my-1 h-px bg-(--line)" />
+
+            <div className="p-1">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="group flex w-full items-center gap-4 rounded-lg px-3.5 py-3 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-300"
+                role="menuitem"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 transition group-hover:bg-red-100 dark:bg-red-950/40 dark:group-hover:bg-red-950/70">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </span>
+                Sign out
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </div>
+    ) : (
+      <div className="flex items-center gap-2">
+        <Link
+          href="/auth/login"
+          className="inline-flex h-11 items-center rounded-lg border border-(--line) bg-(--surface-strong) px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color-mix(in_srgb,var(--foreground)_76%,transparent)]"
+        >
+          Sign in
+        </Link>
+        <Link
+          href="/auth/register"
+          className="inline-flex h-11 items-center rounded-lg bg-(--accent) px-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white hover:bg-(--accent-strong)"
+        >
+          Create account
+        </Link>
+      </div>
+    )
+  ) : (
+    <div className="h-11 w-40 animate-pulse rounded-full bg-(--surface-muted)" aria-hidden />
+  )
+
+  return (
+    <header className={className}>
+      <div className="flex items-center justify-between gap-4">
+        <Link href="/" className="group flex min-w-0 items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-(--accent) text-white">
+            <BriefcaseBusiness className="h-5 w-5" strokeWidth={2.2} />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color-mix(in_srgb,var(--foreground)_44%,transparent)]">
+              {title}
+            </p>
+            <h1 className="truncate text-lg font-semibold tracking-[-0.04em] text-foreground sm:text-xl">
+              JobScan
+            </h1>
+            <p className="hidden truncate text-xs text-[color-mix(in_srgb,var(--foreground)_56%,transparent)] sm:block">
+              {subtitle}
+            </p>
+          </div>
+        </Link>
+
+        <div className="hidden items-center gap-3 sm:flex">
+          <ThemeButton onClick={handleToggleTheme} />
+          {authArea}
         </div>
 
-        {/* Desktop Actions */}
-        <div className="hidden items-center justify-end gap-3 sm:flex">
-          <button
-            type="button"
-            onClick={handleToggleTheme}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white/50 text-gray-500 transition-all hover:border-blue-500/30 hover:bg-white hover:text-blue-600 dark:border-gray-700/60 dark:bg-gray-800/40 dark:text-gray-400 dark:hover:border-blue-400/30 dark:hover:bg-gray-800 dark:hover:text-blue-400"
-            aria-label="Toggle theme"
-          >
-            <svg className="hidden h-5 w-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m12.728 12.728L5.122 5.122M19 12a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <svg className="block h-5 w-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          </button>
-
-          <div className="h-8 w-px bg-gray-100 sm:mx-1 dark:bg-gray-800" />
-
-          {authChecked ? (
-            profile ? (
-              <div ref={profileMenuRef} className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsProfileMenuOpen((open) => !open)}
-                  className="flex h-11 items-center gap-3 rounded-2xl border border-gray-200 bg-white/50 px-2.5 pl-3 transition-all hover:border-blue-500/30 hover:bg-white hover:shadow-md dark:border-gray-700/60 dark:bg-gray-800/40 dark:hover:border-blue-400/30 dark:hover:bg-gray-800"
-                  aria-expanded={isProfileMenuOpen}
-                  aria-haspopup="menu"
-                >
-                  <div className="hidden text-right sm:block">
-                    <p className="max-w-[120px] truncate text-xs font-black text-gray-900 dark:text-gray-100">
-                      {profile.displayName}
-                    </p>
-                    <p className="max-w-[120px] truncate text-[10px] font-bold text-gray-400 dark:text-gray-500">
-                      {profile.isAdmin ? 'Administrator' : 'Explorer'}
-                    </p>
-                  </div>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 text-[11px] font-black text-blue-600 shadow-inner dark:from-blue-900/20 dark:to-indigo-900/20 dark:text-blue-400">
-                    {profile.initials}
-                  </div>
-                </button>
-
-                {isProfileMenuOpen ? (
-                  <div
-                    className="absolute top-full right-0 z-50 mt-3 w-64 origin-top-right overflow-hidden rounded-[2rem] border border-gray-100 bg-white/95 p-2 shadow-2xl backdrop-blur-xl ring-1 ring-black/5 dark:border-gray-700 dark:bg-gray-900/95"
-                    role="menu"
-                  >
-                    <div className="px-4 py-4 border-b border-gray-50 dark:border-gray-800">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">Account</p>
-                      <p className="mt-1 truncate text-base font-black text-gray-900 dark:text-white">{profile.displayName}</p>
-                      <p className="truncate text-xs font-bold text-gray-400 dark:text-gray-500">{profile.email}</p>
-                    </div>
-
-                    <div className="space-y-1 p-1">
-                      <Link
-                        href="/profile"
-                        onClick={() => setIsProfileMenuOpen(false)}
-                        className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
-                        role="menuitem"
-                      >
-                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
-                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                        </span>
-                        Profile Settings
-                      </Link>
-
-                      {profile.isAdmin ? (
-                        <Link
-                          href="/admin"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
-                          role="menuitem"
-                        >
-                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
-                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                          </span>
-                          Admin Panel
-                        </Link>
-                      ) : null}
-                    </div>
-
-                    <div className="my-1 h-px bg-gray-50 dark:bg-gray-800" />
-
-                    <div className="p-1">
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        className="flex w-full items-center gap-4 rounded-2xl px-3.5 py-2.5 text-left text-sm font-bold text-red-500 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
-                        role="menuitem"
-                      >
-                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-50 dark:bg-red-500/10">
-                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                        </span>
-                        Sign Out
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/auth/login"
-                  className="inline-flex h-11 items-center rounded-xl border border-gray-200 bg-white/50 px-5 text-xs font-black uppercase tracking-widest text-gray-700 transition-all hover:bg-white hover:shadow-md dark:border-gray-700 dark:bg-gray-800/40 dark:text-gray-200 dark:hover:bg-gray-800"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="inline-flex h-11 items-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02] hover:shadow-blue-500/40 active:scale-98"
-                >
-                  Register
-                </Link>
-              </div>
-            )
-          ) : (
-            <div className="h-11 w-40 animate-pulse rounded-xl bg-gray-100 dark:bg-gray-800" aria-hidden />
-          )}
-        </div>
-
-        {/* Mobile Hamburger & Theme Toggle */}
         <div className="flex items-center gap-2 sm:hidden">
-          <button
-            type="button"
-            onClick={handleToggleTheme}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white/50 text-gray-500 transition-all active:scale-95 dark:border-gray-700/60 dark:bg-gray-800/40 dark:text-gray-400"
-            aria-label="Toggle theme"
-          >
-            <svg className="hidden h-5 w-5 dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m12.728 12.728L5.122 5.122M19 12a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <svg className="block h-5 w-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          </button>
+          <ThemeButton onClick={handleToggleTheme} />
 
           <div ref={mobileMenuRef} className="relative">
             <button
               type="button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-gray-200 bg-white/50 text-gray-600 transition-all active:scale-95 dark:border-gray-700/60 dark:bg-gray-800/40 dark:text-gray-400"
+              onClick={() => setIsMobileMenuOpen((open) => !open)}
+              className="flex h-11 w-11 items-center justify-center rounded-lg border border-(--line) bg-(--surface-strong) text-foreground"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16m-7 6h7" />
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 7h16M4 12h16m-10 5h10" />
                 </svg>
               )}
             </button>
 
             {isMobileMenuOpen ? (
               <div
-                className="absolute top-full right-0 z-50 mt-3 w-64 origin-top-right overflow-hidden rounded-[2rem] border border-gray-100 bg-white/95 p-2 shadow-2xl backdrop-blur-xl ring-1 ring-black/5 dark:border-gray-700 dark:bg-gray-900/95"
+                className="absolute right-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-xl border border-(--line) bg-(--surface-strong) p-2 backdrop-blur-xl"
                 role="menu"
               >
                 {authChecked ? (
                   profile ? (
                     <>
-                      <div className="px-4 py-4 border-b border-gray-50 dark:border-gray-800">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">Account</p>
-                        <p className="mt-1 truncate text-base font-black text-gray-900 dark:text-white">{profile.displayName}</p>
-                        <p className="truncate text-xs font-bold text-gray-400 dark:text-gray-500">{profile.email}</p>
+                      <div className="border-b border-(--line) px-4 py-4">
+                        <p className="corporate-kicker">Account</p>
+                        <p className="mt-2 truncate text-base font-semibold text-foreground">
+                          {profile.displayName}
+                        </p>
+                        <p className="truncate text-sm text-[color-mix(in_srgb,var(--foreground)_56%,transparent)]">
+                          {profile.email}
+                        </p>
                       </div>
 
                       <div className="space-y-1 p-1">
                         <Link
                           href="/profile"
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+                          className="flex items-center gap-4 rounded-lg px-3.5 py-3 text-sm font-semibold text-[color-mix(in_srgb,var(--foreground)_74%,transparent)] hover:bg-(--accent-soft) hover:text-(--accent)"
                           role="menuitem"
                         >
-                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--surface-muted)">
                             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                           </span>
-                          Profile Settings
+                          Profile settings
                         </Link>
 
-                        {profile.isAdmin && (
+                        {profile.isAdmin ? (
                           <Link
                             href="/admin"
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-indigo-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
+                            className="flex items-center gap-4 rounded-lg px-3.5 py-3 text-sm font-semibold text-[color-mix(in_srgb,var(--foreground)_74%,transparent)] hover:bg-(--accent-soft) hover:text-(--accent)"
                             role="menuitem"
                           >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--surface-muted)">
                               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                               </svg>
                             </span>
-                            Admin Panel
+                            Admin panel
                           </Link>
-                        )}
+                        ) : null}
                       </div>
 
-                      <div className="my-1 h-px bg-gray-50 dark:bg-gray-800" />
+                      <div className="my-1 h-px bg-(--line)" />
 
                       <div className="p-1">
                         <button
                           type="button"
                           onClick={handleLogout}
-                          className="flex w-full items-center gap-4 rounded-2xl px-3.5 py-2.5 text-left text-sm font-bold text-red-500 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                          className="group flex w-full items-center gap-4 rounded-lg px-3.5 py-3 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/30 dark:hover:text-red-300"
                           role="menuitem"
                         >
-                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-50 dark:bg-red-500/10">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 transition group-hover:bg-red-100 dark:bg-red-950/40 dark:group-hover:bg-red-950/70">
                             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
                           </span>
-                          Sign Out
+                          Sign out
                         </button>
                       </div>
                     </>
                   ) : (
-                    <>
-                      <div className="space-y-1 p-1">
-                        <Link
-                          href="/auth/login"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-blue-50 hover:text-blue-600 dark:text-gray-400 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
-                          role="menuitem"
-                        >
-                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-50 dark:bg-gray-800">
-                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                          </span>
-                          Sign In
-                        </Link>
-                        <Link
-                          href="/auth/register"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-4 rounded-2xl px-3.5 py-2.5 text-sm font-bold text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-500/10"
-                          role="menuitem"
-                        >
-                          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/40">
-                            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                            </svg>
-                          </span>
-                          Create Account
-                        </Link>
-                      </div>
-                    </>
+                    <div className="space-y-1 p-1">
+                      <Link
+                        href="/auth/login"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-4 rounded-lg px-3.5 py-3 text-sm font-semibold text-[color-mix(in_srgb,var(--foreground)_74%,transparent)] hover:bg-(--accent-soft) hover:text-(--accent)"
+                        role="menuitem"
+                      >
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--surface-muted)">
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                        </span>
+                        Sign in
+                      </Link>
+                      <Link
+                        href="/auth/register"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-4 rounded-lg px-3.5 py-3 text-sm font-semibold text-(--accent) hover:bg-(--accent-soft)"
+                        role="menuitem"
+                      >
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-(--accent-soft)">
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                          </svg>
+                        </span>
+                        Create account
+                      </Link>
+                    </div>
                   )
                 ) : (
-                  <div className="flex h-32 items-center justify-center p-4">
-                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                  <div className="p-4">
+                    <div className="h-11 w-full animate-pulse rounded-full bg-(--surface-muted)" />
                   </div>
                 )}
               </div>

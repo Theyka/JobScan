@@ -146,6 +146,10 @@ function parseSalaryText(value: unknown): string {
   }
 
   if (typeof value === 'number' && Number.isFinite(value)) {
+    if (Math.round(value) === 0) {
+      return ''
+    }
+
     return `${formatNumber(Math.round(value))} AZN`
   }
 
@@ -161,6 +165,10 @@ function parseSalaryText(value: unknown): string {
 
   if (!numbers.length) {
     return raw
+  }
+
+  if (numbers.every((item) => item === 0)) {
+    return ''
   }
 
   const min = Math.min(...numbers)

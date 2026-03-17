@@ -27,14 +27,14 @@ declare global {
 function getChartColors(theme: 'light' | 'dark') {
   const isDark = theme === 'dark'
   return {
-    text: isDark ? '#94a3b8' : '#64748b',
-    grid: isDark ? '#1e293b' : '#f1f5f9',
-    tooltipBg: isDark ? '#0f172a' : '#ffffff',
-    tooltipText: isDark ? '#f1f5f9' : '#020617',
-    tooltipBorder: isDark ? '#1e293b' : '#e2e8f0',
-    activeBar: isDark ? '#6366f1' : '#4f46e5',
-    bar: isDark ? '#4f46e5' : '#6366f1',
-    barHover: isDark ? '#818cf8' : '#4338ca',
+    text: isDark ? '#90a2b5' : '#5f7286',
+    grid: isDark ? '#183044' : '#dbe4ee',
+    tooltipBg: isDark ? '#0d1b29' : '#ffffff',
+    tooltipText: isDark ? '#edf3f8' : '#0f2235',
+    tooltipBorder: isDark ? '#1e3548' : '#d4dde6',
+    activeBar: isDark ? '#d4b06f' : '#ba9551',
+    bar: isDark ? '#7ea8cf' : '#153758',
+    barHover: isDark ? '#99bbdc' : '#0f2840',
   }
 }
 
@@ -119,13 +119,12 @@ export default function Chart({ topTechs, theme, activeTech, onToggleTech }: Cha
         const values = topTechs.map((item) => item.count)
         const colors = getChartColors(theme)
 
-        // Use gradients for bars
-        const gradient = context.createLinearGradient(0, 0, 0, 400)
+        const gradient = context.createLinearGradient(0, 0, 0, 420)
         gradient.addColorStop(0, colors.bar)
-        gradient.addColorStop(1, colors.activeBar)
+        gradient.addColorStop(1, colors.barHover)
 
         const barColors = labels.map((label) =>
-          activeTech?.toLowerCase() === label.toLowerCase() ? colors.barHover : gradient
+          activeTech?.toLowerCase() === label.toLowerCase() ? colors.activeBar : gradient
         )
 
         const buildConfig = (): ChartConfig => ({
@@ -137,8 +136,8 @@ export default function Chart({ topTechs, theme, activeTech, onToggleTech }: Cha
                 label: 'Mentions',
                 data: values,
                 backgroundColor: barColors,
-                borderRadius: 8,
-                hoverBackgroundColor: colors.barHover,
+                borderRadius: 10,
+                hoverBackgroundColor: colors.activeBar,
               },
             ],
           },
@@ -167,9 +166,9 @@ export default function Chart({ topTechs, theme, activeTech, onToggleTech }: Cha
                 ticks: {
                   color: colors.text,
                   font: {
-                    weight: 'bold',
+                    weight: '600',
                     size: 10,
-                  }
+                  },
                 },
               },
               y: {
@@ -180,11 +179,11 @@ export default function Chart({ topTechs, theme, activeTech, onToggleTech }: Cha
                 border: { display: false },
                 ticks: {
                   color: colors.text,
-                  stepSize: Math.ceil(Math.max(...values) / 5),
+                  stepSize: Math.max(1, Math.ceil(Math.max(...values) / 5)),
                   font: {
-                    weight: '800',
-                    size: 9,
-                  }
+                    weight: '600',
+                    size: 10,
+                  },
                 },
               },
             },
@@ -232,46 +231,45 @@ export default function Chart({ topTechs, theme, activeTech, onToggleTech }: Cha
   }, [])
 
   return (
-    <section className="rounded-[2.5rem] border border-slate-200 bg-white p-10 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
-      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <section className="corporate-panel overflow-hidden rounded-2xl px-6 py-7 sm:px-8 sm:py-8">
+      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 className="flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2.5"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"
-                />
-              </svg>
-            </span>
-            Technology Landscape
+          <p className="corporate-kicker">Demand Index</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.05em] text-[color:var(--foreground)]">
+            Technology landscape by mention volume
           </h2>
-          <p className="mt-1 text-sm font-semibold text-slate-400 dark:text-slate-500 ml-13">Market prevalence of core technologies</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:color-mix(in_srgb,var(--foreground)_66%,transparent)]">
+            Use the bars to focus the vacancy feed by technology. The gold state marks the currently selected demand
+            signal.
+          </p>
+        </div>
+        <div className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-muted)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:color-mix(in_srgb,var(--foreground)_56%,transparent)]">
+          Click any bar to filter
         </div>
       </div>
 
-      <div className="relative">
+      <div className="rounded-xl border border-[color:var(--line)] bg-[color:color-mix(in_srgb,var(--surface-strong)_78%,white_22%)] p-4 sm:p-6">
         {topTechs.length ? (
           <>
-            <div className="h-72 w-full">
+            <div className="h-80 w-full">
               <canvas ref={chartCanvasRef} className="h-full w-full cursor-pointer" />
             </div>
             {chartError ? (
-              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[10px] font-black uppercase tracking-widest text-amber-700 dark:border-amber-900/30 dark:bg-amber-900/20 dark:text-amber-400">
+              <div className="mt-4 rounded-xl border border-amber-200/80 bg-amber-50/80 p-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-700 dark:border-amber-900/30 dark:bg-amber-900/20 dark:text-amber-400">
                 Could not render insight: {chartError}
               </div>
             ) : null}
           </>
         ) : (
-          <div className="flex h-72 flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/20">
-            <div className="rounded-full bg-slate-100 p-4 dark:bg-slate-800/50">
-              <svg className="h-8 w-8 text-slate-400 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="flex h-72 flex-col items-center justify-center rounded-lg border border-dashed border-[color:var(--line)] bg-[color:var(--surface-muted)]/60">
+            <div className="rounded-full bg-[color:var(--accent-soft)] p-4 text-[color:var(--accent)]">
+              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
             </div>
-            <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Empty Technology Record</p>
+            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:color-mix(in_srgb,var(--foreground)_44%,transparent)]">
+              No technology signal available
+            </p>
           </div>
         )}
       </div>

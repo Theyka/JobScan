@@ -60,3 +60,12 @@ export async function setManagedUserAdminStatus(userId: string, isAdmin: boolean
     throw new Error(error.message)
   }
 }
+
+export async function deleteManagedUser(userId: string): Promise<void> {
+  const adminSupabase = await createAdminClient()
+  const { error } = await adminSupabase.auth.admin.deleteUser(userId)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+}

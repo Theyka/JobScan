@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import AdminSectionNav from '@/components/admin/AdminSectionNav'
+import LandingTopBar from '@/components/landing/LandingTopBar'
 import Footer from '@/components/shared/Footer'
-import SiteHeader from '@/components/shared/SiteHeader'
 import CustomDatePicker from '@/components/shared/CustomDatePicker'
 import { buildAdminAnalytics, resolveAdminAnalyticsFilters, type AdminAnalyticsQuery } from '@/lib/admin/analytics'
 import { getCurrentUserAccess } from '@/lib/admin/access'
@@ -43,46 +43,71 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const filters = resolveAdminAnalyticsFilters(resolvedSearchParams)
   const analytics = await buildAdminAnalytics(filters)
   const maxSeriesValue = Math.max(1, ...analytics.trend.map((entry) => entry.visits))
+  const totalTrendVisits = analytics.trend.reduce((sum, entry) => sum + entry.visits, 0)
+  const averageTrendVisits = analytics.trend.length ? Math.round(totalTrendVisits / analytics.trend.length) : 0
+  const peakTrendEntry = analytics.trend.reduce<(typeof analytics.trend)[number] | null>(
+    (peak, entry) => (peak === null || entry.visits > peak.visits ? entry : peak),
+    null
+  )
+  const trendChartWidth = 760
+  const trendChartHeight = 260
+  const trendChartPaddingX = 24
+  const trendChartPaddingTop = 34
+  const trendChartPaddingBottom = 50
+  const trendInnerWidth = trendChartWidth - trendChartPaddingX * 2
+  const trendInnerHeight = trendChartHeight - trendChartPaddingTop - trendChartPaddingBottom
+  const trendPoints = analytics.trend.map((entry, index) => {
+    const x =
+      analytics.trend.length <= 1
+        ? trendChartWidth / 2
+        : trendChartPaddingX + (index / (analytics.trend.length - 1)) * trendInnerWidth
+    const y = trendChartPaddingTop + (1 - entry.visits / maxSeriesValue) * trendInnerHeight
+
+    return {
+      ...entry,
+      x,
+      y,
+    }
+  })
+  const trendLinePath = trendPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ')
+  const trendAreaPath = trendPoints.length
+    ? `${trendLinePath} L ${trendPoints[trendPoints.length - 1]!.x} ${trendChartHeight - trendChartPaddingBottom} L ${trendPoints[0]!.x} ${trendChartHeight - trendChartPaddingBottom} Z`
+    : ''
+  const trendTickValues = Array.from(new Set([1, 0.75, 0.5, 0.25].map((ratio) => Math.round(maxSeriesValue * ratio))))
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
-      {/* Sticky Full-Width Header */}
-      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
-        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
-        <div className="relative container mx-auto max-w-7xl px-4">
-          <SiteHeader
-            className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4"
-            title="Analytics Hub"
-            subtitle={`Platform performance for ${dateRangeLabel(filters.from, filters.to)}`}
-          />
+    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#111111] dark:text-slate-100">
+      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
+        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+          <LandingTopBar />
         </div>
       </div>
 
-
-      <div className="container mx-auto max-w-7xl px-4 py-12">
+      <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+      <div className="mx-auto w-full py-6 lg:py-10">
         <AdminSectionNav current="stats" />
 
         {/* Dashboard Controls */}
-        <section className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between rounded-3xl border border-slate-300/50 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
+        <section className="mb-10 flex flex-col gap-6 rounded-3xl border border-black/8 bg-white p-6 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-4">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm dark:bg-indigo-500/10 dark:text-indigo-400">
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-black/8 bg-[#f8f6f3] text-[#8a6a43] dark:border-white/8 dark:bg-white/6 dark:text-[#d7b37a]">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
             </span>
             <div>
               <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Filter Insights</h2>
-              <p className="text-xs font-semibold text-slate-400 dark:text-slate-500">Adjust temporal range for precise analysis</p>
+              <p className="text-xs font-semibold text-slate-400 dark:text-slate-500">{dateRangeLabel(filters.from, filters.to)}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex h-12 rounded-2xl bg-slate-100 p-1.5 dark:bg-slate-800">
+            <div className="flex h-12 rounded-xl border border-black/8 bg-[#f8f6f3] p-1.5 dark:border-white/8 dark:bg-white/6">
               <Link
                 href="/admin?preset=month"
                 className={`flex h-full items-center justify-center rounded-xl px-5 text-xs font-black uppercase tracking-widest transition-all ${filters.preset === 'month'
-                  ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-700 dark:text-indigo-300'
-                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                  ? 'bg-[#8a6a43] text-white dark:bg-[#d7b37a] dark:text-[#151515]'
+                  : 'text-slate-400 hover:text-[#8a6a43] dark:hover:text-[#d7b37a]'
                   }`}
               >
                 Monthly
@@ -90,8 +115,8 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <Link
                 href="/admin?preset=year"
                 className={`flex h-full items-center justify-center rounded-xl px-5 text-xs font-black uppercase tracking-widest transition-all ${filters.preset === 'year'
-                  ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-700 dark:text-indigo-300'
-                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                  ? 'bg-[#8a6a43] text-white dark:bg-[#d7b37a] dark:text-[#151515]'
+                  : 'text-slate-400 hover:text-[#8a6a43] dark:hover:text-[#d7b37a]'
                   }`}
               >
                 Yearly
@@ -100,7 +125,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
             <form className="flex flex-wrap items-center gap-3" method="get">
               <input type="hidden" name="preset" value="custom" />
-              <div className="flex h-12 items-center gap-4 rounded-2xl bg-slate-50 border border-slate-200 px-6 dark:bg-slate-800 dark:border-slate-700">
+              <div className="flex h-12 items-center gap-4 rounded-xl border border-black/8 bg-[#f8f6f3] px-6 dark:border-white/8 dark:bg-white/6">
                 <CustomDatePicker
                   name="from"
                   defaultValue={filters.from}
@@ -113,7 +138,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               </div>
               <button
                 type="submit"
-                className="flex h-12 items-center justify-center rounded-2xl bg-indigo-600 px-6 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-700 hover:shadow-indigo-700/30 active:scale-95"
+                className="flex h-12 items-center justify-center rounded-xl border border-[#8a6a43] bg-[#8a6a43] px-6 text-xs font-black uppercase tracking-widest text-white transition-colors hover:border-[#765936] hover:bg-[#765936] active:scale-95 dark:border-[#d7b37a] dark:bg-[#d7b37a] dark:text-[#151515] dark:hover:border-[#c9a15e] dark:hover:bg-[#c9a15e]"
               >
                 Apply
               </button>
@@ -145,9 +170,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               )
             },
           ].map((stat) => (
-            <div key={stat.label} className="group relative rounded-3xl border border-slate-300/50 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-indigo-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/40">
+            <div key={stat.label} className="group relative rounded-3xl border border-black/8 bg-white p-6 transition-colors duration-300 hover:border-[#8a6a43]/30 dark:border-white/8 dark:bg-[#151515] dark:hover:border-[#d7b37a]/30">
               <div className="flex flex-col gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white dark:bg-slate-800 dark:text-indigo-400 dark:group-hover:bg-indigo-500">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#f8f6f3] text-[#8a6a43] transition-colors group-hover:bg-[#8a6a43] group-hover:text-white dark:bg-white/6 dark:text-[#d7b37a] dark:group-hover:bg-[#d7b37a] dark:group-hover:text-[#151515]">
                   <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     {stat.icon}
                   </svg>
@@ -162,48 +187,133 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         </div>
 
         {/* Trend Analysis */}
-        <section className="mb-10 rounded-[2.5rem] border border-slate-300/50 bg-white p-10 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
-          <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <section className="mb-10 rounded-3xl border border-black/8 bg-white p-10 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
+          <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Trend Insight</h2>
               <p className="mt-1 text-sm font-semibold text-slate-400 dark:text-slate-500">
                 {filters.granularity === 'month' ? 'Sequential monthly' : 'Detailed daily'} activity
               </p>
             </div>
-            <div className="flex items-center gap-6 rounded-2xl bg-slate-50 p-2.5 px-4 dark:bg-slate-800/50">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-indigo-500 ring-4 ring-indigo-500/10" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Visits</span>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-3 dark:border-white/8 dark:bg-white/6">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Total Visits</p>
+                <p className="mt-1 text-lg font-black tracking-tight text-slate-900 dark:text-white">{formatNumber(totalTrendVisits)}</p>
+              </div>
+              <div className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-3 dark:border-white/8 dark:bg-white/6">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Average</p>
+                <p className="mt-1 text-lg font-black tracking-tight text-slate-900 dark:text-white">{formatNumber(averageTrendVisits)}</p>
+              </div>
+              <div className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-3 dark:border-white/8 dark:bg-white/6">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Peak {filters.granularity === 'month' ? 'Period' : 'Day'}</p>
+                <p className="mt-1 truncate text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                  {peakTrendEntry ? peakTrendEntry.label : '—'}
+                </p>
               </div>
             </div>
           </div>
 
           {analytics.trend.length ? (
-            <div className="overflow-x-auto pb-6 custom-scrollbar">
-              <div className="flex items-end gap-2 px-2 min-w-[700px] sm:min-w-0">
-                {analytics.trend.map((entry) => {
-                  const visitsPercent = (entry.visits / maxSeriesValue) * 100
-
-                  return (
-                    <div key={entry.key} className="group flex flex-1 flex-col items-center gap-4">
-                      <div className="relative flex h-64 w-full flex-row items-end justify-center rounded-2xl bg-slate-200 p-1 dark:bg-slate-800/30 sm:p-2">
-                        {/* Visits bar */}
-                        <div
-                          title={`Visits: ${formatNumber(entry.visits)}`}
-                          style={{ height: `${visitsPercent}%`, minHeight: '6px' }}
-                          className="relative w-full max-w-[2.5rem] rounded-xl bg-gradient-to-t from-indigo-600 to-indigo-400 shadow-sm transition-all group-hover:from-indigo-700 group-hover:to-indigo-500"
-                        />
-                      </div>
-                      <p className="max-w-full truncate text-[8px] font-black uppercase tracking-tight text-slate-400 dark:text-slate-500 sm:text-[9px] sm:tracking-widest">
-                        {entry.label}
-                      </p>
+            <div className="space-y-3">
+              {peakTrendEntry ? (
+                <div className="rounded-2xl border border-black/8 bg-[#f8f6f3] px-5 py-4 dark:border-white/8 dark:bg-white/6">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Highest Activity</p>
+                      <p className="mt-1 text-base font-black tracking-tight text-slate-900 dark:text-white">{peakTrendEntry.label}</p>
                     </div>
-                  )
-                })}
+                    <div className="inline-flex items-center rounded-full border border-black/8 bg-white px-4 py-2 text-sm font-black tracking-tight text-[#8a6a43] dark:border-white/8 dark:bg-[#151515] dark:text-[#d7b37a]">
+                      {formatNumber(peakTrendEntry.visits)} visits
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="rounded-[1.25rem] border border-black/8 bg-[#f8f6f3] p-4 dark:border-white/8 dark:bg-white/6">
+                <div className="overflow-x-auto custom-scrollbar pb-3">
+                    <svg
+                      viewBox={`0 0 ${trendChartWidth} ${trendChartHeight}`}
+                      className="h-120 min-w-180 w-full overflow-visible lg:min-w-0"
+                      preserveAspectRatio="none"
+                      role="img"
+                      aria-label="Trend insight chart"
+                    >
+                      {trendTickValues.map((tickValue, index) => {
+                        const y = trendChartPaddingTop + (1 - tickValue / maxSeriesValue) * trendInnerHeight
+
+                        return (
+                          <g key={`${tickValue}-${index}`}>
+                            <line
+                              x1={trendChartPaddingX}
+                              y1={y}
+                              x2={trendChartWidth - trendChartPaddingX}
+                              y2={y}
+                              className="stroke-black/8 dark:stroke-white/10"
+                              strokeDasharray="4 6"
+                            />
+                            <text
+                              x={trendChartPaddingX - 10}
+                              y={y + 3}
+                              textAnchor="end"
+                              className="fill-slate-400 text-[9px] font-black uppercase tracking-[0.16em] dark:fill-slate-500"
+                            >
+                              {formatNumber(tickValue)}
+                            </text>
+                          </g>
+                        )
+                      })}
+
+                      <path d={trendAreaPath} fill="url(#trendAreaFill)" />
+                      <path
+                        d={trendLinePath}
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-[#8a6a43] dark:text-[#d7b37a]"
+                      />
+
+                      {trendPoints.map((point) => (
+                        <g key={point.key}>
+                          <circle
+                            cx={point.x}
+                            cy={point.y}
+                            r="5"
+                            className="fill-white stroke-[#8a6a43] dark:fill-[#151515] dark:stroke-[#d7b37a]"
+                            strokeWidth="2.5"
+                          />
+                          <text
+                            x={point.x}
+                            y={point.y - 12}
+                            textAnchor="middle"
+                            className="fill-slate-700 text-[10px] font-black dark:fill-slate-200"
+                          >
+                            {formatNumber(point.visits)}
+                          </text>
+                          <text
+                            x={point.x}
+                            y={trendChartHeight - 8}
+                            textAnchor="middle"
+                            className="fill-slate-400 text-[9px] font-black uppercase tracking-[0.12em] dark:fill-slate-500"
+                          >
+                            {point.label}
+                          </text>
+                        </g>
+                      ))}
+
+                      <defs>
+                        <linearGradient id="trendAreaFill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="currentColor" stopOpacity="0.22" className="text-[#8a6a43] dark:text-[#d7b37a]" />
+                          <stop offset="100%" stopColor="currentColor" stopOpacity="0" className="text-[#8a6a43] dark:text-[#d7b37a]" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                </div>
               </div>
             </div>
           ) : (
-            <div className="flex h-72 flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/20">
+            <div className="flex h-72 flex-col items-center justify-center rounded-[1.35rem] border border-dashed border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/20">
               <div className="rounded-full bg-slate-100 p-4 dark:bg-slate-800/50">
                 <svg className="h-8 w-8 text-slate-400 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
@@ -216,10 +326,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
         <div className="mb-10 grid grid-cols-1 gap-10 xl:grid-cols-2">
           {/* Top Positions Table */}
-          <section className="rounded-[2.5rem] border border-slate-300/50 bg-white p-10 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
+          <section className="rounded-3xl border border-black/8 bg-white p-10 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
             <div className="mb-10 flex items-center justify-between">
               <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Engagement Rank</h2>
-              <span className="rounded-xl bg-indigo-50 px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">Positions</span>
+              <span className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-[#8a6a43] dark:border-white/8 dark:bg-white/6 dark:text-[#d7b37a]">Positions</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
@@ -253,13 +363,13 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                         </td>
                         <td className="px-3 py-6 text-right">
                           <div className="flex flex-col items-end">
-                            <span className="max-w-[14rem] truncate text-sm font-bold text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400" title={item.title}>
+                            <span className="max-w-56 truncate text-sm font-bold text-slate-900 group-hover:text-[#8a6a43] dark:text-white dark:group-hover:text-[#d7b37a]" title={item.title}>
                               {item.title}
                             </span>
                             <div className="mt-1.5 flex items-center justify-end gap-2">
                               <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-500">{item.company}</span>
                               <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-700" />
-                              <span className={`text-[9px] font-black uppercase tracking-widest ${item.source === 'jobsearch' ? 'text-blue-500' : 'text-purple-500'
+                              <span className={`text-[9px] font-black uppercase tracking-widest ${item.source === 'jobsearch' ? 'text-[#8a6a43] dark:text-[#d7b37a]' : 'text-slate-400 dark:text-slate-500'
                                 }`}>
                                 {item.source}
                               </span>
@@ -277,10 +387,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           </section>
 
           {/* Top Companies Table */}
-          <section className="rounded-[2.5rem] border border-slate-300/50 bg-white p-10 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
+          <section className="rounded-3xl border border-black/8 bg-white p-10 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
             <div className="mb-10 flex items-center justify-between">
               <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Active Market</h2>
-              <span className="rounded-xl bg-slate-100 px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">Companies</span>
+              <span className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-slate-500 dark:border-white/8 dark:bg-white/6 dark:text-slate-400">Companies</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
@@ -314,7 +424,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                         </td>
                         <td className="px-3 py-6 text-right">
                           <div className="flex flex-col items-end">
-                            <span className="max-w-[14rem] truncate text-sm font-black text-slate-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400" title={item.company}>
+                            <span className="max-w-56 truncate text-sm font-black text-slate-900 group-hover:text-[#8a6a43] dark:text-white dark:group-hover:text-[#d7b37a]" title={item.company}>
                               {item.company}
                             </span>
                             <div className="mt-1.5 flex items-center justify-end gap-2">
@@ -334,12 +444,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         </div>
 
 
-      </div>
+  </div>
+  </main>
 
-      {/* Full-Width Footer Container */}
-      <div className="w-full bg-white border-t border-slate-200 dark:bg-slate-900/50 dark:border-slate-800">
-        <Footer />
-      </div>
+      <Footer />
 
       <style dangerouslySetInnerHTML={{
         __html: `

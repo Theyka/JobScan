@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import type { LandingData } from '@/lib/datatypes/landing-data.types'
 
 type SourceBreakdownProps = {
@@ -11,52 +12,70 @@ export default function SourceBreakdown({ data }: SourceBreakdownProps) {
     {
       label: 'Glorri',
       value: data.stats.total_glorri,
+      detail: 'Marketplace feed',
       icon: 'https://jobs.glorri.com/favicon.ico',
-      color: 'text-blue-700 dark:text-blue-400',
-      bg: 'bg-blue-50/80 border-blue-200/50 dark:bg-blue-500/5 dark:border-blue-500/10'
     },
     {
       label: 'JobSearch.az',
       value: data.stats.total_jsaz,
+      detail: 'Publisher feed',
       icon: 'https://jobsearch.az/favicon.ico',
-      color: 'text-emerald-700 dark:text-emerald-400',
-      bg: 'bg-emerald-50/80 border-emerald-200/50 dark:bg-emerald-500/5 dark:border-emerald-500/10'
     },
     {
       label: 'Overlap',
       value: data.stats.overlap,
-      color: 'text-indigo-700 dark:text-indigo-400',
-      bg: 'bg-indigo-50/80 border-indigo-200/50 dark:bg-indigo-500/5 dark:border-indigo-500/10'
+      detail: 'Detected duplicates',
     },
     {
-      label: 'Unique',
+      label: 'Unique roles',
       value: uniqueStat,
-      color: 'text-amber-700 dark:text-amber-400',
-      bg: 'bg-amber-50/80 border-amber-200/50 dark:bg-amber-500/5 dark:border-amber-500/10'
+      detail: 'Non-duplicated inventory',
     },
   ]
 
   return (
-    <section className="mb-10 rounded-3xl border border-slate-300/60 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
-          Source Breakdown
-        </h3>
-        <div className="h-px grow mx-6 bg-slate-100 dark:bg-slate-800" />
+    <section className="corporate-panel mb-10 overflow-hidden rounded-2xl px-6 py-6 sm:px-8 sm:py-7">
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p className="corporate-kicker">Source Integrity</p>
+          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.05em] text-foreground">
+            Coverage split across both channels
+          </h2>
+        </div>
+        <p className="max-w-2xl text-sm leading-7 text-[color-mix(in_srgb,var(--foreground)_66%,transparent)]">
+          This is where the product starts to feel credible: the page makes the raw source relationship visible instead
+          of hiding it behind a generic template.
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {sources.map((source) => (
-          <div key={source.label} className={`flex flex-col items-center gap-3 rounded-2xl border p-3 sm:p-5 transition-all hover:shadow-md ${source.bg}`}>
-            <div className="flex min-w-0 items-center justify-center gap-2 text-center">
-              {source.icon && <img src={source.icon} className="h-4 w-4 shrink-0 rounded-sm" alt="" />}
-              <span className={`truncate text-[9px] font-black uppercase tracking-tight sm:text-[10px] ${source.color}`}>
-                {source.label}
-              </span>
+          <div
+            key={source.label}
+            className="rounded-xl border border-(--line) bg-[color-mix(in_srgb,var(--surface-strong)_85%,white_15%)] px-5 py-5"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                {source.icon ? (
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-(--line) bg-background">
+                    <img src={source.icon} className="h-4 w-4 rounded-sm object-contain" alt="" />
+                  </span>
+                ) : (
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-(--line) bg-(--accent-soft) text-[11px] font-semibold uppercase tracking-[0.16em] text-(--accent)">
+                    {source.label.slice(0, 1)}
+                  </span>
+                )}
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">{source.label}</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-[color-mix(in_srgb,var(--foreground)_44%,transparent)]">
+                    {source.detail}
+                  </p>
+                </div>
+              </div>
             </div>
-            <span className="text-2xl font-black tracking-tighter text-slate-900 sm:text-3xl dark:text-white">
+            <p className="metric-value mt-6 text-4xl font-semibold tracking-[-0.06em] text-foreground">
               {new Intl.NumberFormat('en-US').format(source.value)}
-            </span>
+            </p>
           </div>
         ))}
       </div>

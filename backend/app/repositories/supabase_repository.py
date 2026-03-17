@@ -31,6 +31,56 @@ class SupabaseRepository:
         response.raise_for_status()
         return response
 
+    def _fetch_by_ids(self, table: str, select: str, ids: list[int]) -> list[dict]:
+        normalized_ids = sorted({int(value) for value in ids if value is not None})
+        if not normalized_ids:
+            return []
+
+        rows: list[dict] = []
+        for chunk in self._chunk_list(normalized_ids, 80):
+            in_filter = "(" + ",".join(str(value) for value in chunk) + ")"
+            response = self._get(
+                table,
+                {
+                    "select": select,
+                    "id": f"in.{in_filter}",
+                },
+            ).json()
+            if isinstance(response, list):
+                rows.extend(response)
+
+        return rows
+
+    def _fetch_latest(self, table: str, select: str, order_by: str, limit: int) -> list[dict]:
+        response = self._get(
+            table,
+            {
+                "select": select,
+                "order": f"{order_by}.desc",
+                "limit": str(max(1, int(limit))),
+            },
+        ).json()
+        return response if isinstance(response, list) else []
+
+    def _fetch_latest_with_filters(
+        self,
+        table: str,
+        select: str,
+        order_by: str,
+        limit: int,
+        filters: list[str],
+    ) -> list[dict]:
+        params = {
+            "select": select,
+            "order": f"{order_by}.desc",
+            "limit": str(max(1, int(limit))),
+        }
+        if filters:
+            params["and"] = "(" + ",".join(filters) + ")"
+
+        response = self._get(table, params).json()
+        return response if isinstance(response, list) else []
+
     def _post(
         self,
         table: str,
@@ -256,3 +306,87 @@ class SupabaseRepository:
                 prefer="resolution=merge-duplicates,return=minimal",
                 params={"on_conflict": "glorri_id"},
             )
+
+    # Telegram digest methods
+    def fetch_latest_js_vacancies(self, limit: int) -> list[dict]:
+        return self._fetch_latest(
+            "js_vacancies",
+            "id,title,created_at,slug,salary,deadline_at,company_id,tech_stack",
+            "created_at",
+            limit,
+        )
+
+    def fetch_js_vacancies_between(self, start_iso: str, end_iso: str, limit: int) -> list[dict]:
+        return self._fetch_latest_with_filters(
+            "js_vacancies",
+            "id,title,created_at,slug,salary,deadline_at,company_id,tech_stack",
+            "created_at",
+            limit,
+            [f"created_at.gte.{start_iso}", f"created_at.lt.{end_iso}"],
+        )
+
+    def fetch_latest_glorri_vacancies(self, limit: int) -> list[dict]:
+        return self._fetch_latest(
+            "glorri_vacancies",
+            "id,title,slug,postedDate,detail_url,location,vacancy_about,company_id,tech_stack",
+            "postedDate",
+            limit,
+        )
+
+    def fetch_glorri_vacancies_between(self, start_iso: str, end_iso: str, limit: int) -> list[dict]:
+        return self._fetch_latest_with_filters(
+            "glorri_vacancies",
+            "id,title,slug,postedDate,detail_url,location,vacancy_about,company_id,tech_stack",
+            "postedDate",
+            limit,
+            [f"postedDate.gte.{start_iso}", f"postedDate.lt.{end_iso}"],
+        )
+
+    def fetch_js_companies_by_ids(self, ids: list[int]) -> dict[int, dict]:
+        rows = self._fetch_by_ids("js_companies", "id,title,address", ids)
+        company_map: dict[int, dict] = {}
+        for row in rows:
+            company_id = row.get("id")
+            title = row.get("title")
+            if company_id is None or not isinstance(title, str):
+                continue
+            company_map[int(company_id)] = {
+                "title": title,
+                "address": row.get("address") if isinstance(row.get("address"), str) else "",
+            }
+        return company_map
+
+    def fetch_glorri_company_names_by_ids(self, ids: list[int]) -> dict[int, str]:
+        rows = self._fetch_by_ids("glorri_companies", "id,name", ids)
+        company_map: dict[int, str] = {}
+        for row in rows:
+            company_id = row.get("id")
+            name = row.get("name")
+            if company_id is None or not isinstance(name, str):
+                continue
+            company_map[int(company_id)] = name
+        return company_map
+
+    def fetch_duplicate_glorri_ids(self, ids: list[int]) -> set[int]:
+        normalized_ids = sorted({int(value) for value in ids if value is not None})
+        if not normalized_ids:
+            return set()
+
+        duplicate_ids: set[int] = set()
+        for chunk in self._chunk_list(normalized_ids, 80):
+            in_filter = "(" + ",".join(str(value) for value in chunk) + ")"
+            rows = self._get(
+                "duplicate_jobs",
+                {
+                    "select": "glorri_id",
+                    "glorri_id": f"in.{in_filter}",
+                },
+            ).json()
+            if not isinstance(rows, list):
+                continue
+            for row in rows:
+                glorri_id = row.get("glorri_id")
+                if glorri_id is not None:
+                    duplicate_ids.add(int(glorri_id))
+
+        return duplicate_ids

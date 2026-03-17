@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
 
-import { updateManagedUserAdminAction } from '@/app/admin/actions'
+import UserActionButtons from '@/app/admin/user/UserActionButtons'
 import AdminSectionNav from '@/components/admin/AdminSectionNav'
+import LandingTopBar from '@/components/landing/LandingTopBar'
 import Footer from '@/components/shared/Footer'
-import SiteHeader from '@/components/shared/SiteHeader'
 import { getCurrentUserAccess } from '@/lib/admin/access'
 import { listManagedUsers } from '@/lib/admin/user-management'
 
@@ -48,18 +48,18 @@ export default async function AdminUserPage() {
   const adminCount = managedUsers.filter((user) => user.isAdmin).length
 
   return (
-    <div className="min-h-screen bg-[#f1f5f9] text-slate-900 transition-colors duration-300 dark:bg-[#020617] dark:text-slate-100">
-      <div className="relative z-[100] sm:sticky top-0 w-full shadow-sm">
-        <div className="absolute inset-0 border-b border-slate-200 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-[#0f172a]/80" />
-        <div className="relative container mx-auto max-w-7xl px-4">
-          <SiteHeader className="border-none !pb-2 sm:!pb-4 !pt-3 sm:!pt-4" title="User Management" subtitle="Manage admin permissions" />
+    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#111111] dark:text-slate-100">
+      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
+        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+          <LandingTopBar />
         </div>
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 py-12">
+      <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+      <div className="mx-auto w-full py-6 lg:py-10">
         <AdminSectionNav current="users" />
 
-        <section className="mb-10 rounded-[2.5rem] border border-slate-200 bg-white p-5 sm:p-10 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
+        <section className="mb-10 rounded-3xl border border-black/8 bg-white p-5 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] sm:p-10">
           <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">User Management</h2>
@@ -68,10 +68,10 @@ export default async function AdminUserPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="rounded-xl bg-indigo-50 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300">
+              <span className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-[#8a6a43] dark:border-white/8 dark:bg-white/6 dark:text-[#d7b37a]">
                 {formatNumber(managedUsers.length)} Users
               </span>
-              <span className="rounded-xl bg-slate-100 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:bg-slate-800/60 dark:text-slate-300">
+              <span className="rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:border-white/8 dark:bg-white/6 dark:text-slate-300">
                 {formatNumber(adminCount)} Admins
               </span>
             </div>
@@ -96,7 +96,7 @@ export default async function AdminUserPage() {
                     return (
                       <tr key={user.id} className="transition-all hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
                         <td className="px-3 py-5">
-                          <p className="max-w-[120px] truncate text-sm font-bold text-slate-900 dark:text-white sm:max-w-none">
+                          <p className="max-w-30 truncate text-sm font-bold text-slate-900 dark:text-white sm:max-w-none">
                             {formatDisplayName(user.firstName, user.lastName, user.username)}
                           </p>
 
@@ -114,31 +114,17 @@ export default async function AdminUserPage() {
                             {user.isAdmin ? 'Admin' : 'User'}
                           </span>
                           {isCurrentUser ? (
-                            <span className="ml-2 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300">
+                            <span className="ml-2 inline-flex items-center rounded-full border border-black/8 bg-[#f8f6f3] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-[#8a6a43] dark:border-white/8 dark:bg-white/6 dark:text-[#d7b37a]">
                               You
                             </span>
                           ) : null}
                         </td>
                         <td className="px-3 py-5 text-right">
                           {isCurrentUser ? (
-                            <span className="inline-flex rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                            <span className="inline-flex rounded-xl border border-black/8 bg-[#f8f6f3] px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:border-white/8 dark:bg-white/6 dark:text-slate-400">
                               Current User
                             </span>
-                          ) : (
-                            <form action={updateManagedUserAdminAction} className="inline-flex">
-                              <input type="hidden" name="target_user_id" value={user.id} />
-                              <input type="hidden" name="next_is_admin" value={user.isAdmin ? 'false' : 'true'} />
-                              <button
-                                type="submit"
-                                className={`inline-flex cursor-pointer items-center rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors ${user.isAdmin
-                                  ? 'bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-500/15 dark:text-red-300 dark:hover:bg-red-500/25'
-                                  : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25'
-                                  }`}
-                              >
-                                {user.isAdmin ? 'Remove Admin' : 'Make Admin'}
-                              </button>
-                            </form>
-                          )}
+                          ) : <UserActionButtons userId={user.id} isAdmin={user.isAdmin} />}
                         </td>
                       </tr>
                     )
@@ -155,10 +141,9 @@ export default async function AdminUserPage() {
           </div>
         </section>
       </div>
+      </main>
 
-      <div className="w-full border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   )
 }

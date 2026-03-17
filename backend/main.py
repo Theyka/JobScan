@@ -1,16 +1,36 @@
+import argparse
 from pathlib import Path
+from threading import Thread
 
 from app.config import load_settings
 from app.controllers.scrape_controller import ScrapeController
 from app.repositories.supabase_repository import SupabaseRepository
+from app.scheduler.daily_scheduler import DailyScheduler
 from app.scheduler.interval_scheduler import IntervalScheduler
 from app.services.duplicate_detection_service import DuplicateDetectionService
 from app.services.glorri_service import GlorriService
 from app.services.jobsearch_service import JobSearchService
+from app.services.telegram_service import TelegramService
 from app.services.technology_service import TechnologyService
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--send-telegram-digest-now",
+        action="store_true",
+        help="Send the Telegram jobs digest immediately, then exit.",
+    )
+    parser.add_argument(
+        "--preview-telegram-digest",
+        action="store_true",
+        help="Build the Telegram jobs digest, print it, then exit without sending.",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
     env_path = Path(__file__).resolve().with_name(".env")
     settings = load_settings(env_path)
 
@@ -24,10 +44,43 @@ def main():
     jobsearch_service = JobSearchService(repository, technology_service)
     glorri_service = GlorriService(repository, technology_service)
     duplicate_detection_service = DuplicateDetectionService(repository)
+    telegram_service = TelegramService(
+        repository,
+        settings.telegram_bot_token,
+        settings.telegram_channel_id,
+        settings.telegram_digest_limit,
+        settings.telegram_bot_username,
+        settings.telegram_timezone,
+    )
     controller = ScrapeController(jobsearch_service, glorri_service, duplicate_detection_service)
 
     if not repository.is_configured:
         print("Warning: SUPABASE_URL or SUPABASE_SERVICE_KEY is missing. DB inserts will be skipped.")
+
+    if args.preview_telegram_digest:
+        preview = telegram_service.preview_latest_jobs_digest()
+        print(
+            f"Preview built: jobs={preview['jobs']}, message_length={preview['message_length']}"
+        )
+        print(str(preview["message"]))
+        return
+
+    if args.send_telegram_digest_now:
+        telegram_service.send_latest_jobs_digest()
+        return
+
+    if telegram_service.is_configured:
+        daily_scheduler = DailyScheduler(
+            settings.telegram_digest_time,
+            settings.telegram_timezone,
+        )
+        Thread(
+            target=daily_scheduler.run_forever,
+            args=(telegram_service.send_latest_jobs_digest,),
+            daemon=True,
+        ).start()
+    else:
+        print("Telegram digest disabled: set TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID to enable it.")
 
     scheduler = IntervalScheduler(settings.scrape_interval_seconds)
     scheduler.run_forever(controller.run_cycle)

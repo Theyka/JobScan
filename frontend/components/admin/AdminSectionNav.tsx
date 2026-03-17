@@ -14,7 +14,7 @@ const LINKS: Array<{ id: AdminSection; href: string; label: string }> = [
 
 export default function AdminSectionNav({ current }: AdminSectionNavProps) {
   return (
-    <nav className="mb-8 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-800 dark:bg-slate-900/40">
+    <nav className="mb-8 rounded-[2rem] border border-black/8 bg-white p-2 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
       <div className="flex flex-wrap gap-2">
         {LINKS.map((link) => {
           const isActive = link.id === current
@@ -24,8 +24,8 @@ export default function AdminSectionNav({ current }: AdminSectionNavProps) {
               key={link.id}
               href={link.href}
               className={`inline-flex h-10 items-center rounded-xl px-4 text-xs font-black uppercase tracking-widest transition-colors ${isActive
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
+                ? 'bg-[#8a6a43] text-white dark:bg-[#d7b37a] dark:text-[#151515]'
+                : 'text-slate-500 hover:bg-[#f8f6f3] hover:text-[#8a6a43] dark:text-slate-300 dark:hover:bg-white/6 dark:hover:text-[#d7b37a]'
                 }`}
               aria-current={isActive ? 'page' : undefined}
             >

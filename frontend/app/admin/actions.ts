@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { getCurrentUserAccess } from '@/lib/admin/access'
-import { setManagedUserAdminStatus } from '@/lib/admin/user-management'
+import { deleteManagedUser, setManagedUserAdminStatus } from '@/lib/admin/user-management'
 
 function toText(value: FormDataEntryValue | null): string {
   return String(value ?? '').trim()
@@ -48,6 +48,32 @@ export async function updateManagedUserAdminAction(formData: FormData): Promise<
 
   try {
     await setManagedUserAdminStatus(targetUserId, nextIsAdmin)
+  } finally {
+    revalidatePath('/admin/user')
+    revalidatePath('/admin')
+  }
+}
+
+export async function deleteManagedUserAction(formData: FormData): Promise<void> {
+  const access = await getCurrentUserAccess()
+
+  if (!access) {
+    redirect('/auth/login')
+  }
+
+  if (!access.isAdmin) {
+    redirect('/')
+  }
+
+  const targetUserId = toText(formData.get('target_user_id'))
+
+  if (!targetUserId || targetUserId === access.userId) {
+    revalidatePath('/admin/user')
+    return
+  }
+
+  try {
+    await deleteManagedUser(targetUserId)
   } finally {
     revalidatePath('/admin/user')
     revalidatePath('/admin')
