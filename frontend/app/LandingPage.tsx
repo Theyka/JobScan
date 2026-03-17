@@ -394,7 +394,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
         </div>
       </div>
 
-      <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+      <main className="relative mx-auto flex max-w-420 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
         {data.error ? (
           <div className="mb-8 rounded-2xl border border-red-200/80 bg-red-50/90 px-5 py-4 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
             Could not load landing data from database: {data.error}
@@ -403,7 +403,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
 
         <section className="px-0 py-2 transition-colors duration-300 max-sm:dark:rounded-2xl max-sm:dark:px-2 max-sm:dark:py-3 sm:rounded-2xl sm:p-4">
           <div className="grid h-full gap-4 xl:grid-cols-[290px_minmax(0,1fr)]">
-            <div className="min-w-0 lg:overflow-hidden lg:rounded-xl lg:transition-colors lg:duration-300 dark:lg:bg-transparent">
+            <div className="min-w-0 lg:overflow-hidden lg:rounded-xl lg:transition-colors lg:duration-300">
               <FiltersSidebar
                 isMobileSidebarOpen={isMobileSidebarOpen}
                 onCloseMobileSidebar={closeMobileSidebar}

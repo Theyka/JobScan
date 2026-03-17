@@ -238,7 +238,7 @@ function JobsSection({
                   href={href}
                   target={isExternalDetail ? '_blank' : undefined}
                   rel={isExternalDetail ? 'noopener noreferrer' : undefined}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-black/8 bg-[#fcfbfa] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#b69263]/45 hover:shadow-[0_20px_44px_rgba(17,17,17,0.08)] dark:border-white/8 dark:bg-[#171311] dark:hover:border-[#b69263]/45 dark:hover:shadow-none"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-black/8 bg-[#fcfbfa] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#b69263]/45 hover:shadow-[0_20px_44px_rgba(17,17,17,0.08)] dark:border-white/8 dark:bg-[#151515] dark:hover:border-[#b69263]/45 dark:hover:shadow-none"
                 >
                   <div className="relative mb-5 flex items-start justify-between gap-4">
                     <h3 className="flex-1 text-[1rem] leading-tight font-semibold tracking-[-0.03em] wrap-break-word text-[#161616] transition-colors group-hover:text-[#8a6a43] dark:text-white dark:group-hover:text-[#d7b37a] sm:text-[1.05rem]">

@@ -94,8 +94,8 @@ function FiltersSidebar({
 
         {/* Scrollable content */}
         <div className="custom-scrollbar min-h-0 flex-1 overflow-y-scroll overscroll-contain p-4 lg:overflow-visible lg:p-0" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <div className="rounded-xl border border-black/8 bg-white p-5 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
-          <div className="mt-2 rounded-lg bg-[#f8f6f3] p-4 transition-colors duration-300 dark:bg-white/5">
+        <div className="rounded-xl border border-black/8 bg-white px-5 pb-5 pt-6 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
+          <div className="rounded-lg bg-[#f8f6f3] p-4 transition-colors duration-300 dark:bg-white/5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-black/46 dark:text-white/48">Search</p>
               <label className="relative mt-3 block">
                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-black/35 dark:text-white/34">
