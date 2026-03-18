@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import time
-from datetime import date
+from datetime import date, datetime, time as dt_time, timedelta, timezone
 from html import escape
 
 import requests
@@ -19,8 +19,11 @@ class TelegramBotService(TelegramService):
     CALLBACK_PREFIX_TECH = "tech"
     CALLBACK_PREFIX_STATUS = "status"
     CALLBACK_PREFIX_VIEW = "view"
+    VIEW_CONTEXT_BROWSE = "browse"
+    VIEW_CONTEXT_DAILY = "daily"
     TECH_PAGE_SIZE = 8
     VIEW_PAGE_SIZE = 5
+    DETAIL_PAGE_SIZE = 6
     UPDATE_TIMEOUT_SECONDS = 45
     RETRY_DELAY_SECONDS = 5
     MAX_DAILY_FETCH = 200
@@ -73,6 +76,7 @@ class TelegramBotService(TelegramService):
             "previous": "Əvvəlki",
             "vacancies_sent": "Sizə uyğun vakansiyalar göndərildi.",
             "browse_vacancies": "Sizə uyğun vakansiyalar:",
+            "daily_digest": "Dünən sizə uyğun tapılan vakansiyalar:",
             "page": "Səhifə",
             "open_vacancy": "Vakansiyanı aç",
         },
@@ -117,6 +121,7 @@ class TelegramBotService(TelegramService):
             "previous": "Previous",
             "vacancies_sent": "Matching vacancies were sent to you.",
             "browse_vacancies": "Vacancies matching your stack:",
+            "daily_digest": "Vacancies matching you from yesterday:",
             "page": "Page",
             "open_vacancy": "Open vacancy",
         },
@@ -161,6 +166,7 @@ class TelegramBotService(TelegramService):
             "previous": "Назад",
             "vacancies_sent": "Подходящие вакансии отправлены.",
             "browse_vacancies": "Вакансии по вашему стеку:",
+            "daily_digest": "Вакансии за вчера по вашему стеку:",
             "page": "Страница",
             "open_vacancy": "Открыть вакансию",
         },
@@ -234,26 +240,39 @@ class TelegramBotService(TelegramService):
             ]
         }
 
-    def _build_view_keyboard(self, language: str, page: int, total_pages: int) -> dict:
+    def _build_view_keyboard(
+        self,
+        language: str,
+        page: int,
+        total_pages: int,
+        context: str,
+        date_token: str | None = None,
+    ) -> dict | None:
         rows: list[list[dict]] = []
         nav_row: list[dict] = []
+
+        def callback_data(target_page: int) -> str:
+            if context == self.VIEW_CONTEXT_DAILY and date_token:
+                return f"{self.CALLBACK_PREFIX_VIEW}:{context}:{date_token}:{target_page}"
+            return f"{self.CALLBACK_PREFIX_VIEW}:{context}:{target_page}"
+
         if page > 0:
             nav_row.append(
                 {
                     "text": self._text(language, "previous"),
-                    "callback_data": f"{self.CALLBACK_PREFIX_VIEW}:page:{page - 1}",
+                    "callback_data": callback_data(page - 1),
                 }
             )
         if page < total_pages - 1:
             nav_row.append(
                 {
                     "text": self._text(language, "next"),
-                    "callback_data": f"{self.CALLBACK_PREFIX_VIEW}:page:{page + 1}",
+                    "callback_data": callback_data(page + 1),
                 }
             )
         if nav_row:
             rows.append(nav_row)
-        return {"inline_keyboard": rows}
+        return {"inline_keyboard": rows} if rows else None
 
     def _build_tech_keyboard(self, language: str, selected: list[str], page: int) -> dict:
         total_pages = max(1, (len(self.tech_options) + self.TECH_PAGE_SIZE - 1) // self.TECH_PAGE_SIZE)
@@ -487,6 +506,116 @@ class TelegramBotService(TelegramService):
             lines.append(f'<a href="{escape(url, quote=True)}">Open vacancy</a>')
         return "\n".join(lines)
 
+    @staticmethod
+    def _parse_date_token(value: str | None) -> date | None:
+        raw = str(value or "").strip()
+        if not raw:
+            return None
+        try:
+            return date.fromisoformat(raw)
+        except ValueError:
+            return None
+
+    def _date_window(self, target_date: date) -> tuple[datetime, datetime]:
+        start_local = datetime.combine(target_date, dt_time.min, tzinfo=self.local_timezone)
+        end_local = start_local + timedelta(days=1)
+        return start_local.astimezone(timezone.utc), end_local.astimezone(timezone.utc)
+
+    def _collect_jobs_for_date(self, target_date: date) -> list[dict]:
+        fetch_limit = max(self.MAX_DAILY_FETCH, self.digest_limit)
+        start_utc, end_utc = self._date_window(target_date)
+
+        js_rows = self.repository.fetch_js_vacancies_between(
+            self._to_iso_utc(start_utc),
+            self._to_iso_utc(end_utc),
+            fetch_limit,
+        )
+        js_company_map = self.repository.fetch_js_companies_by_ids(
+            [row.get("company_id") for row in js_rows if isinstance(row, dict)]
+        )
+
+        js_jobs: list[dict] = []
+        for row in js_rows:
+            if not isinstance(row, dict):
+                continue
+
+            company_info = js_company_map.get(int(row.get("company_id"))) if row.get("company_id") is not None else {}
+            company_title = company_info.get("title") if isinstance(company_info, dict) else ""
+            company_address = company_info.get("address") if isinstance(company_info, dict) else ""
+            js_jobs.append(
+                {
+                    "source": "JobSearch",
+                    "title": row.get("title") if isinstance(row.get("title"), str) else "Untitled",
+                    "company": company_title or "Unknown company",
+                    "location": self._compact_location(company_address),
+                    "employment_type": "",
+                    "published_at": row.get("created_at"),
+                    "deadline": row.get("deadline_at"),
+                    "tech_stack": row.get("tech_stack"),
+                    "salary": row.get("salary"),
+                    "url": self._jobsearch_public_url(row.get("slug")),
+                }
+            )
+
+        glorri_rows = self.repository.fetch_glorri_vacancies_between(
+            self._to_iso_utc(start_utc),
+            self._to_iso_utc(end_utc),
+            fetch_limit,
+        )
+        duplicate_ids = self.repository.fetch_duplicate_glorri_ids(
+            [row.get("id") for row in glorri_rows if isinstance(row, dict)]
+        )
+        filtered_glorri_rows = [
+            row for row in glorri_rows if isinstance(row, dict) and row.get("id") not in duplicate_ids
+        ]
+        glorri_company_map = self.repository.fetch_glorri_company_names_by_ids(
+            [row.get("company_id") for row in filtered_glorri_rows if isinstance(row, dict)]
+        )
+
+        glorri_jobs: list[dict] = []
+        for row in filtered_glorri_rows:
+            vacancy_about = row.get("vacancy_about") if isinstance(row.get("vacancy_about"), dict) else {}
+            glorri_jobs.append(
+                {
+                    "source": "Glorri",
+                    "title": row.get("title") if isinstance(row.get("title"), str) else "Untitled",
+                    "company": glorri_company_map.get(int(row.get("company_id"))) if row.get("company_id") is not None else "Unknown company",
+                    "location": self._compact_location(row.get("location") if isinstance(row.get("location"), str) else ""),
+                    "employment_type": row.get("type") if isinstance(row.get("type"), str) else "",
+                    "published_at": row.get("postedDate"),
+                    "deadline": vacancy_about.get("deadline") if isinstance(vacancy_about.get("deadline"), str) else "",
+                    "tech_stack": row.get("tech_stack"),
+                    "salary": vacancy_about.get("salary") if isinstance(vacancy_about.get("salary"), str) else None,
+                    "url": self._glorri_public_url(row.get("slug")),
+                }
+            )
+
+        jobs = js_jobs + glorri_jobs
+        jobs.sort(key=lambda item: self._parse_datetime(item.get("published_at")), reverse=True)
+        return jobs
+
+    def _paginate_detail_messages(self, language: str, jobs: list[dict], title_key: str) -> list[str]:
+        title = self._text(language, title_key)
+        rendered_jobs = [self._render_user_vacancy(job, language) for job in jobs]
+        pages = [
+            rendered_jobs[index : index + self.DETAIL_PAGE_SIZE]
+            for index in range(0, len(rendered_jobs), self.DETAIL_PAGE_SIZE)
+        ]
+
+        total_pages = max(1, len(pages))
+        messages: list[str] = []
+        for index, page_items in enumerate(pages, start=1):
+            messages.append(
+                "\n\n".join(
+                    [
+                        title,
+                        f"{self._text(language, 'page')}: {index}/{total_pages}",
+                        *page_items,
+                    ]
+                )
+            )
+        return messages
+
     def _user_matches_job(self, selected: list[str], job: dict) -> bool:
         if not selected:
             return True
@@ -494,10 +623,8 @@ class TelegramBotService(TelegramService):
         return bool(job_stack.intersection(set(selected)))
 
     def _collect_yesterday_jobs(self) -> list[dict]:
-        fetch_limit = max(self.MAX_DAILY_FETCH, self.digest_limit)
-        jobs = self._normalize_jobsearch_jobs(fetch_limit) + self._normalize_glorri_jobs(fetch_limit)
-        jobs.sort(key=lambda item: self._parse_datetime(item.get("published_at")), reverse=True)
-        return jobs
+        _, _, yesterday_local = self._yesterday_window()
+        return self._collect_jobs_for_date(yesterday_local)
 
     def _collect_all_jobs(self) -> list[dict]:
         js_rows = self.repository.fetch_all_js_vacancies_for_bot()
@@ -561,7 +688,7 @@ class TelegramBotService(TelegramService):
     def _matching_jobs_for_user(self, user: dict) -> list[dict]:
         selected = self._normalize_technologies(user.get("selected_technologies"))
         jobs = self._collect_yesterday_jobs()
-        return [job for job in jobs if self._user_matches_job(selected, job)][: self.digest_limit]
+        return [job for job in jobs if self._user_matches_job(selected, job)]
 
     def _all_matching_jobs_for_user(self, user: dict) -> list[dict]:
         selected = self._normalize_technologies(user.get("selected_technologies"))
@@ -601,20 +728,49 @@ class TelegramBotService(TelegramService):
             lines.append(f"💰 {salary}")
             lines.append("")
 
-        return "\n".join(lines).strip(), self._build_view_keyboard(language, current_page, total_pages)
+        return "\n".join(lines).strip(), self._build_view_keyboard(
+            language,
+            current_page,
+            total_pages,
+            self.VIEW_CONTEXT_BROWSE,
+        )
 
-    def _send_matching_vacancies(self, user: dict):
+    def _build_daily_digest_message(
+        self,
+        user: dict,
+        target_date: date | None = None,
+        page: int = 0,
+    ) -> tuple[str, dict | None]:
         language = self._normalize_language(user.get("language_code"))
-        matched = self._matching_jobs_for_user(user)
-        chat_id = int(user["chat_id"])
+        digest_date = target_date or self._yesterday_window()[2]
+        selected = self._normalize_technologies(user.get("selected_technologies"))
+        jobs = self._collect_jobs_for_date(digest_date)
+        matched = [job for job in jobs if self._user_matches_job(selected, job)]
 
         if not matched:
-            self._send_message(chat_id, self._text(language, "empty_digest"))
-            return
+            return self._text(language, "empty_digest"), None
 
-        for job in matched:
-            self._send_message(chat_id, self._render_user_vacancy(job, language))
-            time.sleep(0.2)
+        messages = self._paginate_detail_messages(language, matched, "daily_digest")
+        current_page = min(max(0, int(page)), len(messages) - 1)
+        keyboard = self._build_view_keyboard(
+            language,
+            current_page,
+            len(messages),
+            self.VIEW_CONTEXT_DAILY,
+            digest_date.isoformat(),
+        )
+        return messages[current_page], keyboard
+
+    def _send_matching_vacancies(self, user: dict):
+        self._send_daily_digest_page(user)
+
+    def _send_daily_digest_page(self, user: dict, target_date: date | None = None, page: int = 0, message_id: int | None = None):
+        text, keyboard = self._build_daily_digest_message(user, target_date, page)
+        chat_id = int(user["chat_id"])
+        if message_id is None:
+            self._send_message(chat_id, text, keyboard)
+        else:
+            self._edit_message(chat_id, message_id, text, keyboard)
 
     def _send_browse_vacancies(self, user: dict, page: int = 0, message_id: int | None = None):
         text, keyboard = self._build_browse_message(user, page)
@@ -642,15 +798,13 @@ class TelegramBotService(TelegramService):
 
             language = self._normalize_language(user.get("language_code"))
             selected = self._normalize_technologies(user.get("selected_technologies"))
-            matched = [job for job in jobs if self._user_matches_job(selected, job)][: self.digest_limit]
+            matched = [job for job in jobs if self._user_matches_job(selected, job)]
             if not matched:
                 self._send_message(int(user["chat_id"]), self._text(language, "empty_digest"))
                 self.repository.update_telegram_user(int(user["chat_id"]), {"last_digest_for": yesterday_token})
                 continue
 
-            for job in matched:
-                self._send_message(int(user["chat_id"]), self._render_user_vacancy(job, language))
-                time.sleep(0.2)
+            self._send_daily_digest_page(user, yesterday_local)
 
             self.repository.update_telegram_user(int(user["chat_id"]), {"last_digest_for": yesterday_token})
 
@@ -769,10 +923,17 @@ class TelegramBotService(TelegramService):
             self._send_browse_vacancies(user, 0)
             return
 
-        if action == self.CALLBACK_PREFIX_VIEW and len(parts) == 3 and parts[1] == "page":
+        if action == self.CALLBACK_PREFIX_VIEW and len(parts) == 3 and parts[1] == self.VIEW_CONTEXT_BROWSE:
             page = int(parts[2]) if parts[2].isdigit() else 0
             self._answer_callback(callback_id)
             self._send_browse_vacancies(user, page, int(message["message_id"]))
+            return
+
+        if action == self.CALLBACK_PREFIX_VIEW and len(parts) == 4 and parts[1] == self.VIEW_CONTEXT_DAILY:
+            target_date = self._parse_date_token(parts[2]) or self._yesterday_window()[2]
+            page = int(parts[3]) if parts[3].isdigit() else 0
+            self._answer_callback(callback_id)
+            self._send_daily_digest_page(user, target_date, page, int(message["message_id"]))
             return
 
         if action == self.CALLBACK_PREFIX_TECH:
