@@ -486,17 +486,14 @@ class TelegramBotService(TelegramService):
         return self.repository.fetch_telegram_user(chat_id) or user
 
     def _render_user_vacancy(self, job: dict, language: str) -> str:
-        tech_stack = self._format_tech_stack(job.get("tech_stack"))
+        tech_stack = self._format_tech_stack(job.get("tech_stack"), limit=5)
         salary = self._format_salary(job.get("salary"))
         deadline = self._format_deadline(job.get("deadline")) or self._text(language, "not_specified")
         location = str(job.get("location") or "").strip() or self._text(language, "not_specified")
-        employment_type = str(job.get("employment_type") or "").strip() or self._text(language, "not_specified")
         lines = [
-            self._text(language, "vacancy_header"),
             f"{self._text(language, 'position')}: {escape(str(job.get('title') or 'Untitled'))}",
             f"{self._text(language, 'company')}: {escape(str(job.get('company') or 'Unknown company'))}",
             f"{self._text(language, 'location')}: {escape(location)}",
-            f"{self._text(language, 'employment_type')}: {escape(employment_type)}",
             f"{self._text(language, 'salary')}: {escape(salary)}",
             f"{self._text(language, 'deadline')}: {escape(deadline)}",
             f"{self._text(language, 'stack')}: {escape(tech_stack if tech_stack != '-' else self._text(language, 'not_specified'))}",

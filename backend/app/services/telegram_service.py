@@ -105,10 +105,13 @@ class TelegramService:
             return text or "göstərilməyib"
 
     @staticmethod
-    def _format_tech_stack(value) -> str:
+    def _format_tech_stack(value, limit: int | None = None) -> str:
         if not isinstance(value, list) or not value:
             return "-"
-        return ", ".join(str(item).strip() for item in value if str(item).strip()) or "-"
+        items = [str(item).strip() for item in value if str(item).strip()]
+        if limit is not None:
+            items = items[:limit]
+        return ", ".join(items) or "-"
 
     @staticmethod
     def _compact_location(value: str | None) -> str:
@@ -300,7 +303,7 @@ class TelegramService:
 
     def _build_message(self, jobs: list[dict]) -> str:
         if not jobs:
-            return "Hazırda yeni vakansiya tapılmadı."
+            return ""
 
         lines: list[str] = []
         for index, job in enumerate(jobs, start=1):
@@ -344,6 +347,10 @@ class TelegramService:
         preview = self.preview_latest_jobs_digest()
         jobs = int(preview["jobs"])
         message = str(preview["message"])
+
+        if jobs == 0:
+            print("Telegram digest skipped: no new vacancies")
+            return {"sent": False, "jobs": 0}
 
         print(
             "Telegram digest payload: "
