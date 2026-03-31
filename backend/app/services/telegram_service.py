@@ -22,10 +22,12 @@ class TelegramService:
         digest_limit: int = DEFAULT_DIGEST_LIMIT,
         bot_username: str = "",
         timezone_name: str = DEFAULT_TIMEZONE_LABEL,
+        thread_id: int | None = None,
     ):
         self.repository = repository
         self.bot_token = (bot_token or "").strip()
         self.channel_id = (channel_id or "").strip()
+        self.thread_id = int(thread_id) if isinstance(thread_id, int) and thread_id > 0 else None
         self.digest_limit = max(1, int(digest_limit))
         self.bot_username = str(bot_username or "").strip().lstrip("@")
         self.timezone_name = str(timezone_name or self.DEFAULT_TIMEZONE_LABEL).strip()
@@ -359,14 +361,18 @@ class TelegramService:
             f"chat_id_kind={self._chat_id_kind(self.channel_id)}"
         )
 
-        response = requests.post(
-            f"{self.API_BASE_URL}/bot{self.bot_token}/sendMessage",
-            json={
+        send_payload: dict = {
                 "chat_id": self.channel_id,
                 "text": message,
                 "parse_mode": "HTML",
                 "disable_web_page_preview": True,
-            },
+            }
+        if self.thread_id is not None:
+            send_payload["message_thread_id"] = self.thread_id
+
+        response = requests.post(
+            f"{self.API_BASE_URL}/bot{self.bot_token}/sendMessage",
+            json=send_payload,
             timeout=30,
         )
         try:

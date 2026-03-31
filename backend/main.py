@@ -52,6 +52,7 @@ def main():
         settings.telegram_digest_limit,
         settings.telegram_bot_username,
         settings.telegram_timezone,
+        settings.telegram_thread_id,
     )
     telegram_bot_service = TelegramBotService(
         repository,
