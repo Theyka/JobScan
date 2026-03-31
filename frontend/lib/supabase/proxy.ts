@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const PUBLIC_PATH_PREFIXES = ['/login', '/auth', '/vacancies']
+const PUBLIC_PATH_PREFIXES = ['/login', '/auth', '/vacancies', '/track']
 const PUBLIC_EXACT_PATHS = ['/']
 
 export async function updateSession(request: NextRequest) {

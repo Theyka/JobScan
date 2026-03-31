@@ -67,7 +67,7 @@ function collectCounts(values: string[]): CountItem[] {
     }
   }
 
-  return [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+  return [...counts.values()].sort((a, b) => b.count - a.count || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
 }
 
 function hasSource(job: LandingJob, source: SourceFilter): boolean {
@@ -226,7 +226,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
       const rightJob = right.job
 
       if (sortBy === 'company-asc') {
-        return leftJob.company.localeCompare(rightJob.company)
+        return leftJob.company < rightJob.company ? -1 : leftJob.company > rightJob.company ? 1 : 0
       }
 
       if (sortBy === 'salary-desc' || sortBy === 'salary-asc') {
@@ -259,7 +259,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
 
     if (activeTech && !allTechs.some((item) => item.name.toLowerCase() === activeTech.toLowerCase())) {
       return [...allTechs, { name: activeTech, count: 0 }].sort(
-        (a, b) => b.count - a.count || a.name.localeCompare(b.name)
+        (a, b) => b.count - a.count || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
       )
     }
 
@@ -274,7 +274,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
       !allCompanies.some((item) => item.name.toLowerCase() === activeCompanyTag.toLowerCase())
     ) {
       return [...allCompanies, { name: activeCompanyTag, count: 0 }].sort(
-        (a, b) => b.count - a.count || a.name.localeCompare(b.name)
+        (a, b) => b.count - a.count || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
       )
     }
 
