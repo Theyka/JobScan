@@ -402,6 +402,30 @@ class SupabaseRepository:
 
         return duplicate_ids
 
+    def fetch_duplicate_jobsearch_ids(self, ids: list[int]) -> set[int]:
+        normalized_ids = sorted({int(value) for value in ids if value is not None})
+        if not normalized_ids:
+            return set()
+
+        duplicate_ids: set[int] = set()
+        for chunk in self._chunk_list(normalized_ids, 80):
+            in_filter = "(" + ",".join(str(value) for value in chunk) + ")"
+            rows = self._get(
+                "duplicate_jobs",
+                {
+                    "select": "jobsearch_id",
+                    "jobsearch_id": f"in.{in_filter}",
+                },
+            ).json()
+            if not isinstance(rows, list):
+                continue
+            for row in rows:
+                jobsearch_id = row.get("jobsearch_id")
+                if jobsearch_id is not None:
+                    duplicate_ids.add(int(jobsearch_id))
+
+        return duplicate_ids
+
     def fetch_all_js_vacancies_for_bot(self) -> list[dict]:
         rows = self._fetch_all(
             "js_vacancies",

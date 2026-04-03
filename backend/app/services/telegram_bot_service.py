@@ -527,15 +527,16 @@ class TelegramBotService(TelegramService):
             self._to_iso_utc(end_utc),
             fetch_limit,
         )
+        duplicate_js_ids = self.repository.fetch_duplicate_jobsearch_ids(
+            [row.get("id") for row in js_rows if isinstance(row, dict)]
+        )
+        js_rows = [row for row in js_rows if isinstance(row, dict) and row.get("id") not in duplicate_js_ids]
         js_company_map = self.repository.fetch_js_companies_by_ids(
             [row.get("company_id") for row in js_rows if isinstance(row, dict)]
         )
 
         js_jobs: list[dict] = []
         for row in js_rows:
-            if not isinstance(row, dict):
-                continue
-
             company_info = js_company_map.get(int(row.get("company_id"))) if row.get("company_id") is not None else {}
             company_title = company_info.get("title") if isinstance(company_info, dict) else ""
             company_address = company_info.get("address") if isinstance(company_info, dict) else ""
@@ -625,14 +626,16 @@ class TelegramBotService(TelegramService):
 
     def _collect_all_jobs(self) -> list[dict]:
         js_rows = self.repository.fetch_all_js_vacancies_for_bot()
+        duplicate_js_ids = self.repository.fetch_duplicate_jobsearch_ids(
+            [row.get("id") for row in js_rows if isinstance(row, dict)]
+        )
+        js_rows = [row for row in js_rows if isinstance(row, dict) and row.get("id") not in duplicate_js_ids]
         js_company_map = self.repository.fetch_js_companies_by_ids(
             [row.get("company_id") for row in js_rows if isinstance(row, dict)]
         )
 
         js_jobs: list[dict] = []
         for row in js_rows:
-            if not isinstance(row, dict):
-                continue
             company_info = js_company_map.get(int(row.get("company_id"))) if row.get("company_id") is not None else {}
             company_title = company_info.get("title") if isinstance(company_info, dict) else ""
             company_address = company_info.get("address") if isinstance(company_info, dict) else ""

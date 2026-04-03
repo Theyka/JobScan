@@ -227,14 +227,18 @@ class TelegramService:
             self._to_iso_utc(end_utc),
             limit,
         )
+        duplicate_js_ids = self.repository.fetch_duplicate_jobsearch_ids(
+            [row.get("id") for row in rows if isinstance(row, dict)]
+        )
+        filtered_rows = [
+            row for row in rows if isinstance(row, dict) and row.get("id") not in duplicate_js_ids
+        ]
         company_map = self.repository.fetch_js_companies_by_ids(
-            [row.get("company_id") for row in rows if isinstance(row, dict)]
+            [row.get("company_id") for row in filtered_rows if isinstance(row, dict)]
         )
 
         jobs = []
-        for row in rows:
-            if not isinstance(row, dict):
-                continue
+        for row in filtered_rows:
             if not self._was_published_yesterday(row.get("created_at"), expected_date):
                 continue
 
