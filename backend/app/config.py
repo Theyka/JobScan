@@ -63,6 +63,7 @@ class Settings:
     telegram_digest_time: str
     telegram_timezone: str
     telegram_digest_limit: int
+    frontend_base_url: str
 
 
 
@@ -97,6 +98,12 @@ def load_settings(env_path: Path | None = None) -> Settings:
         os.getenv("TELEGRAM_DIGEST_LIMIT") or env_values.get("TELEGRAM_DIGEST_LIMIT", ""),
         5,
     )
+    frontend_base_url = (os.getenv("FRONTEND_BASE_URL") or env_values.get("FRONTEND_BASE_URL") or "").strip().rstrip("/")
+    if not frontend_base_url:
+        raise RuntimeError(
+            "FRONTEND_BASE_URL is required but not set. "
+            "Add it to your .env file or set it as an environment variable (e.g. FRONTEND_BASE_URL=https://vakanso.com)."
+        )
 
     return Settings(
         supabase_url=supabase_url,
@@ -109,4 +116,5 @@ def load_settings(env_path: Path | None = None) -> Settings:
         telegram_digest_time=telegram_digest_time,
         telegram_timezone=telegram_timezone,
         telegram_digest_limit=telegram_digest_limit,
+        frontend_base_url=frontend_base_url,
     )

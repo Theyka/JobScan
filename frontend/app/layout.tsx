@@ -2,15 +2,15 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import { IBM_Plex_Mono, Manrope } from 'next/font/google'
 
+import { SITE_TAGLINE, SITE_DESCRIPTION, CREATOR_NAME, CREATOR_URL } from '@/lib/site-config'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'JobScan | Azerbaijan IT Market Intelligence',
-  description:
-    'Corporate-grade monitoring of the Azerbaijan technology hiring market with merged vacancy coverage, source overlap, and live demand signals.',
-  authors: [{ name: 'Theyka', url: 'https://github.com/Theyka' }],
-  creator: 'Theyka',
-  publisher: 'Theyka',
+  title: SITE_TAGLINE,
+  description: SITE_DESCRIPTION,
+  authors: [{ name: CREATOR_NAME, url: CREATOR_URL }],
+  creator: CREATOR_NAME,
+  publisher: CREATOR_NAME,
 }
 
 const manrope = Manrope({

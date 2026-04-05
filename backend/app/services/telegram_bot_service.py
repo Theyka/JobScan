@@ -186,8 +186,8 @@ class TelegramBotService(TelegramService):
         },
     }
 
-    def __init__(self, repository, bot_token: str, digest_limit: int, timezone_name: str, bot_username: str = ""):
-        super().__init__(repository, bot_token, "", digest_limit, bot_username, timezone_name)
+    def __init__(self, repository, bot_token: str, digest_limit: int, timezone_name: str, bot_username: str = "", frontend_base_url: str = ""):
+        super().__init__(repository, bot_token, "", digest_limit, bot_username, timezone_name, frontend_base_url=frontend_base_url)
         self.tech_options = sorted(TECHNOLOGIES.keys())
         self._update_offset: int | None = None
 

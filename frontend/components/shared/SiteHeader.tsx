@@ -74,7 +74,7 @@ function ThemeButton({ onClick }: { onClick: () => void }) {
 }
 
 export default function SiteHeader({
-  title = 'JobScan Intelligence',
+  title = `${process.env.NEXT_PUBLIC_SITE_NAME} Intelligence`,
   subtitle = 'Corporate-grade monitoring of Azerbaijan technology hiring',
   className = '',
   onToggleTheme,
@@ -315,7 +315,7 @@ export default function SiteHeader({
               {title}
             </p>
             <h1 className="truncate text-lg font-semibold tracking-[-0.04em] text-foreground sm:text-xl">
-              JobScan
+              {process.env.NEXT_PUBLIC_SITE_NAME}
             </h1>
             <p className="hidden truncate text-xs text-[color-mix(in_srgb,var(--foreground)_56%,transparent)] sm:block">
               {subtitle}

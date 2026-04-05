@@ -151,7 +151,7 @@ export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
             <BriefcaseBusiness className="h-5.5 w-5.5" strokeWidth={2.2} />
           </span>
           <div>
-            <p className="text-lg font-semibold tracking-[-0.03em] text-white">JobScan</p>
+            <p className="text-lg font-semibold tracking-[-0.03em] text-white">{process.env.NEXT_PUBLIC_SITE_NAME}</p>
           </div>
         </Link>
 

@@ -1,3 +1,5 @@
+import { SITE_NAME, CREATOR_NAME, REPO_URL, LICENSE_URL } from '@/lib/site-config'
+
 export default function Footer() {
   return (
     <footer className="w-full bg-[#151515] border-t border-white/5 text-white">
@@ -8,7 +10,7 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-4 md:items-start text-center md:text-left">
             <div className="flex items-center gap-2">
               <span className="text-xl font-black tracking-tight text-white">
-                Job<span className="text-[#d4ae72]">Scan</span>
+                {SITE_NAME}
               </span>
               <span className="rounded-full bg-[#d4ae72]/14 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-[#e4c58f]">
                 Beta
@@ -17,7 +19,7 @@ export default function Footer() {
             <p className="max-w-xs text-sm font-medium text-white/60">
               Aggregating and analyzing the IT job market in Azerbaijan with precision.
               <span className="mt-4 block text-[10px] font-bold uppercase tracking-wider text-white/30">
-                © 2026 JobScan — Created and maintained by Theyka
+                © 2026 {SITE_NAME} — Created and maintained by {CREATOR_NAME}
               </span>
               <span className="mt-2 block text-[11px] text-white/45">
                 Open source under GNU AGPL v3 with public source availability.
@@ -42,7 +44,7 @@ export default function Footer() {
 
             <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
               <a
-                href="https://github.com/Theyka/JobScan"
+                href={REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full border border-[#d4ae72]/25 bg-[#d4ae72]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#f0d3a6] transition-colors hover:border-[#d4ae72]/45 hover:bg-[#d4ae72]/15"
@@ -50,7 +52,7 @@ export default function Footer() {
                 Source Code
               </a>
               <a
-                href="https://github.com/Theyka/JobScan/blob/main/LICENSE"
+                href={LICENSE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-white/65 transition-colors hover:border-white/20 hover:text-white"

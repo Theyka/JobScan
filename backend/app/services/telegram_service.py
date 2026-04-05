@@ -12,8 +12,6 @@ class TelegramService:
     API_BASE_URL = "https://api.telegram.org"
     DEFAULT_DIGEST_LIMIT = 5
     DEFAULT_TIMEZONE_LABEL = "Asia/Baku"
-    FRONTEND_BASE_URL = "https://jobstats.theyka.net"
-
     def __init__(
         self,
         repository: SupabaseRepository,
@@ -23,6 +21,7 @@ class TelegramService:
         bot_username: str = "",
         timezone_name: str = DEFAULT_TIMEZONE_LABEL,
         thread_id: int | None = None,
+        frontend_base_url: str = "",
     ):
         self.repository = repository
         self.bot_token = (bot_token or "").strip()
@@ -32,6 +31,12 @@ class TelegramService:
         self.bot_username = str(bot_username or "").strip().lstrip("@")
         self.timezone_name = str(timezone_name or self.DEFAULT_TIMEZONE_LABEL).strip()
         self.local_timezone = self._load_timezone(self.timezone_name)
+        self.frontend_base_url = (frontend_base_url or "").rstrip("/")
+        if not self.frontend_base_url:
+            raise RuntimeError(
+                "FRONTEND_BASE_URL is required but was not provided to TelegramService. "
+                "Ensure it is set in your .env or environment variables."
+            )
 
     @property
     def is_configured(self) -> bool:
@@ -132,17 +137,15 @@ class TelegramService:
         }
         return replacements.get(location, location)
 
-    @staticmethod
-    def _jobsearch_public_url(slug: str | None) -> str:
+    def _jobsearch_public_url(self, slug: str | None) -> str:
         if not isinstance(slug, str) or not slug.strip():
             return ""
-        return f"{TelegramService.FRONTEND_BASE_URL}/vacancies/jobsearch/{slug.strip()}"
+        return f"{self.frontend_base_url}/vacancies/jobsearch/{slug.strip()}"
 
-    @staticmethod
-    def _glorri_public_url(slug: str | None) -> str:
+    def _glorri_public_url(self, slug: str | None) -> str:
         if not isinstance(slug, str) or not slug.strip():
             return ""
-        return f"{TelegramService.FRONTEND_BASE_URL}/vacancies/glorri/{slug.strip()}"
+        return f"{self.frontend_base_url}/vacancies/glorri/{slug.strip()}"
 
     @staticmethod
     def _chat_id_kind(value: str) -> str:

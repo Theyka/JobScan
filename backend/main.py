@@ -53,6 +53,7 @@ def main():
         settings.telegram_bot_username,
         settings.telegram_timezone,
         settings.telegram_thread_id,
+        settings.frontend_base_url,
     )
     telegram_bot_service = TelegramBotService(
         repository,
@@ -60,6 +61,7 @@ def main():
         settings.telegram_digest_limit,
         settings.telegram_timezone,
         settings.telegram_bot_username,
+        settings.frontend_base_url,
     )
     controller = ScrapeController(jobsearch_service, glorri_service, duplicate_detection_service)
 
