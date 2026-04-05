@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: 'JobScan | Azerbaijan IT Market Intelligence',
   description:
     'Corporate-grade monitoring of the Azerbaijan technology hiring market with merged vacancy coverage, source overlap, and live demand signals.',
+  authors: [{ name: 'Theyka', url: 'https://github.com/Theyka' }],
+  creator: 'Theyka',
+  publisher: 'Theyka',
 }
 
 const manrope = Manrope({

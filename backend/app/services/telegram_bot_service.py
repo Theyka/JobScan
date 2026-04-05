@@ -14,6 +14,10 @@ from app.services.telegram_service import TelegramService
 class TelegramBotService(TelegramService):
     SUPPORTED_LANGUAGES = ("az", "en", "ru")
     DEFAULT_LANGUAGE = "az"
+    CREATOR_NAME = "Theyka"
+    CREATOR_URL = "https://github.com/Theyka"
+    PROJECT_URL = "https://github.com/Theyka/JobScan"
+    LICENSE_URL = "https://github.com/Theyka/JobScan/blob/main/LICENSE"
     CALLBACK_PREFIX_LANGUAGE = "lang"
     CALLBACK_PREFIX_SETTINGS = "settings"
     CALLBACK_PREFIX_TECH = "tech"
@@ -26,6 +30,7 @@ class TelegramBotService(TelegramService):
     DETAIL_PAGE_SIZE = 6
     UPDATE_TIMEOUT_SECONDS = 45
     RETRY_DELAY_SECONDS = 5
+    CONFLICT_RETRY_DELAY_SECONDS = 30
     MAX_DAILY_FETCH = 200
 
     LANGUAGE_LABELS = {
@@ -41,6 +46,9 @@ class TelegramBotService(TelegramService):
                 "Dil seçimi yadda saxlanıldı. Əgər vakansiyanın təsviri seçilən dildə mövcud deyilsə, "
                 "avtomatik tərcümə Google Translate vasitəsilə həyata keçiriləcək."
             ),
+            "creator": "Müəllif",
+            "source_code": "Mənbə kodu",
+            "license": "Lisenziya",
             "step_two": "Step 2/2 — Sizə uyğun stack və texnologiyaları seçin.",
             "tech_help": "Seçim etmək üçün düymələrə toxunun. Bitir düyməsi ilə yadda saxlanılır.",
             "settings_hint": "Tənzimləmələri yenidən dəyişmək üçün /settings yazın.",
@@ -86,6 +94,9 @@ class TelegramBotService(TelegramService):
                 "Your language was saved. If a vacancy description is not available in the selected language, "
                 "it will be translated automatically via Google Translate."
             ),
+            "creator": "Creator",
+            "source_code": "Source code",
+            "license": "License",
             "step_two": "Step 2/2 — Choose the stack and technologies that match you.",
             "tech_help": "Tap buttons to select technologies. Use Done to save.",
             "settings_hint": "Use /settings any time to update your preferences.",
@@ -131,6 +142,9 @@ class TelegramBotService(TelegramService):
                 "Язык сохранён. Если описание вакансии недоступно на выбранном языке, "
                 "будет использован автоматический перевод через Google Translate."
             ),
+            "creator": "Автор",
+            "source_code": "Исходный код",
+            "license": "Лицензия",
             "step_two": "Шаг 2/2 — Выберите подходящие технологии и стек.",
             "tech_help": "Нажимайте кнопки для выбора. Используйте Done для сохранения.",
             "settings_hint": "Используйте /settings, чтобы изменить настройки в любой момент.",
@@ -210,6 +224,12 @@ class TelegramBotService(TelegramService):
             rows.append([
                 {"text": self.LANGUAGE_LABELS[code], "callback_data": f"{self.CALLBACK_PREFIX_LANGUAGE}:{code}"}
             ])
+        rows.append(
+            [
+                {"text": "💻 Source", "url": self.PROJECT_URL},
+                {"text": "⚖️ License", "url": self.LICENSE_URL},
+            ]
+        )
         return {"inline_keyboard": rows}
 
     def _build_settings_keyboard(self, language: str, active: bool) -> dict:
@@ -236,6 +256,10 @@ class TelegramBotService(TelegramService):
                         "text": self._text(language, "pause") if active else self._text(language, "resume"),
                         "callback_data": f"{self.CALLBACK_PREFIX_STATUS}:{'pause' if active else 'resume'}",
                     }
+                ],
+                [
+                    {"text": f"💻 {self._text(language, 'source_code')}", "url": self.PROJECT_URL},
+                    {"text": f"⚖️ {self._text(language, 'license')}", "url": self.LICENSE_URL},
                 ],
             ]
         }
@@ -340,6 +364,37 @@ class TelegramBotService(TelegramService):
             raise RuntimeError(data.get("description") or f"Telegram method failed: {method}")
         return data
 
+    def _get_webhook_info(self) -> dict:
+        response = requests.get(
+            f"{self.API_BASE_URL}/bot{self.bot_token}/getWebhookInfo",
+            timeout=30,
+        )
+        response.raise_for_status()
+        data = response.json()
+        if not data.get("ok"):
+            raise RuntimeError(data.get("description") or "Telegram getWebhookInfo failed")
+        return data.get("result") if isinstance(data.get("result"), dict) else {}
+
+    def _delete_webhook(self, drop_pending_updates: bool = False) -> None:
+        self._send_api_request(
+            "deleteWebhook",
+            {"drop_pending_updates": bool(drop_pending_updates)},
+        )
+
+    def _prepare_polling_session(self) -> None:
+        webhook_info = self._get_webhook_info()
+        webhook_url = str(webhook_info.get("url") or "").strip()
+        if webhook_url:
+            print(f"Telegram bot polling: deleting active webhook {webhook_url}")
+            self._delete_webhook(drop_pending_updates=False)
+
+    @staticmethod
+    def _is_conflict_error(error: Exception) -> bool:
+        if not isinstance(error, requests.RequestException):
+            return False
+        response = getattr(error, "response", None)
+        return bool(response is not None and response.status_code == 409)
+
     def _send_message(self, chat_id: int, text: str, reply_markup: dict | None = None):
         payload = {
             "chat_id": int(chat_id),
@@ -420,11 +475,21 @@ class TelegramBotService(TelegramService):
                 f"• {self._text(language, 'status')}: {status_text}",
                 "",
                 self._text(language, "settings_hint"),
+                *self._project_notice_lines(language),
             ]
         )
 
+    def _project_notice_lines(self, language: str) -> list[str]:
+        return [
+            "",
+            f"👤 {self._text(language, 'creator')}: <a href=\"{self.CREATOR_URL}\">{self.CREATOR_NAME}</a>",
+            f"💻 {self._text(language, 'source_code')}: <a href=\"{self.PROJECT_URL}\">JobScan</a>",
+            f"⚖️ {self._text(language, 'license')}: <a href=\"{self.LICENSE_URL}\">GNU AGPL v3</a>",
+        ]
+
     def _send_language_prompt(self, chat_id: int):
-        self._send_message(chat_id, self._text(self.DEFAULT_LANGUAGE, "welcome"), self._build_language_keyboard())
+        text = "\n".join([self._text(self.DEFAULT_LANGUAGE, "welcome"), *self._project_notice_lines(self.DEFAULT_LANGUAGE)])
+        self._send_message(chat_id, text, self._build_language_keyboard())
 
     def _send_tech_prompt(self, chat_id: int, language: str, selected: list[str], page: int = 0, message_id: int | None = None):
         text = "\n\n".join(
@@ -500,7 +565,7 @@ class TelegramBotService(TelegramService):
         ]
         url = str(job.get("url") or "").strip()
         if self._is_supported_url(url):
-            lines.append(f'<a href="{escape(url, quote=True)}">Open vacancy</a>')
+            lines.append(f'<a href="{escape(url, quote=True)}">{escape(self._text(language, "open_vacancy"))}</a>')
         return "\n".join(lines)
 
     @staticmethod
@@ -986,8 +1051,13 @@ class TelegramBotService(TelegramService):
             return
 
         print("Telegram bot polling started")
+        polling_prepared = False
         while True:
             try:
+                if not polling_prepared:
+                    self._prepare_polling_session()
+                    polling_prepared = True
+
                 updates = self._get_updates()
                 for update in updates:
                     update_id = update.get("update_id")
@@ -998,6 +1068,15 @@ class TelegramBotService(TelegramService):
                     elif isinstance(update.get("callback_query"), dict):
                         self._handle_callback(update["callback_query"])
             except requests.RequestException as error:
+                if self._is_conflict_error(error):
+                    polling_prepared = False
+                    print(
+                        "Telegram bot polling conflict (409): another polling session or webhook is active for this bot. "
+                        "Only one polling process can use getUpdates at a time. Retrying after cleanup."
+                    )
+                    time.sleep(self.CONFLICT_RETRY_DELAY_SECONDS)
+                    continue
+
                 print(f"Telegram bot polling error: {error}")
                 time.sleep(self.RETRY_DELAY_SECONDS)
             except Exception as error:

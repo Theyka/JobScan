@@ -1,3 +1,9 @@
+## Project Ownership
+---
+- Created by [Theyka](https://github.com/Theyka)
+- Source code: [github.com/Theyka/JobScan](https://github.com/Theyka/JobScan)
+- License: GNU Affero General Public License v3.0 or later ([LICENSE](LICENSE))
+
 Tech Stack:
 ---
 - Python

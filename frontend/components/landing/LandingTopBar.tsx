@@ -156,9 +156,9 @@ export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
-          <a href="#open-roles" className="text-sm font-medium text-white transition hover:text-white/82">
+          <Link href="/" className="text-sm font-medium text-white transition hover:text-white/82">
             Home
-          </a>
+          </Link>
           {profile?.isAdmin ? (
             <Link href="/admin" className="text-sm font-medium text-white/70 transition hover:text-white">
               Admin
