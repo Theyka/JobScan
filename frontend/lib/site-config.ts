@@ -33,6 +33,11 @@ export const SITE_DESCRIPTION: string = requireLiteral(
   process.env.NEXT_PUBLIC_SITE_DESCRIPTION,
 )
 
+export const SITE_URL: string = requireLiteral(
+  'NEXT_PUBLIC_SITE_URL',
+  process.env.NEXT_PUBLIC_SITE_URL,
+)
+
 export const SITE_TAGLINE = `${SITE_NAME} | Azerbaijan IT Market Intelligence`
 
 export const CREATOR_NAME = 'Theyka'
