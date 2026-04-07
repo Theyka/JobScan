@@ -51,6 +51,24 @@ function formatCardDate(value: string): string {
   }).format(parsed)
 }
 
+function hasVacancyDatePassed(value: string): boolean {
+  const raw = String(value ?? '').trim()
+  if (!raw) {
+    return false
+  }
+
+  const parsed = new Date(raw)
+  if (Number.isNaN(parsed.getTime())) {
+    return false
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    parsed.setHours(23, 59, 59, 999)
+  }
+
+  return parsed.getTime() < Date.now()
+}
+
 function buildResultsLabel(activeTech: string | null, normalizedSearch: string): string {
   if (normalizedSearch) {
     return `Results for “${normalizedSearch}”`
@@ -231,6 +249,7 @@ function JobsSection({
               const visibleTechnologies = job.technologies.slice(0, 3)
               const remainingTechnologies = Math.max(job.technologies.length - visibleTechnologies.length, 0)
               const hasSalary = Boolean(job.salary && job.salary !== 'Not specified')
+              const isExpired = hasVacancyDatePassed(job.deadline_at)
 
               return (
                 <a
@@ -238,13 +257,29 @@ function JobsSection({
                   href={href}
                   target={isExternalDetail ? '_blank' : undefined}
                   rel={isExternalDetail ? 'noopener noreferrer' : undefined}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-black/8 bg-[#fcfbfa] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#b69263]/45 hover:shadow-[0_20px_44px_rgba(17,17,17,0.08)] dark:border-white/8 dark:bg-[#151515] dark:hover:border-[#b69263]/45 dark:hover:shadow-none"
+                  className={`group relative flex h-full flex-col overflow-hidden rounded-xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_rgba(17,17,17,0.08)] dark:hover:shadow-none ${
+                    isExpired
+                      ? 'border-red-300 bg-red-50/90 hover:border-red-400 dark:border-red-500/35 dark:bg-red-950/20 dark:hover:border-red-400/60'
+                      : 'border-black/8 bg-[#fcfbfa] hover:border-[#b69263]/45 dark:border-white/8 dark:bg-[#151515] dark:hover:border-[#b69263]/45'
+                  }`}
                 >
                   <div className="relative mb-5 flex items-start justify-between gap-4">
-                    <h3 className="flex-1 text-[1rem] leading-tight font-semibold tracking-[-0.03em] wrap-break-word text-[#161616] transition-colors group-hover:text-[#8a6a43] dark:text-white dark:group-hover:text-[#d7b37a] sm:text-[1.05rem]">
+                    <h3
+                      className={`flex-1 text-[1rem] leading-tight font-semibold tracking-[-0.03em] wrap-break-word transition-colors sm:text-[1.05rem] ${
+                        isExpired
+                          ? 'text-red-900 group-hover:text-red-700 dark:text-red-100 dark:group-hover:text-red-300'
+                          : 'text-[#161616] group-hover:text-[#8a6a43] dark:text-white dark:group-hover:text-[#d7b37a]'
+                      }`}
+                    >
                       {job.title}
                     </h3>
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/8 bg-white text-black/52 transition-colors group-hover:border-[#b69263]/35 group-hover:text-[#8a6a43] dark:border-white/10 dark:bg-white/8 dark:text-white/62 dark:group-hover:text-[#d7b37a]">
+                    <span
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                        isExpired
+                          ? 'border-red-200 bg-white text-red-500 group-hover:border-red-300 group-hover:text-red-600 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300 dark:group-hover:text-red-200'
+                          : 'border-black/8 bg-white text-black/52 group-hover:border-[#b69263]/35 group-hover:text-[#8a6a43] dark:border-white/10 dark:bg-white/8 dark:text-white/62 dark:group-hover:text-[#d7b37a]'
+                      }`}
+                    >
                       <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                       </svg>
@@ -252,19 +287,30 @@ function JobsSection({
                   </div>
 
                   <div className="relative mb-5 flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-black/8 bg-[#f8f6f3] p-1.5 transition-colors group-hover:bg-white dark:border-white/10 dark:bg-white/6 dark:group-hover:bg-white/10">
+                    <div
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border p-1.5 transition-colors ${
+                        isExpired
+                          ? 'border-red-200 bg-white group-hover:bg-red-100 dark:border-red-500/25 dark:bg-red-900/20 dark:group-hover:bg-red-900/30'
+                          : 'border-black/8 bg-[#f8f6f3] group-hover:bg-white dark:border-white/10 dark:bg-white/6 dark:group-hover:bg-white/10'
+                      }`}
+                    >
                       {job.company_logo ? (
                         <img src={job.company_logo} alt={job.company} className="h-full w-full object-contain" />
                       ) : (
-                        <span className="text-sm font-semibold text-black/60 dark:text-white/60">{job.company.slice(0, 1) || 'C'}</span>
+                        <span className={`text-sm font-semibold ${isExpired ? 'text-red-700 dark:text-red-200' : 'text-black/60 dark:text-white/60'}`}>{job.company.slice(0, 1) || 'C'}</span>
                       )}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="text-[12px] font-semibold leading-4 wrap-break-word text-[#161616] dark:text-white">
+                      <p className={`text-[12px] font-semibold leading-4 wrap-break-word ${isExpired ? 'text-red-900 dark:text-red-100' : 'text-[#161616] dark:text-white'}`}>
                         {job.company}
                       </p>
-                      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-black/40 dark:text-white/42">
+                      <p
+                        className={`mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${
+                          isExpired ? 'text-red-600 dark:text-red-400' : 'text-black/40 dark:text-white/42'
+                        }`}
+                        title={isExpired ? `Expired on ${formatCardDate(job.deadline_at)}` : undefined}
+                      >
                         {formatCardDate(job.created_at)}
                       </p>
                     </div>
@@ -274,7 +320,11 @@ function JobsSection({
                     {visibleTechnologies.map((tech) => (
                       <span
                         key={`${job.uid}-${tech}`}
-                        className="rounded-lg border border-black/10 bg-[#f8f6f3] px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] text-black/58 transition-colors group-hover:bg-white dark:border-white/10 dark:bg-white/6 dark:text-white/62 dark:group-hover:bg-white/10"
+                        className={`rounded-lg border px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] transition-colors ${
+                          isExpired
+                            ? 'border-red-200 bg-white text-red-700 group-hover:bg-red-100 dark:border-red-500/25 dark:bg-red-900/20 dark:text-red-200 dark:group-hover:bg-red-900/30'
+                            : 'border-black/10 bg-[#f8f6f3] text-black/58 group-hover:bg-white dark:border-white/10 dark:bg-white/6 dark:text-white/62 dark:group-hover:bg-white/10'
+                        }`}
                         title={tech}
                       >
                         {tech}
@@ -282,22 +332,40 @@ function JobsSection({
                     ))}
 
                     {remainingTechnologies > 0 ? (
-                      <span className="flex items-center justify-center rounded-lg bg-[#f1ede7] px-2.5 text-[10px] font-semibold tracking-[0.04em] text-black/44 transition-colors group-hover:bg-white group-hover:text-black/60 dark:bg-white/6 dark:text-white/48 dark:group-hover:bg-white/10 dark:group-hover:text-white/72">
+                      <span
+                        className={`flex items-center justify-center rounded-lg px-2.5 text-[10px] font-semibold tracking-[0.04em] transition-colors ${
+                          isExpired
+                            ? 'bg-red-100 text-red-600 group-hover:bg-red-200 group-hover:text-red-700 dark:bg-red-900/20 dark:text-red-300 dark:group-hover:bg-red-900/30 dark:group-hover:text-red-200'
+                            : 'bg-[#f1ede7] text-black/44 group-hover:bg-white group-hover:text-black/60 dark:bg-white/6 dark:text-white/48 dark:group-hover:bg-white/10 dark:group-hover:text-white/72'
+                        }`}
+                      >
                         +{remainingTechnologies}
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="relative flex items-center justify-between border-t border-black/6 pt-4 transition-colors group-hover:border-black/10 dark:border-white/8 dark:group-hover:border-white/12">
+                  <div
+                    className={`relative flex items-center justify-between border-t pt-4 transition-colors ${
+                      isExpired
+                        ? 'border-red-200 group-hover:border-red-300 dark:border-red-500/20 dark:group-hover:border-red-500/35'
+                        : 'border-black/6 group-hover:border-black/10 dark:border-white/8 dark:group-hover:border-white/12'
+                    }`}
+                  >
                     {hasSalary ? (
                       <div className="min-w-0 pr-3">
-                        <p className="text-sm font-semibold text-[#161616] dark:text-white">{job.salary}</p>
+                        <p className={`text-sm font-semibold ${isExpired ? 'text-red-900 dark:text-red-100' : 'text-[#161616] dark:text-white'}`}>{job.salary}</p>
                       </div>
                     ) : <span />}
 
-                    <span className="inline-flex h-9 items-center rounded-lg bg-[#151515] px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-white transition-all group-hover:bg-[#8a6a43] dark:bg-white dark:text-[#151515] dark:group-hover:bg-[#d7b37a]">
-                      Details
-                    </span>
+                    {isExpired ? (
+                      <span className="inline-flex h-9 items-center rounded-lg bg-red-600 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-white transition-all group-hover:bg-red-700 dark:bg-red-500 dark:text-white dark:group-hover:bg-red-400">
+                        Expired
+                      </span>
+                    ) : (
+                      <span className="inline-flex h-9 items-center rounded-lg bg-[#151515] px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-white transition-all group-hover:bg-[#8a6a43] dark:bg-white dark:text-[#151515] dark:group-hover:bg-[#d7b37a]">
+                        Details
+                      </span>
+                    )}
                   </div>
                 </a>
               )

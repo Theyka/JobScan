@@ -15,6 +15,7 @@ export type LandingJob = {
   company: string
   company_logo: string
   created_at: string
+  deadline_at: string
   salary: string
   technologies: string[]
   detail_url: string

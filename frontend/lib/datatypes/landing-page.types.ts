@@ -1,6 +1,6 @@
 import type { SourceKey } from '@/lib/datatypes/landing-data.types'
 
-export type PageSizeOption = 18 | 36 | 54 | 72
+export type PageSizeOption = 20 | 40 | 60 | 80 | 100
 
 export type SourceFilter = SourceKey | 'duplicates'
 

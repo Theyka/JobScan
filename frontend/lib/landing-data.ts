@@ -155,6 +155,10 @@ function toDateLabel(value: unknown): string {
   }).format(parsed)
 }
 
+function toDateValue(value: unknown): string {
+  return String(value ?? '').trim()
+}
+
 function toTimestamp(...values: unknown[]): number {
   for (const value of values) {
     const raw = String(value ?? '').trim()
@@ -170,6 +174,31 @@ function toTimestamp(...values: unknown[]): number {
   }
 
   return 0
+}
+
+function pickLatestDateValue(...values: unknown[]): string {
+  let fallback = ''
+  let latestValue = ''
+  let latestTimestamp = 0
+
+  for (const value of values) {
+    const raw = String(value ?? '').trim()
+    if (!raw) {
+      continue
+    }
+
+    if (!fallback) {
+      fallback = raw
+    }
+
+    const timestamp = toTimestamp(raw)
+    if (timestamp > latestTimestamp) {
+      latestTimestamp = timestamp
+      latestValue = raw
+    }
+  }
+
+  return latestValue || fallback
 }
 
 function toAbsoluteJobSearchLogo(logo: unknown): string {
@@ -460,6 +489,7 @@ export async function getLandingData(): Promise<LandingData> {
         company: company?.name || 'Unknown',
         company_logo: company?.logo || '',
         created_at: toDateLabel(vacancy.created_at),
+        deadline_at: toDateValue(vacancy.deadline_at),
         salary: parseSalaryText(vacancy.salary),
         technologies: normalizeTechStack(vacancy.tech_stack),
         detail_url: slug ? `https://jobsearch.az/vacancies/${encodeURIComponent(slug)}` : '',
@@ -474,6 +504,7 @@ export async function getLandingData(): Promise<LandingData> {
       const slug = String(vacancy.slug ?? '').trim()
       const vacancyAbout = isObjectRecord(vacancy.vacancy_about) ? vacancy.vacancy_about : {}
       const salarySource = vacancyAbout.salary
+      const deadlineAt = toDateValue(vacancyAbout.deadline)
 
       const fallbackDetailUrl =
         company?.slug && slug
@@ -492,6 +523,7 @@ export async function getLandingData(): Promise<LandingData> {
         company: company?.name || 'Unknown',
         company_logo: toAbsoluteGlorriLogo(company?.logo),
         created_at: toDateLabel(vacancy.postedDate || vacancy.created_at),
+        deadline_at: deadlineAt,
         salary: parseSalaryText(salarySource),
         technologies: normalizeTechStack(vacancy.tech_stack),
         detail_url: detailUrl,
@@ -556,6 +588,7 @@ export async function getLandingData(): Promise<LandingData> {
         technologies: mergeTechnologies(primary.technologies, secondary?.technologies || []),
         company: primary.company || secondary?.company || 'Unknown',
         company_logo: primary.company_logo || secondary?.company_logo || '',
+        deadline_at: pickLatestDateValue(primary.deadline_at, secondary?.deadline_at),
         salary:
           primary.salary !== 'Not specified'
             ? primary.salary
@@ -590,6 +623,7 @@ export async function getLandingData(): Promise<LandingData> {
       company: job.company,
       company_logo: job.company_logo,
       created_at: job.created_at,
+      deadline_at: job.deadline_at,
       salary: job.salary,
       technologies: job.technologies,
       detail_url: job.detail_url,

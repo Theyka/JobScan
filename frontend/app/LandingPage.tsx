@@ -9,7 +9,7 @@ import JobsSection from '@/components/landing/JobsSection'
 import type { LandingData, LandingJob } from '@/lib/datatypes/landing-data.types'
 import type { CountItem, PageSizeOption, SalaryRange, SourceFilter } from '@/lib/datatypes/landing-page.types'
 
-const PAGE_SIZE_OPTIONS: PageSizeOption[] = [18, 36, 54, 72]
+const PAGE_SIZE_OPTIONS: PageSizeOption[] = [20, 40, 60, 80, 100]
 type SortOption = 'latest' | 'oldest' | 'salary-desc' | 'salary-asc' | 'company-asc'
 
 const SALARY_RANGES: SalaryRange[] = [
@@ -104,7 +104,7 @@ export default function LandingPage({ data }: { data: LandingData }) {
   const [salaryMin, setSalaryMin] = useState<number | null>(null)
   const [salaryMax, setSalaryMax] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState<PageSizeOption>(18)
+  const [itemsPerPage, setItemsPerPage] = useState<PageSizeOption>(20)
   const [sortBy, setSortBy] = useState<SortOption>('latest')
   const [isSelectOpen, setIsSelectOpen] = useState(false)
   const [showAllTechs, setShowAllTechs] = useState(true)
