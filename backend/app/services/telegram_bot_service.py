@@ -1052,6 +1052,8 @@ class TelegramBotService(TelegramService):
 
         print("Telegram bot polling started")
         polling_prepared = False
+        conflict_count = 0
+        MAX_CONFLICT_RETRIES = 10
         while True:
             try:
                 if not polling_prepared:
@@ -1059,6 +1061,7 @@ class TelegramBotService(TelegramService):
                     polling_prepared = True
 
                 updates = self._get_updates()
+                conflict_count = 0
                 for update in updates:
                     update_id = update.get("update_id")
                     if isinstance(update_id, int):
@@ -1070,10 +1073,18 @@ class TelegramBotService(TelegramService):
             except requests.RequestException as error:
                 if self._is_conflict_error(error):
                     polling_prepared = False
-                    print(
-                        "Telegram bot polling conflict (409): another polling session or webhook is active for this bot. "
-                        "Only one polling process can use getUpdates at a time. Retrying after cleanup."
-                    )
+                    conflict_count += 1
+                    if conflict_count == 1:
+                        print(
+                            "Telegram bot polling conflict (409): another polling session is active. "
+                            f"Will retry up to {MAX_CONFLICT_RETRIES} times (every {self.CONFLICT_RETRY_DELAY_SECONDS}s)."
+                        )
+                    if conflict_count >= MAX_CONFLICT_RETRIES:
+                        print(
+                            f"Telegram bot polling conflict persists after {MAX_CONFLICT_RETRIES} retries. "
+                            "This instance will stop polling — another instance is the active poller."
+                        )
+                        return
                     time.sleep(self.CONFLICT_RETRY_DELAY_SECONDS)
                     continue
 

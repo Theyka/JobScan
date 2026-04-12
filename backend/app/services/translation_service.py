@@ -58,8 +58,14 @@ class TranslationService:
             return None
 
         for attempt in range(MAX_RETRIES):
+            # Lazily refresh proxy list if it was empty when the batch started
+            # (e.g. proxies were added while the batch was already running)
+            if not self._proxy_list:
+                self._refresh_proxies()
+
             proxy_row = self._next_proxy()
             proxy_url = proxy_row["url"] if proxy_row else None
+            proxy_label = proxy_url or "direct (no proxy)"
             try:
                 result = _call_google_translate(text, to_lang, from_lang, proxy_url)
                 if proxy_row:
@@ -70,17 +76,17 @@ class TranslationService:
                     if proxy_row:
                         self._report_proxy_failure(proxy_row)
                     wait = RETRY_WAIT_SECONDS + random.uniform(0, 5)
-                    print(f"[translation] 429 rate-limited, waiting {wait:.0f}s (attempt {attempt + 1}/{MAX_RETRIES})")
+                    print(f"[translation] 429 rate-limited via {proxy_label}, waiting {wait:.0f}s (attempt {attempt + 1}/{MAX_RETRIES})")
                     time.sleep(wait)
                 else:
                     if proxy_row:
                         self._report_proxy_failure(proxy_row)
-                    print(f"[translation] HTTP error: {err}")
+                    print(f"[translation] HTTP error via {proxy_label}: {err}")
                     return None
             except Exception as err:
                 if proxy_row:
                     self._report_proxy_failure(proxy_row)
-                print(f"[translation] error: {err}")
+                print(f"[translation] error via {proxy_label}: {err}")
                 if attempt < MAX_RETRIES - 1:
                     time.sleep(2)
 

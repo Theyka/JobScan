@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-type AdminSection = 'stats' | 'users' | 'export'
+type AdminSection = 'stats' | 'users' | 'export' | 'proxies'
 
 type AdminSectionNavProps = {
   current: AdminSection
@@ -10,11 +10,12 @@ const LINKS: Array<{ id: AdminSection; href: string; label: string }> = [
   { id: 'stats', href: '/admin', label: 'Statistics' },
   { id: 'users', href: '/admin/user', label: 'Users' },
   { id: 'export', href: '/admin/export', label: 'Export' },
+  { id: 'proxies', href: '/admin/proxy', label: 'Proxies' },
 ]
 
 export default function AdminSectionNav({ current }: AdminSectionNavProps) {
   return (
-    <nav className="mb-8 rounded-[2rem] border border-black/8 bg-white p-2 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
+    <nav className="mb-8 rounded-4xl border border-black/8 bg-white p-2 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515]">
       <div className="flex flex-wrap gap-2">
         {LINKS.map((link) => {
           const isActive = link.id === current
