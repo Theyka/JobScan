@@ -35,6 +35,8 @@ type JobsSectionProps = {
   onNextPage: () => void
   sortBy: SortOption
   onSortChange: (value: SortOption) => void
+  favoriteVacancyIds?: Set<string>
+  onToggleFavorite?: (source: string, vacancyId: number) => void
 }
 
 function formatCardDate(value: string): string {
@@ -101,6 +103,8 @@ function JobsSection({
   onNextPage,
   sortBy,
   onSortChange,
+  favoriteVacancyIds,
+  onToggleFavorite,
 }: JobsSectionProps) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement | null>(null)
@@ -250,6 +254,8 @@ function JobsSection({
               const remainingTechnologies = Math.max(job.technologies.length - visibleTechnologies.length, 0)
               const hasSalary = Boolean(job.salary && job.salary !== 'Not specified')
               const isExpired = hasVacancyDatePassed(job.deadline_at)
+              const favoriteKey = `${job.source === 'glorri' ? 'glorri' : 'jobsearch'}-${job.id}`
+              const isFavorite = favoriteVacancyIds?.has(favoriteKey) ?? false
 
               return (
                 <a
@@ -273,7 +279,28 @@ function JobsSection({
                     >
                       {job.title}
                     </h3>
-                    <span
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      {onToggleFavorite ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            onToggleFavorite(job.source, job.id)
+                          }}
+                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
+                            isFavorite
+                              ? 'border-red-200 bg-red-50 text-red-500 hover:bg-red-100 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
+                              : 'border-black/8 bg-white text-black/30 hover:border-red-200 hover:bg-red-50 hover:text-red-400 dark:border-white/10 dark:bg-white/8 dark:text-white/30 dark:hover:border-red-500/30 dark:hover:text-red-400'
+                          }`}
+                          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        >
+                          <svg className="h-4 w-4" fill={isFavorite ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                          </svg>
+                        </button>
+                      ) : null}
+                      <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${
                         isExpired
                           ? 'border-red-200 bg-white text-red-500 group-hover:border-red-300 group-hover:text-red-600 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-300 dark:group-hover:text-red-200'
@@ -284,6 +311,7 @@ function JobsSection({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                       </svg>
                     </span>
+                    </div>
                   </div>
 
                   <div className="relative mb-5 flex items-center gap-3">

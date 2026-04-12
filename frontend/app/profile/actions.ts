@@ -14,6 +14,17 @@ export async function updateProfileAction(_: ProfileActionState, formData: FormD
   const firstName = toText(formData.get('first_name'))
   const lastName = toText(formData.get('last_name'))
   const username = toText(formData.get('username'))
+  const techStackRaw = toText(formData.get('tech_stack'))
+
+  let techStack: string[] = []
+  try {
+    const parsed = JSON.parse(techStackRaw || '[]')
+    if (Array.isArray(parsed)) {
+      techStack = parsed.filter((item: unknown) => typeof item === 'string')
+    }
+  } catch {
+    techStack = []
+  }
 
   if (!firstName || !lastName || !username) {
     return {
@@ -66,6 +77,7 @@ export async function updateProfileAction(_: ProfileActionState, formData: FormD
       username,
       first_name: firstName,
       last_name: lastName,
+      tech_stack: techStack,
     },
     { onConflict: 'id' }
   )

@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import { useActionState } from 'react'
 
-import LandingTopBar from '@/components/landing/LandingTopBar'
-import Footer from '@/components/shared/Footer'
 import { INITIAL_AUTH_ACTION_STATE } from '@/lib/datatypes/auth.types'
 
 import { loginAction } from './actions'
@@ -13,14 +11,7 @@ export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(loginAction, INITIAL_AUTH_ACTION_STATE)
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-900 transition-colors duration-300 dark:bg-[#111111] dark:text-white">
-      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
-        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-          <LandingTopBar />
-        </div>
-      </div>
-
-      <main className="relative mx-auto flex w-full max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+    <main className="relative mx-auto flex w-full max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
         <section className="mx-auto w-full max-w-2xl py-6 lg:py-10">
           <section className="rounded-3xl border border-black/8 bg-[#fcfbfa] p-6 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] sm:p-8 lg:p-10">
             <div className="mb-8">
@@ -104,10 +95,7 @@ export default function LoginPage() {
             </div>
           </section>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   )
 }
 

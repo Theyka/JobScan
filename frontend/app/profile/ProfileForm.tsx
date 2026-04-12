@@ -1,8 +1,9 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 
 import { INITIAL_PROFILE_ACTION_STATE } from '@/lib/datatypes/profile.types'
+import { TECHNOLOGIES } from '@/lib/datatypes/technologies'
 
 import { updateProfileAction } from './actions'
 
@@ -11,6 +12,7 @@ type ProfileFormProps = {
   initialFirstName: string
   initialLastName: string
   initialUsername: string
+  initialTechStack: string[]
 }
 
 export default function ProfileForm({
@@ -18,8 +20,21 @@ export default function ProfileForm({
   initialFirstName,
   initialLastName,
   initialUsername,
+  initialTechStack,
 }: ProfileFormProps) {
   const [state, formAction, isPending] = useActionState(updateProfileAction, INITIAL_PROFILE_ACTION_STATE)
+  const [techStack, setTechStack] = useState<string[]>(initialTechStack)
+  const [techSearch, setTechSearch] = useState('')
+
+  const filteredTechs = TECHNOLOGIES.filter((tech) =>
+    tech.toLowerCase().includes(techSearch.toLowerCase())
+  )
+
+  const toggleTech = (tech: string) => {
+    setTechStack((prev) =>
+      prev.includes(tech) ? prev.filter((t) => t !== tech) : [...prev, tech]
+    )
+  }
 
   return (
     <section className="mx-auto w-full max-w-xl rounded-xl border border-black/8 bg-white p-8 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] sm:p-10">
@@ -130,6 +145,44 @@ export default function ProfileForm({
             </div>
           </div>
         </div>
+
+        {/* Tech Stack Selection */}
+        <div>
+          <label className="mb-1.5 block text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
+            Tech Stack ({techStack.length} selected)
+          </label>
+          <input
+            type="text"
+            placeholder="Search technologies..."
+            value={techSearch}
+            onChange={(e) => setTechSearch(e.target.value)}
+            className="mb-3 h-10 w-full rounded-lg border border-black/8 bg-[#f8f6f3] px-4 text-sm font-medium text-slate-900 outline-none transition-colors placeholder-slate-400 focus:border-[#8a6a43]/35 focus:bg-white dark:border-white/8 dark:bg-white/6 dark:text-white dark:placeholder-slate-600 dark:focus:border-[#d7b37a]/50 dark:focus:bg-white/8"
+          />
+          <div className="custom-scrollbar flex max-h-48 flex-wrap gap-2 overflow-y-auto rounded-lg border border-black/8 bg-[#f8f6f3] p-3 dark:border-white/8 dark:bg-white/6">
+            {filteredTechs.map((tech) => {
+              const isActive = techStack.includes(tech)
+              return (
+                <button
+                  key={tech}
+                  type="button"
+                  onClick={() => toggleTech(tech)}
+                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition-colors ${
+                    isActive
+                      ? 'bg-[#8a6a43] text-white dark:bg-[#d7b37a] dark:text-[#151515]'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-300 dark:hover:bg-white/15'
+                  }`}
+                >
+                  {tech}
+                </button>
+              )
+            })}
+            {filteredTechs.length === 0 && (
+              <p className="text-xs text-slate-400">No technologies match your search</p>
+            )}
+          </div>
+        </div>
+
+        <input type="hidden" name="tech_stack" value={JSON.stringify(techStack)} />
 
         <button
           type="submit"

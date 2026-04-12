@@ -3,8 +3,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import Footer from '@/components/shared/Footer'
-import LandingTopBar from '@/components/landing/LandingTopBar'
 import { incrementVacancyVisitCounter } from '@/lib/vacancy-visit-tracker'
 import { getVacancyDetail, normalizeRouteSource } from '@/lib/vacancy-detail-data'
 import type { VacancyDetail } from '@/lib/datatypes/vacancy-detail-data.types'
@@ -406,16 +404,7 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
     .filter((entry) => entry.url)
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-[#111111]">
-      {/* Sticky Header Wrapper */}
-      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
-        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-          <LandingTopBar />
-        </div>
-      </div>
-
-
-      <main className="relative mx-auto flex max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+    <main className="relative mx-auto flex max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
         <section className="px-0 py-2 transition-colors duration-300 sm:p-4">
         <header className="mb-6 flex flex-wrap items-center gap-4">
           <Link
@@ -582,8 +571,6 @@ export default async function VacancyPage({ params }: VacancyPageProps) {
           </aside>
         </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </main>
   )
 }

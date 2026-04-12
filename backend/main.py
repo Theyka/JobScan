@@ -10,9 +10,12 @@ from app.scheduler.interval_scheduler import IntervalScheduler
 from app.services.duplicate_detection_service import DuplicateDetectionService
 from app.services.glorri_service import GlorriService
 from app.services.jobsearch_service import JobSearchService
+from app.services.notification_service import NotificationService
 from app.services.telegram_bot_service import TelegramBotService
 from app.services.telegram_service import TelegramService
 from app.services.technology_service import TechnologyService
+from app.services.translation_batch_service import TranslationBatchService
+from app.services.translation_service import TranslationService
 
 
 def parse_args() -> argparse.Namespace:
@@ -65,6 +68,12 @@ def main():
     )
     controller = ScrapeController(jobsearch_service, glorri_service, duplicate_detection_service)
 
+    notification_service = NotificationService(repository)
+    translation_service = TranslationService(repository)
+    translation_batch_service = TranslationBatchService(
+        repository, translation_service, settings.translation_batch_size
+    )
+
     if not repository.is_configured:
         print("Warning: SUPABASE_URL or SUPABASE_SERVICE_KEY is missing. DB inserts will be skipped.")
 
@@ -107,8 +116,23 @@ def main():
     else:
         print("Telegram digest disabled: set TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID to enable it.")
 
+    # Translation batch scheduler
+    translation_scheduler = IntervalScheduler(settings.translation_interval_seconds)
+    Thread(
+        target=translation_scheduler.run_forever,
+        args=(translation_batch_service.run,),
+        daemon=True,
+    ).start()
+
+    def scrape_with_notifications():
+        cycle_result = controller.run_cycle()
+        try:
+            notification_service.run(cycle_result)
+        except Exception as err:
+            print(f"Notification generation failed: {err}")
+
     scheduler = IntervalScheduler(settings.scrape_interval_seconds)
-    scheduler.run_forever(controller.run_cycle)
+    scheduler.run_forever(scrape_with_notifications)
 
 
 if __name__ == "__main__":

@@ -3,9 +3,11 @@
 import type { User } from '@supabase/supabase-js'
 import { BriefcaseBusiness } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 
+import NotificationBell from '@/components/shared/NotificationBell'
+import { applyTheme, persistTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 
 type LandingTopBarProps = {
@@ -16,6 +18,7 @@ type HeaderProfile = {
   displayName: string
   initials: string
   isAdmin: boolean
+  userId: string
 }
 
 function pickText(value: unknown): string {
@@ -45,6 +48,7 @@ function buildProfile(user: User | null, isAdmin = false): HeaderProfile | null 
     displayName,
     initials: initials || 'P',
     isAdmin,
+    userId: user.id,
   }
 }
 
@@ -76,6 +80,7 @@ function CircleButton({
 
 export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const supabase = useMemo(() => createClient(), [])
   const [profile, setProfile] = useState<HeaderProfile | null>(null)
   const [authChecked, setAuthChecked] = useState(false)
@@ -137,10 +142,8 @@ export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
 
     const root = document.documentElement
     const nextTheme = root.classList.contains('dark') ? 'light' : 'dark'
-    root.classList.toggle('dark', nextTheme === 'dark')
-    root.classList.toggle('light', nextTheme === 'light')
-    root.style.colorScheme = nextTheme
-    window.localStorage.setItem('theme', nextTheme)
+    applyTheme(nextTheme)
+    persistTheme(nextTheme)
   }
 
   return (
@@ -156,11 +159,19 @@ export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
-          <Link href="/" className="text-sm font-medium text-white transition hover:text-white/82">
+          <Link href="/" className={`text-sm font-medium transition ${pathname === '/' ? 'text-white hover:text-white/82' : 'text-white/70 hover:text-white'}`}>
             Home
           </Link>
+          <Link href="/companies" className={`text-sm font-medium transition ${pathname === '/companies' || pathname?.startsWith('/companies/') ? 'text-white hover:text-white/82' : 'text-white/70 hover:text-white'}`}>
+            Companies
+          </Link>
+          {profile ? (
+            <Link href="/my-stack" className={`text-sm font-medium transition ${pathname === '/my-stack' || pathname?.startsWith('/my-stack/') ? 'text-white hover:text-white/82' : 'text-white/70 hover:text-white'}`}>
+              My Stack
+            </Link>
+          ) : null}
           {profile?.isAdmin ? (
-            <Link href="/admin" className="text-sm font-medium text-white/70 transition hover:text-white">
+            <Link href="/admin" className={`text-sm font-medium transition ${pathname === '/admin' || pathname?.startsWith('/admin/') ? 'text-white hover:text-white/82' : 'text-white/70 hover:text-white'}`}>
               Admin
             </Link>
           ) : null}
@@ -172,6 +183,8 @@ export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
           </CircleButton>
+
+          {profile ? <NotificationBell userId={profile.userId} /> : null}
 
           {authChecked ? (
             profile ? (
@@ -211,7 +224,10 @@ export default function LandingTopBar({ onToggleTheme }: LandingTopBarProps) {
               </div>
             )
           ) : (
-            <div className="h-11 w-28 animate-pulse rounded-lg bg-white/10" aria-hidden />
+            <div className="flex items-center gap-2">
+              <div className="h-11 w-18 animate-pulse rounded-lg border border-white/10 bg-white/5" aria-hidden />
+              <div className="h-11 w-22 animate-pulse rounded-lg bg-white/20" aria-hidden />
+            </div>
           )}
         </div>
       </div>

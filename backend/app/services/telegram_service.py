@@ -348,10 +348,27 @@ class TelegramService:
             "message": message,
         }
 
+    @staticmethod
+    def _parse_channel_chat_id(channel_id: str) -> int | None:
+        raw = (channel_id or "").strip()
+        if raw.lstrip("-").isdigit():
+            return int(raw)
+        return None
+
     def send_latest_jobs_digest(self) -> dict[str, int | bool]:
         if not self.is_configured:
             print("Telegram digest skipped: missing Telegram or Supabase configuration")
             return {"sent": False, "jobs": 0}
+
+        _, _, yesterday_local = self._yesterday_window()
+        digest_token = yesterday_local.isoformat()
+        channel_chat_id = self._parse_channel_chat_id(self.channel_id)
+
+        if channel_chat_id is not None:
+            state = self.repository.fetch_telegram_user(channel_chat_id)
+            if state and str(state.get("last_digest_for", "")) == digest_token:
+                print(f"Telegram channel digest skipped: already sent for {digest_token}")
+                return {"sent": False, "jobs": 0}
 
         preview = self.preview_latest_jobs_digest()
         jobs = int(preview["jobs"])
@@ -393,6 +410,15 @@ class TelegramService:
             description = payload.get("description") if isinstance(payload, dict) else ""
             details = description or response.text.strip() or str(error)
             raise RuntimeError(f"Telegram API rejected sendMessage: {details}") from error
+
+        if channel_chat_id is not None:
+            try:
+                self.repository.upsert_telegram_user({
+                    "chat_id": channel_chat_id,
+                    "last_digest_for": digest_token,
+                })
+            except Exception as err:
+                print(f"Warning: failed to persist channel digest state: {err}")
 
         print(f"Telegram digest sent: jobs={jobs}")
         return {"sent": True, "jobs": jobs}

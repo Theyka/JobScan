@@ -79,15 +79,18 @@ html.dark {
 }
 
 html {
+  background: var(--background);
+  color: var(--foreground);
   color-scheme: light;
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
 
 body {
-  background: #ffffff;
-  color: var(--foreground);
+  background: transparent;
+  color: inherit;
   font-family: var(--font-manrope), sans-serif;
+  margin: 0;
   min-height: 100vh;
   overflow-y: scroll;
 }
@@ -97,7 +100,7 @@ html.dark {
 }
 
 html.dark body {
-  background: #ffffff;
+  background: transparent;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -239,6 +242,7 @@ select {
 .line-clamp-2-custom {
   display: -webkit-box;
   overflow: hidden;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
@@ -257,6 +261,142 @@ select {
   margin-bottom: 0.75rem;
   font-weight: 700;
   line-height: 1.2;
+}
+
+.loading-orbit {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-orbit::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 26%, transparent) 0, transparent 38%),
+    radial-gradient(circle at 70% 65%, color-mix(in srgb, var(--gold) 22%, transparent) 0, transparent 42%);
+  animation: loading-orbit-spin 14s linear infinite;
+  pointer-events: none;
+}
+
+.loading-grid-surface {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--line) 80%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--line) 80%, transparent) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+
+.loading-panel {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 70px rgba(17, 24, 39, 0.06);
+}
+
+.dark .loading-panel {
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.24);
+}
+
+.loading-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 15%, rgba(255, 255, 255, 0.52) 48%, transparent 80%);
+  transform: translateX(-140%);
+  animation: loading-panel-sheen 1.9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.dark .loading-panel::after {
+  background: linear-gradient(110deg, transparent 15%, rgba(255, 255, 255, 0.08) 48%, transparent 80%);
+}
+
+.loading-block {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--surface-muted) 92%, transparent) 0%,
+      color-mix(in srgb, var(--accent-soft) 70%, var(--surface-muted) 30%) 50%,
+      color-mix(in srgb, var(--surface-muted) 92%, transparent) 100%
+    );
+  background-size: 240% 100%;
+  animation: loading-block-wave 1.8s ease-in-out infinite;
+}
+
+.dark .loading-block {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(182, 145, 99, 0.16) 50%,
+      rgba(255, 255, 255, 0.06) 100%
+    );
+  background-size: 240% 100%;
+}
+
+.loading-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-progress::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent), var(--gold), var(--accent));
+  background-size: 200% 100%;
+  animation: loading-progress-flow 1.6s linear infinite;
+}
+
+@keyframes loading-panel-sheen {
+  0% {
+    transform: translateX(-140%);
+  }
+
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+@keyframes loading-block-wave {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes loading-progress-flow {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes loading-orbit-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.03);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 .job-description strong,

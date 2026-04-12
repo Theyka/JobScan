@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import FiltersSidebar from '@/components/landing/FiltersSidebar'
-import LandingTopBar from '@/components/landing/LandingTopBar'
-import Footer from '@/components/shared/Footer'
 import JobsSection from '@/components/landing/JobsSection'
 import type { LandingData, LandingJob } from '@/lib/datatypes/landing-data.types'
 import type { CountItem, PageSizeOption, SalaryRange, SourceFilter } from '@/lib/datatypes/landing-page.types'
+import { addFavoriteVacancy, removeFavoriteVacancy, getUserFavoriteVacancies } from '@/lib/favorites'
+import { createClient } from '@/lib/supabase/client'
+import { applyTheme, getStoredTheme, persistTheme } from '@/lib/theme'
 
 const PAGE_SIZE_OPTIONS: PageSizeOption[] = [20, 40, 60, 80, 100]
 type SortOption = 'latest' | 'oldest' | 'salary-desc' | 'salary-asc' | 'company-asc'
@@ -87,13 +88,6 @@ type IndexedLandingJob = {
   createdAtTs: number
 }
 
-function applyTheme(theme: 'light' | 'dark') {
-  const root = document.documentElement
-  root.classList.toggle('dark', theme === 'dark')
-  root.classList.toggle('light', theme === 'light')
-  root.style.colorScheme = theme
-}
-
 export default function LandingPage({ data }: { data: LandingData }) {
   const [search, setSearch] = useState('')
   const [activeTech, setActiveTech] = useState<string | null>(null)
@@ -110,21 +104,36 @@ export default function LandingPage({ data }: { data: LandingData }) {
   const [showAllTechs, setShowAllTechs] = useState(true)
   const [showAllCompanies, setShowAllCompanies] = useState(true)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [favoriteVacancyIds, setFavoriteVacancyIds] = useState<Set<string>>(new Set())
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const selectRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem('theme')
-    const resolvedTheme = savedTheme === 'dark' ? 'dark' : 'light'
+    const resolvedTheme = getStoredTheme() ?? 'light'
 
     const savedItems = Number.parseInt(window.localStorage.getItem('itemsPerPage') || '', 10)
 
     window.requestAnimationFrame(() => {
       applyTheme(resolvedTheme)
+      persistTheme(resolvedTheme)
       if (isPageSizeOption(savedItems)) {
         setItemsPerPage(savedItems)
       }
     })
+
+    // Load favorites
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setIsLoggedIn(true)
+        getUserFavoriteVacancies().then((favorites) => {
+          const ids = new Set(favorites.map((f) => `${f.source}-${f.vacancy_id}`))
+          setFavoriteVacancyIds(ids)
+        }).catch(() => {})
+      }
+    }).catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -323,12 +332,6 @@ export default function LandingPage({ data }: { data: LandingData }) {
     setCurrentPage(1)
   }, [])
 
-  const toggleTheme = useCallback(() => {
-    const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark'
-    applyTheme(nextTheme)
-    window.localStorage.setItem('theme', nextTheme)
-  }, [])
-
   const clearFilter = useCallback(() => {
     setActiveTech(null)
     setActiveCompanyTag(null)
@@ -386,14 +389,47 @@ export default function LandingPage({ data }: { data: LandingData }) {
     setCurrentPage((page) => Math.min(totalPages, Math.max(1, page) + 1))
   }, [totalPages])
 
-  return (
-    <div className="relative min-h-screen overflow-x-hidden bg-white text-foreground transition-colors duration-300 dark:bg-[#111111]">
-      <div className="sticky top-0 z-50 w-full bg-[#151515] border-b border-black/20">
-        <div className="mx-auto max-w-345 px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
-          <LandingTopBar onToggleTheme={toggleTheme} />
-        </div>
-      </div>
+  const handleToggleFavorite = useCallback(async (source: string, vacancyId: number) => {
+    if (!isLoggedIn) {
+      setShowLoginPrompt(true)
+      return
+    }
 
+    const normalizedSource = source === 'glorri' ? 'glorri' : 'jobsearch'
+    const key = `${normalizedSource}-${vacancyId}`
+    const isFavorited = favoriteVacancyIds.has(key)
+
+    // Optimistic update
+    setFavoriteVacancyIds((prev) => {
+      const next = new Set(prev)
+      if (isFavorited) {
+        next.delete(key)
+      } else {
+        next.add(key)
+      }
+      return next
+    })
+
+    const result = isFavorited
+      ? await removeFavoriteVacancy(source, vacancyId)
+      : await addFavoriteVacancy(source, vacancyId)
+
+    if (result.error) {
+      // Revert on error
+      setFavoriteVacancyIds((prev) => {
+        const next = new Set(prev)
+        if (isFavorited) {
+          next.add(key)
+        } else {
+          next.delete(key)
+        }
+        return next
+      })
+    }
+  }, [favoriteVacancyIds, isLoggedIn])
+
+  return (
+    <>
       <main className="relative mx-auto flex max-w-420 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
         {data.error ? (
           <div className="mb-8 rounded-2xl border border-red-200/80 bg-red-50/90 px-5 py-4 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
@@ -455,6 +491,8 @@ export default function LandingPage({ data }: { data: LandingData }) {
                   onNextPage={goToNextPage}
                   sortBy={sortBy}
                   onSortChange={setSortBy}
+                  favoriteVacancyIds={favoriteVacancyIds}
+                  onToggleFavorite={handleToggleFavorite}
                 />
               </div>
             </div>
@@ -463,7 +501,24 @@ export default function LandingPage({ data }: { data: LandingData }) {
 
       </main>
 
-      <Footer />
-    </div>
+      {showLoginPrompt ? (
+        <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowLoginPrompt(false)}>
+          <div className="mx-4 w-full max-w-sm rounded-2xl border border-black/8 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#1a1a1a]" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#f8f6f3] dark:bg-white/6">
+              <svg className="h-6 w-6 text-[#8a6a43] dark:text-[#d7b37a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-lg font-bold text-slate-900 dark:text-white">Sign in to save favorites</h3>
+            <p className="mb-5 text-sm text-slate-500 dark:text-slate-400">Create an account or sign in to save vacancies to your favorites list.</p>
+            <div className="flex gap-3">
+              <a href="/auth/login" className="flex-1 rounded-lg bg-[#8a6a43] py-2.5 text-center text-sm font-bold text-white transition-colors hover:bg-[#765936] dark:bg-[#d7b37a] dark:text-[#151515] dark:hover:bg-[#c9a15e]">Sign in</a>
+              <button type="button" onClick={() => setShowLoginPrompt(false)} className="flex-1 rounded-lg border border-black/8 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5">Cancel</button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+    </>
   )
 }

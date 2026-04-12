@@ -491,3 +491,288 @@ class SupabaseRepository:
             },
         ).json()
         return rows if isinstance(rows, list) else []
+
+    # ── Proxy methods ──────────────────────────────────────────────────
+
+    def fetch_active_proxies(self) -> list[dict]:
+        rows = self._get(
+            "proxies",
+            {
+                "select": "id,url,fail_count,last_used_at",
+                "is_active": "eq.true",
+                "order": "fail_count.asc,last_used_at.asc.nullsfirst",
+            },
+        ).json()
+        return rows if isinstance(rows, list) else []
+
+    def fetch_all_proxies(self) -> list[dict]:
+        return self._fetch_all("proxies", "id,url,is_active,fail_count,last_used_at,created_at")
+
+    def insert_proxies(self, urls: list[str]):
+        if not urls:
+            return
+        payload = [{"url": url.strip()} for url in urls if url.strip()]
+        if not payload:
+            return
+        for chunk in self._chunk_list(payload, 200):
+            self._post(
+                "proxies",
+                chunk,
+                prefer="resolution=merge-duplicates,return=minimal",
+                params={"on_conflict": "url"},
+            )
+
+    def update_proxy_status(self, proxy_id: int, fail_count: int):
+        self._patch(
+            "proxies",
+            {"fail_count": fail_count, "last_used_at": "now()"},
+            {"id": f"eq.{int(proxy_id)}"},
+        )
+
+    def update_proxy_success(self, proxy_id: int):
+        self._patch(
+            "proxies",
+            {"fail_count": 0, "last_used_at": "now()"},
+            {"id": f"eq.{int(proxy_id)}"},
+        )
+
+    def toggle_proxy(self, proxy_id: int, is_active: bool):
+        self._patch(
+            "proxies",
+            {"is_active": is_active},
+            {"id": f"eq.{int(proxy_id)}"},
+        )
+
+    def delete_proxy(self, proxy_id: int):
+        self._delete("proxies", {"id": f"eq.{int(proxy_id)}"})
+
+    # ── Translation methods ────────────────────────────────────────────
+
+    def fetch_untranslated_vacancies(self, source: str) -> list[dict]:
+        table = "js_vacancies" if source == "jobsearch" else "glorri_vacancies"
+        select = "id,title,text"
+
+        all_vacancies = self._fetch_all(table, select)
+        if not all_vacancies:
+            return []
+
+        vacancy_ids = [v["id"] for v in all_vacancies if v.get("id") is not None]
+        if not vacancy_ids:
+            return []
+
+        translated_ids: set[int] = set()
+        for chunk in self._chunk_list(sorted(vacancy_ids), 200):
+            in_filter = "(" + ",".join(str(v) for v in chunk) + ")"
+            rows = self._get(
+                "vacancy_translations",
+                {
+                    "select": "vacancy_id",
+                    "source": f"eq.{source}",
+                    "vacancy_id": f"in.{in_filter}",
+                },
+            ).json()
+            if isinstance(rows, list):
+                seen: set[int] = set()
+                for row in rows:
+                    vid = row.get("vacancy_id")
+                    if vid is not None:
+                        seen.add(int(vid))
+                # Only consider fully translated (3 languages) as done
+                # For simplicity, if any translation exists we count it
+                translated_ids.update(seen)
+
+        return [v for v in all_vacancies if v.get("id") not in translated_ids]
+
+    def fetch_untranslated_companies(self, source: str) -> list[dict]:
+        table = "js_companies" if source == "jobsearch" else "glorri_companies"
+        if source == "jobsearch":
+            select = "id,title,text"
+        else:
+            select = "id,name"
+
+        all_companies = self._fetch_all(table, select)
+        if not all_companies:
+            return []
+
+        company_ids = [c["id"] for c in all_companies if c.get("id") is not None]
+        if not company_ids:
+            return []
+
+        translated_ids: set[int] = set()
+        for chunk in self._chunk_list(sorted(company_ids), 200):
+            in_filter = "(" + ",".join(str(c) for c in chunk) + ")"
+            rows = self._get(
+                "company_translations",
+                {
+                    "select": "company_id",
+                    "source": f"eq.{source}",
+                    "company_id": f"in.{in_filter}",
+                },
+            ).json()
+            if isinstance(rows, list):
+                for row in rows:
+                    cid = row.get("company_id")
+                    if cid is not None:
+                        translated_ids.add(int(cid))
+
+        return [c for c in all_companies if c.get("id") not in translated_ids]
+
+    def upsert_vacancy_translations(self, translations: list[dict]):
+        if not translations:
+            return
+        for chunk in self._chunk_list(translations, 200):
+            self._post(
+                "vacancy_translations",
+                chunk,
+                prefer="resolution=merge-duplicates,return=minimal",
+                params={"on_conflict": "source,vacancy_id,lang"},
+            )
+
+    def upsert_company_translations(self, translations: list[dict]):
+        if not translations:
+            return
+        for chunk in self._chunk_list(translations, 200):
+            self._post(
+                "company_translations",
+                chunk,
+                prefer="resolution=merge-duplicates,return=minimal",
+                params={"on_conflict": "source,company_id,lang"},
+            )
+
+    # ── Notification methods ───────────────────────────────────────────
+
+    def fetch_expired_favorite_vacancies(self) -> list[dict]:
+        """Fetch favorite vacancies that have passed their deadline."""
+        # Get JS favorites with expired deadline
+        rows: list[dict] = []
+
+        js_expired = self._get(
+            "user_favorite_vacancies",
+            {
+                "select": "user_id,source,vacancy_id,js_vacancies!inner(title,slug,deadline_at)",
+                "source": "eq.jobsearch",
+            },
+        ).json()
+
+        if isinstance(js_expired, list):
+            for row in js_expired:
+                vacancy = row.get("js_vacancies") or {}
+                deadline = vacancy.get("deadline_at")
+                if deadline and self._is_past(deadline):
+                    rows.append({
+                        "user_id": row["user_id"],
+                        "source": "jobsearch",
+                        "vacancy_id": row["vacancy_id"],
+                        "title": vacancy.get("title"),
+                        "slug": vacancy.get("slug"),
+                    })
+
+        glorri_expired = self._get(
+            "user_favorite_vacancies",
+            {
+                "select": "user_id,source,vacancy_id,glorri_vacancies!inner(title,slug,vacancy_about)",
+                "source": "eq.glorri",
+            },
+        ).json()
+
+        if isinstance(glorri_expired, list):
+            for row in glorri_expired:
+                vacancy = row.get("glorri_vacancies") or {}
+                about = vacancy.get("vacancy_about") or {}
+                deadline = about.get("Son tarix") or about.get("deadline") or ""
+                if deadline and self._is_past(deadline):
+                    rows.append({
+                        "user_id": row["user_id"],
+                        "source": "glorri",
+                        "vacancy_id": row["vacancy_id"],
+                        "title": vacancy.get("title"),
+                        "slug": vacancy.get("slug"),
+                    })
+
+        return rows
+
+    @staticmethod
+    def _is_past(date_str: str) -> bool:
+        from datetime import datetime, timezone
+        try:
+            if "T" in date_str:
+                dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+            else:
+                dt = datetime.strptime(date_str.split("T")[0], "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            return dt < datetime.now(timezone.utc)
+        except (ValueError, TypeError):
+            return False
+
+    def check_notification_exists(self, user_id: str, notification_type: str, source: str, vacancy_id: int) -> bool:
+        rows = self._get(
+            "notifications",
+            {
+                "select": "id",
+                "user_id": f"eq.{user_id}",
+                "type": f"eq.{notification_type}",
+                "metadata->>source": f"eq.{source}",
+                "metadata->>vacancy_id": f"eq.{vacancy_id}",
+                "limit": "1",
+            },
+        ).json()
+        return isinstance(rows, list) and len(rows) > 0
+
+    def insert_notifications(self, notifications: list[dict]):
+        if not notifications:
+            return
+        for chunk in self._chunk_list(notifications, 200):
+            self._post(
+                "notifications",
+                chunk,
+                prefer="return=minimal",
+            )
+
+    def fetch_company_followers(self, source: str, company_id: int) -> list[str]:
+        rows = self._get(
+            "user_favorite_companies",
+            {
+                "select": "user_id",
+                "source": f"eq.{source}",
+                "company_id": f"eq.{int(company_id)}",
+            },
+        ).json()
+        if not isinstance(rows, list):
+            return []
+        return [row["user_id"] for row in rows if row.get("user_id")]
+
+    def fetch_vacancy_brief(self, source: str, vacancy_id: int) -> dict | None:
+        table = "js_vacancies" if source == "jobsearch" else "glorri_vacancies"
+        if source == "jobsearch":
+            select = "id,title,slug,company_id"
+        else:
+            select = "id,title,slug,company_id"
+
+        rows = self._get(
+            table,
+            {
+                "select": select,
+                "id": f"eq.{int(vacancy_id)}",
+                "limit": "1",
+            },
+        ).json()
+
+        if not isinstance(rows, list) or not rows:
+            return None
+
+        vacancy = rows[0]
+
+        # Resolve company name
+        company_id_val = vacancy.get("company_id")
+        company_name = ""
+        if company_id_val is not None:
+            if source == "jobsearch":
+                companies = self.fetch_js_companies_by_ids([int(company_id_val)])
+                info = companies.get(int(company_id_val))
+                if info:
+                    company_name = info.get("title", "")
+            else:
+                names = self.fetch_glorri_company_names_by_ids([int(company_id_val)])
+                company_name = names.get(int(company_id_val), "")
+
+        vacancy["company_name"] = company_name
+        return vacancy

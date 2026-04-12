@@ -64,6 +64,8 @@ class Settings:
     telegram_timezone: str
     telegram_digest_limit: int
     frontend_base_url: str
+    translation_interval_seconds: int
+    translation_batch_size: int
 
 
 
@@ -105,6 +107,13 @@ def load_settings(env_path: Path | None = None) -> Settings:
             "Add it to your .env file or set it as an environment variable (e.g. FRONTEND_BASE_URL=https://vakanso.com)."
         )
 
+    translation_interval_raw = os.getenv("TRANSLATION_INTERVAL") or env_values.get("TRANSLATION_INTERVAL", "")
+    translation_interval_seconds = _parse_positive_int(translation_interval_raw, 1800)
+    translation_batch_size = _parse_positive_int(
+        os.getenv("TRANSLATION_BATCH_SIZE") or env_values.get("TRANSLATION_BATCH_SIZE", ""),
+        50,
+    )
+
     return Settings(
         supabase_url=supabase_url,
         supabase_service_key=supabase_service_key,
@@ -117,4 +126,6 @@ def load_settings(env_path: Path | None = None) -> Settings:
         telegram_timezone=telegram_timezone,
         telegram_digest_limit=telegram_digest_limit,
         frontend_base_url=frontend_base_url,
+        translation_interval_seconds=translation_interval_seconds,
+        translation_batch_size=translation_batch_size,
     )

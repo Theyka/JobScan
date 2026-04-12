@@ -2,8 +2,6 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import AdminSectionNav from '@/components/admin/AdminSectionNav'
-import LandingTopBar from '@/components/landing/LandingTopBar'
-import Footer from '@/components/shared/Footer'
 import CustomDatePicker from '@/components/shared/CustomDatePicker'
 import { buildAdminAnalytics, resolveAdminAnalyticsFilters, type AdminAnalyticsQuery } from '@/lib/admin/analytics'
 import { getCurrentUserAccess } from '@/lib/admin/access'
@@ -76,13 +74,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const trendTickValues = Array.from(new Set([1, 0.75, 0.5, 0.25].map((ratio) => Math.round(maxSeriesValue * ratio))))
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#111111] dark:text-slate-100">
-      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
-        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-          <LandingTopBar />
-        </div>
-      </div>
-
+    <>
       <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto w-full py-6 lg:py-10">
         <AdminSectionNav current="stats" />
@@ -447,8 +439,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   </div>
   </main>
 
-      <Footer />
-
       <style dangerouslySetInnerHTML={{
         __html: `
         .custom-scrollbar::-webkit-scrollbar {
@@ -475,6 +465,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
       `}} />
-    </div>
+    </>
   )
 }

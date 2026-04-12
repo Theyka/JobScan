@@ -1,7 +1,5 @@
 import { redirect } from 'next/navigation'
 
-import LandingTopBar from '@/components/landing/LandingTopBar'
-import Footer from '@/components/shared/Footer'
 import { createClient } from '@/lib/supabase/server'
 
 import ProfileForm from './ProfileForm'
@@ -26,26 +24,26 @@ export default async function ProfilePage() {
   const username = pickText((metadata as Record<string, unknown>).username)
   const email = pickText(user.email)
 
-  return (
-    <div className="flex min-h-screen flex-col bg-slate-50 transition-colors duration-300 dark:bg-[#111111]">
-      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
-        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-          <LandingTopBar />
-        </div>
-      </div>
+  // Fetch tech_stack from profiles table
+  let techStack: string[] = []
+  const { data: profileData } = await supabase.from('profiles').select('tech_stack').eq('id', user.id).maybeSingle()
+  if (profileData) {
+    if (Array.isArray(profileData.tech_stack)) {
+      techStack = profileData.tech_stack
+    }
+  }
 
-      <main className="relative mx-auto flex max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+  return (
+    <main className="relative mx-auto flex max-w-345 grow flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-4xl py-6 lg:py-10">
           <ProfileForm
             email={email}
             initialFirstName={firstName}
             initialLastName={lastName}
             initialUsername={username}
+            initialTechStack={techStack}
           />
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   )
 }

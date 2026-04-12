@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { createClient } from '@/lib/supabase/client'
+import { applyTheme, persistTheme } from '@/lib/theme'
 
 type SiteHeaderProps = {
   title?: string
@@ -189,10 +190,8 @@ export default function SiteHeader({
 
     const root = document.documentElement
     const nextTheme = root.classList.contains('dark') ? 'light' : 'dark'
-    root.classList.toggle('dark', nextTheme === 'dark')
-    root.classList.toggle('light', nextTheme === 'light')
-    root.style.colorScheme = nextTheme
-    window.localStorage.setItem('theme', nextTheme)
+    applyTheme(nextTheme)
+    persistTheme(nextTheme)
   }
 
   const authArea = authChecked ? (

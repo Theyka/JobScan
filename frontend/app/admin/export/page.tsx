@@ -2,8 +2,6 @@ import { redirect } from 'next/navigation'
 
 import AdminSectionNav from '@/components/admin/AdminSectionNav'
 import CSVPreviewTable from '@/components/admin/CSVPreviewTable'
-import LandingTopBar from '@/components/landing/LandingTopBar'
-import Footer from '@/components/shared/Footer'
 import { getCurrentUserAccess } from '@/lib/admin/access'
 import { buildJobsCsvPreview } from '@/lib/admin/jobs-export'
 import type { JobsCsvPreview } from '@/lib/admin/jobs-export'
@@ -39,14 +37,7 @@ export default async function AdminExportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#111111] dark:text-slate-100">
-      <div className="sticky top-0 z-120 w-full border-b border-black/20 bg-[#151515]">
-        <div className="mx-auto max-w-345 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-          <LandingTopBar />
-        </div>
-      </div>
-
-      <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
+    <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto w-full py-6 lg:py-10">
         <AdminSectionNav current="export" />
 
@@ -116,10 +107,7 @@ export default async function AdminExportPage() {
           )}
         </section>
       </div>
-      </main>
-
-      <Footer />
-    </div>
+    </main>
   )
 }
 

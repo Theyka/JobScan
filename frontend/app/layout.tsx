@@ -1,8 +1,11 @@
 import type { Metadata } from 'next'
+import { cookies } from 'next/headers'
 import Script from 'next/script'
 import { IBM_Plex_Mono, Manrope } from 'next/font/google'
 
+import AppShell from '@/components/shared/AppShell'
 import { SITE_TAGLINE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, CREATOR_NAME, CREATOR_URL } from '@/lib/site-config'
+import { THEME_COOKIE_NAME, THEME_PALETTE, resolveInitialTheme } from '@/lib/theme'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -40,14 +43,20 @@ const ibmPlexMono = IBM_Plex_Mono({
 const themeInitScript = `
 (() => {
   try {
-    const storedTheme = window.localStorage.getItem('theme');
+    const storedTheme = window.localStorage.getItem('${THEME_COOKIE_NAME}');
     const hasStoredTheme = storedTheme === 'dark' || storedTheme === 'light';
+    const palette = ${JSON.stringify(THEME_PALETTE)};
 
     const applyTheme = (nextTheme) => {
       const root = document.documentElement;
+      const colors = palette[nextTheme];
+
       root.classList.remove('light', 'dark');
       root.classList.add(nextTheme);
       root.style.colorScheme = nextTheme;
+      root.style.backgroundColor = colors.background;
+      root.style.color = colors.foreground;
+      document.cookie = '${THEME_COOKIE_NAME}=' + nextTheme + '; path=/; max-age=31536000; samesite=lax';
     };
 
     applyTheme(hasStoredTheme ? storedTheme : 'light');
@@ -55,18 +64,30 @@ const themeInitScript = `
 })();
 `
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = await cookies()
+  const initialTheme = resolveInitialTheme(cookieStore.get(THEME_COOKIE_NAME)?.value)
+  const initialPalette = THEME_PALETTE[initialTheme]
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={initialTheme}
+      style={{ backgroundColor: initialPalette.background, color: initialPalette.foreground, colorScheme: initialTheme }}
+      suppressHydrationWarning
+    >
       <head>
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className={`${manrope.variable} ${ibmPlexMono.variable} antialiased`}>
-        {children}
+      <body
+        className={`${manrope.variable} ${ibmPlexMono.variable} antialiased`}
+        style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
+      >
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   )
