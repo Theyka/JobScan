@@ -546,6 +546,28 @@ class SupabaseRepository:
     def delete_proxy(self, proxy_id: int):
         self._delete("proxies", {"id": f"eq.{int(proxy_id)}"})
 
+    # ── App settings methods ───────────────────────────────────────────
+
+    def fetch_setting(self, key: str) -> str | None:
+        try:
+            rows = self._get(
+                "app_settings",
+                {"select": "value", "key": f"eq.{key}"},
+            ).json()
+            if isinstance(rows, list) and rows:
+                return rows[0].get("value")
+        except Exception:
+            pass
+        return None
+
+    def upsert_setting(self, key: str, value: str) -> None:
+        self._post(
+            "app_settings",
+            [{"key": key, "value": value, "updated_at": "now()"}],
+            prefer="resolution=merge-duplicates,return=minimal",
+            params={"on_conflict": "key"},
+        )
+
     # ── Translation methods ────────────────────────────────────────────
 
     def fetch_untranslated_vacancies(self, source: str) -> list[dict]:

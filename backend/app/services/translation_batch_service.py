@@ -22,6 +22,13 @@ class TranslationBatchService:
             result["errors"].append("Repository not configured, skipping translations")
             return result
 
+        # Check kill switch
+        enabled = self.repository.fetch_setting("translation_enabled")
+        if enabled == "false":
+            print(f"[{started_at.isoformat()}] translation batch skipped (disabled via admin panel)")
+            result["errors"].append("Translation disabled")
+            return result
+
         # Refresh proxy list before batch
         self.translation_service._refresh_proxies()
 

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { getCurrentUserAccess } from '@/lib/admin/access'
+import { setTranslationEnabled } from '@/lib/admin/app-settings'
 import { addProxies, removeProxy, setProxyActive } from '@/lib/admin/proxy-management'
 
 async function requireAdmin() {
@@ -72,7 +73,6 @@ export async function toggleProxyAction(formData: FormData): Promise<void> {
 
 export async function deleteProxyAction(formData: FormData): Promise<void> {
   await requireAdmin()
-
   const id = parseInt(String(formData.get('proxy_id') ?? ''), 10)
 
   if (!Number.isFinite(id)) {
@@ -81,5 +81,12 @@ export async function deleteProxyAction(formData: FormData): Promise<void> {
   }
 
   await removeProxy(id)
+  revalidatePath('/admin/proxy')
+}
+
+export async function setTranslationEnabledAction(formData: FormData): Promise<void> {
+  await requireAdmin()
+  const enabled = formData.get('enabled') === 'true'
+  await setTranslationEnabled(enabled)
   revalidatePath('/admin/proxy')
 }

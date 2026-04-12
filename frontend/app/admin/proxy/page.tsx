@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation'
 
 import ProxyActionButtons from '@/app/admin/proxy/ProxyActionButtons'
-import { addProxiesAction } from '@/app/admin/proxy/actions'
+import { addProxiesAction, setTranslationEnabledAction } from '@/app/admin/proxy/actions'
 import AdminSectionNav from '@/components/admin/AdminSectionNav'
 import { getCurrentUserAccess } from '@/lib/admin/access'
+import { getTranslationEnabled } from '@/lib/admin/app-settings'
 import { listProxies } from '@/lib/admin/proxy-management'
 
 function formatDate(value: string | null): string {
@@ -20,6 +21,7 @@ export default async function AdminProxyPage() {
   if (!access.isAdmin) redirect('/')
 
   const proxies = await listProxies().catch(() => [])
+  const translationEnabled = await getTranslationEnabled().catch(() => true)
   const activeCount = proxies.filter((p) => p.isActive).length
   const failingCount = proxies.filter((p) => p.failCount > 0).length
 
@@ -27,6 +29,33 @@ export default async function AdminProxyPage() {
     <main className="relative mx-auto flex max-w-345 flex-col px-4 pb-16 pt-6 text-slate-900 transition-colors duration-300 dark:text-white sm:px-6 lg:px-8">
       <div className="mx-auto w-full py-6 lg:py-10">
         <AdminSectionNav current="proxies" />
+
+        {/* Translation toggle */}
+        <section className="mb-6 rounded-3xl border border-black/8 bg-white p-5 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Translation</h2>
+              <p className="mt-1 text-sm font-semibold text-slate-400 dark:text-slate-500">
+                {translationEnabled
+                  ? 'Translation batches run every 30 minutes. Disable to stop all translation jobs.'
+                  : 'Translation is currently disabled. No translation batches will run.'}
+              </p>
+            </div>
+            <form action={setTranslationEnabledAction} className="shrink-0">
+              <input type="hidden" name="enabled" value={translationEnabled ? 'false' : 'true'} />
+              <button
+                type="submit"
+                className={`inline-flex h-10 cursor-pointer items-center rounded-xl px-6 text-sm font-bold transition-colors ${
+                  translationEnabled
+                    ? 'border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/15 dark:text-red-300 dark:hover:bg-red-500/25'
+                    : 'border border-[#8a6a43]/20 bg-[#8a6a43] text-white hover:bg-[#745634] dark:border-[#d7b37a]/30 dark:bg-[#d7b37a] dark:text-[#111111] dark:hover:bg-[#c9a76f]'
+                }`}
+              >
+                {translationEnabled ? 'Disable Translation' : 'Enable Translation'}
+              </button>
+            </form>
+          </div>
+        </section>
 
         {/* Add proxies form */}
         <section className="mb-6 rounded-3xl border border-black/8 bg-white p-5 transition-colors duration-300 dark:border-white/8 dark:bg-[#151515] sm:p-8">
