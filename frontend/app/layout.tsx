@@ -72,6 +72,7 @@ export default async function RootLayout({
   const cookieStore = await cookies()
   const initialTheme = resolveInitialTheme(cookieStore.get(THEME_COOKIE_NAME)?.value)
   const initialPalette = THEME_PALETTE[initialTheme]
+  const gtagId = process.env.NEXT_PUBLIC_GTAG_ID
 
   return (
     <html
@@ -82,6 +83,23 @@ export default async function RootLayout({
     >
       <head>
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {gtagId ? (
+          <>
+            <Script
+              id="gtag-src"
+              src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gtagId}');
+              `}
+            </Script>
+          </>
+        ) : null}
       </head>
       <body
         className={`${manrope.variable} ${ibmPlexMono.variable} antialiased`}
