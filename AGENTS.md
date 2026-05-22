@@ -10,7 +10,7 @@ Azerbaijan IT job market intelligence platform. Aggregates vacancies from **JobS
 /
 ├── backend/        Python scraper + scheduler + Telegram bot
 ├── frontend/       Next.js 15 web app (App Router)
-├── database/       SQL migration files (Supabase)
+├── database/       Supabase SQL schema
 └── AGENTS.md
 ```
 
@@ -128,15 +128,13 @@ Azerbaijan IT job market intelligence platform. Aggregates vacancies from **JobS
 
 ## Database (`database/`)
 
-Managed via Supabase. Migration files are numbered and applied manually.
+Managed via Supabase. Fresh setup uses one SQL file:
 
 | File | Creates |
 |------|---------|
-| `001_create_profiles.sql` | `profiles` table (extends auth.users: username, first_name, last_name, is_admin) |
-| `003_unique_visits_per_ip_per_day.sql` | `vacancy_visits` table + `increment_vacancy_visit()` RPC. PK deduplicates per source/vacancy/day/IP. |
-| `004_create_vacancy_clicks.sql` | `vacancy_clicks` table (source, vacancy_id, slug, visitor_hash, target_url) |
+| `001_initial_schema.sql` | Full schema: scraper tables, profiles, favorites, notifications, translations, proxies, app settings, Telegram user settings, RLS policies, indexes, and RPC functions |
 
-### Tables created by the scraper (not in migration files)
+### Core data tables
 
 | Table | Key columns |
 |-------|-------------|
@@ -145,8 +143,17 @@ Managed via Supabase. Migration files are numbered and applied manually.
 | `glorri_vacancies` | id, title, slug, postedDate, text, vacancy_about (JSONB), benefits (JSONB), tech_stack (JSONB), company_id |
 | `glorri_companies` | id, slug, name, logo |
 | `duplicate_jobs` | glorri_id (PK), jobsearch_id, score, matched_at |
+| `profiles` | id, username, first_name, last_name, is_admin, tech_stack |
+| `user_favorite_vacancies` | user_id, source, vacancy_id |
+| `user_favorite_companies` | user_id, source, company_id |
+| `notifications` | user_id, type, title, metadata, is_read |
+| `vacancy_translations` | source, vacancy_id, lang, title, text |
+| `company_translations` | source, company_id, lang, name, description |
+| `proxies` | url, is_active, last_used_at, fail_count |
+| `app_settings` | key, value |
+| `telegram_user_settings` | chat_id, language_code, selected_technologies, onboarding_step, active |
 
-All data tables use RLS: **public read, service_role write only**.
+RLS is table-specific: public vacancy/source tables are public read, user-owned tables restrict access to the authenticated owner, and internal/admin tables are service-role only.
 
 ### IP hashing convention
 
